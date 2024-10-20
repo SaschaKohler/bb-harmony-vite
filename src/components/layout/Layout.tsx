@@ -1,17 +1,23 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "./AppSidebar";
+import TopNavigation from "./TopNavigation";
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC = () => {
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* <AppSidebar /> */}
-      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6">
-        {children}
-      </main>
-    </div>
+    <SidebarProvider>
+      <div className="flex h-screen">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <TopNavigation />
+          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6">
+            <SidebarTrigger className="mb-4" />
+            <Outlet />
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

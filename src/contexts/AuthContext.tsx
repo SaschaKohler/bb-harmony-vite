@@ -1,15 +1,12 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabaseClient";
-import { Database } from "../types/supabase";
-
-type AuthUser = Database["public"]["Tables"]["users"]["Row"];
+import { User, Session } from "@supabase/supabase-js";
 
 interface AuthContextType {
-  user: AuthUser | null;
+  user: User | null;
   session: Session | null;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, username: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
 }
@@ -19,79 +16,51 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const setData = async () => {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-      if (error) {
-        console.error("Error fetching session:", error);
-        return;
-      }
-      setSession(session);
-      setUser(session?.user ? await fetchUser(session.user.id) : null);
-      setLoading(false);
-    };
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
         setSession(session);
-        setUser(session?.user ? await fetchUser(session.user.id) : null);
-        setLoading(false);
+        setUser(session?.user ?? null);
+        console.log("Auth state changed:", event, session?.user);
       },
     );
 
-    setData();
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      console.log("Initial session:", session?.user);
+    });
 
     return () => {
-      listener?.subscription.unsubscribe();
+      authListener.subscription.unsubscribe();
     };
   }, []);
 
-  const fetchUser = async (userId: string): Promise<AuthUser | null> => {
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      console.error("Error fetching user:", error);
-      return null;
-    }
-
-    return data;
-  };
-
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) throw error;
+    console.log("Sign in successful:", data.user);
   };
 
-  const signUp = async (email: string, password: string, username: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username,
-        },
-      },
-    });
+  const signUp = async (email: string, password: string) => {
+    const { error, data } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
+    console.log("Sign up successful:", data.user);
   };
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+    setUser(null);
+    setSession(null);
+    console.log("Sign out successful");
   };
 
   const signInWithGoogle = async () => {
@@ -110,11 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     signInWithGoogle,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

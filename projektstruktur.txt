@@ -1,0 +1,59 @@
+.
+├── README.md
+├── components.json
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── projektstruktur.txt
+├── public
+├── src
+│   ├── App.css
+│   ├── App.tsx
+│   ├── assets
+│   │   └── react.svg
+│   ├── components
+│   │   ├── Layout.tsx
+│   │   ├── Sidebar.tsx
+│   │   ├── auth
+│   │   │   ├── LoginForm.tsx
+│   │   │   ├── ProtectedRoute.tsx
+│   │   │   ├── RegistrationForm.tsx
+│   │   │   └── UnifiedAuthPage.tsx
+│   │   ├── layout
+│   │   │   └── Layout.tsx
+│   │   └── ui
+│   │       ├── alert.tsx
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── separator.tsx
+│   │       ├── sheet.tsx
+│   │       ├── sidebar.tsx
+│   │       ├── skeleton.tsx
+│   │       └── tooltip.tsx
+│   ├── contexts
+│   │   └── AuthContext.tsx
+│   ├── hooks
+│   │   └── use-mobile.tsx
+│   ├── index.css
+│   ├── lib
+│   │   ├── supabaseClient.ts
+│   │   └── utils.ts
+│   ├── main.tsx
+│   ├── pages
+│   │   ├── AuthPage.tsx
+│   │   ├── BachbluetenRad.tsx
+│   │   └── Dashboard.tsx
+│   ├── types
+│   │   └── supabase.ts
+│   └── vite-env.d.ts
+├── tailwind.config.js
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+
+12 directories, 44 files

@@ -12,8 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AuthWrapper } from "./AuthWrapper";
 
-export function LoginForm() {
+interface LoginFormProps {
+  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export function LoginForm({ setIsLogin }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -40,67 +45,73 @@ export function LoginForm() {
   };
 
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                to="/forgot-password"
-                className="ml-auto inline-block text-sm underline"
-              >
-                Forgot your password?
-              </Link>
+    <AuthWrapper>
+      <Card className="mx-auto max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardDescription>
+            Enter your email below to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
-            <Input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  to="/forgot-password"
+                  className="ml-auto inline-block text-sm underline"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleGoogleSignIn}
+            >
+              Login with Google
+            </Button>
+          </form>
+          <div className="mt-4 text-center text-sm">
+            Don't have an account?{" "}
+            <Button
+              variant="link"
+              className="p-0"
+              onClick={() => setIsLogin(false)}
+            >
+              Sign up
+            </Button>
           </div>
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={handleGoogleSignIn}
-          >
-            Login with Google
-          </Button>
-        </form>
-        <div className="mt-4 text-center text-sm">
-          Don't have an account?{" "}
-          <Link to="/register" className="underline">
-            Sign up
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </AuthWrapper>
   );
 }

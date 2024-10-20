@@ -1,21 +1,35 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-import { LoginForm } from "./components/auth/LoginForm";
-import { RegistrationForm } from "./components/auth/RegistrationForm";
+import { UnifiedAuthPage } from "./components/auth/UnifiedAuthPage";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Layout from "./components/layout/Layout";
+import Dashboard from "./pages/Dashboard";
+import BachblutenRad from "./pages/BachbluetenRad";
+import PublicRoute from "./components/auth/PublicRoute";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <Layout>
-          <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegistrationForm />} />
-            {/* Fügen Sie hier weitere Routen hinzu */}
-          </Routes>
-        </Layout>
+        <Routes>
+          <Route element={<PublicRoute />}>
+            <Route path="/auth" element={<UnifiedAuthPage />} />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="/Dashboard" element={<Dashboard />} />
+              <Route path="/bachbluten-rad" element={<BachblutenRad />} />
+            </Route>
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />{" "}
+          {/* Catch-all route */}
+        </Routes>
       </Router>
     </AuthProvider>
   );
