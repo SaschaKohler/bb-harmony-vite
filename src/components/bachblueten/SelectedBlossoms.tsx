@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { Blossom } from "@/lib/bachblueten/types";
 
 interface SelectedBlossomsProps {
@@ -35,35 +36,56 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
   const progress = (blossoms.length / maxBlossoms) * 100;
   const isOverRecommended = blossoms.length > recommendedBlossoms;
   const isAtMax = blossoms.length === maxBlossoms;
+  const isOptimal = blossoms.length === recommendedBlossoms;
   const canAddMore =
     hasConfirmedInitial && blossoms.length >= recommendedBlossoms;
 
+  const getProgressColor = () => {
+    if (isOptimal) return "bg-violet-100";
+    if (isOverRecommended) return "bg-amber-100";
+    return "bg-violet-50";
+  };
+
   return (
-    <Card>
+    <Card className="bg-white/50 backdrop-blur-sm border-gray-100">
       <CardHeader className="space-y-1">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Ausgewählte Blüten</CardTitle>
           <Badge
             variant={isOverRecommended ? "warning" : "secondary"}
-            className="ml-2"
+            className={cn(
+              "ml-2",
+              isOverRecommended
+                ? "bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200"
+                : "bg-violet-50 text-violet-700 hover:bg-violet-100 border border-violet-200",
+            )}
           >
             {blossoms.length}/{canAddMore ? maxBlossoms : recommendedBlossoms}
           </Badge>
         </div>
         {blossoms.length > 0 && (
-          <Progress
-            value={progress}
-            className={isOverRecommended ? "text-amber-500" : ""}
-          />
+          <div className="relative w-full h-2 bg-gray-100/50 rounded-full overflow-hidden">
+            <Progress
+              value={progress}
+              className={cn(
+                "transition-all duration-300",
+                blossoms.length < recommendedBlossoms
+                  ? "bg-violet-200 text-violet-200" // Noch nicht genug Blüten
+                  : blossoms.length === recommendedBlossoms
+                    ? "bg-emerald-200 text-emerald-200" // Optimale Anzahl
+                    : "bg-amber-200 text-amber-200", // Über der empfohlenen Anzahl
+              )}
+            />
+          </div>
         )}
       </CardHeader>
 
       <CardContent>
         {blossoms.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-6 text-center text-muted-foreground">
+          <div className="flex flex-col items-center justify-center py-6 text-center text-gray-500">
             <Info className="h-12 w-12 mb-2 opacity-50" />
             <p>Wählen Sie bis zu {recommendedBlossoms} Blüten aus</p>
-            <p className="text-sm mt-1">
+            <p className="text-sm mt-1 text-gray-400">
               Optimal: {recommendedBlossoms} Blüten
             </p>
           </div>
@@ -75,19 +97,32 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
                 return (
                   <div
                     key={blossom}
-                    className="group relative bg-muted/50 rounded-lg p-2 text-sm"
+                    className={cn(
+                      "group relative rounded-lg p-2",
+                      "bg-violet-50/50 hover:bg-violet-50",
+                      "border border-violet-100",
+                      "transition-all duration-200",
+                    )}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1 pr-2">
-                        <p className="font-medium truncate">{blossom}</p>
-                        <p className="text-xs text-muted-foreground truncate">
+                        <p className="font-medium text-sm text-violet-700 truncate">
+                          {blossom}
+                        </p>
+                        <p className="text-xs text-violet-600/70 truncate">
                           {blossomInfo.deutsch}
                         </p>
                       </div>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className={cn(
+                          "h-6 w-6 p-0",
+                          "opacity-0 group-hover:opacity-100",
+                          "text-violet-500 hover:text-violet-700",
+                          "hover:bg-violet-100/50",
+                          "transition-all duration-200",
+                        )}
                         onClick={() => onRemove(blossom)}
                       >
                         ×
@@ -98,20 +133,19 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
               })}
             </div>
 
-            {blossoms.length === recommendedBlossoms &&
-              !hasConfirmedInitial && (
-                <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/50 text-green-900 dark:text-green-100 rounded-md text-sm">
-                  <p className="flex items-center">
-                    <Info className="h-4 w-4 mr-2" />
-                    Sie haben die optimale Anzahl von {recommendedBlossoms}{" "}
-                    Blüten erreicht. Bestätigen Sie Ihre Auswahl oder wählen Sie
-                    weitere Blüten (max. {maxBlossoms}).
-                  </p>
-                </div>
-              )}
+            {isOptimal && !hasConfirmedInitial && (
+              <div className="mt-4 p-3 bg-violet-50 text-violet-700 rounded-md text-sm border border-violet-100">
+                <p className="flex items-center">
+                  <Info className="h-4 w-4 mr-2" />
+                  Sie haben die optimale Anzahl von {recommendedBlossoms} Blüten
+                  erreicht. Bestätigen Sie Ihre Auswahl oder wählen Sie weitere
+                  Blüten (max. {maxBlossoms}).
+                </p>
+              </div>
+            )}
 
             {canAddMore && !isAtMax && (
-              <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-900 dark:text-amber-100 rounded-md text-sm">
+              <div className="mt-4 p-3 bg-amber-50 text-amber-700 rounded-md text-sm border border-amber-100">
                 <p className="flex items-center">
                   <Info className="h-4 w-4 mr-2" />
                   Sie können noch bis zu {maxBlossoms - blossoms.length} weitere
@@ -121,7 +155,7 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
             )}
 
             {isAtMax && (
-              <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-900 dark:text-amber-100 rounded-md text-sm">
+              <div className="mt-4 p-3 bg-amber-50 text-amber-700 rounded-md text-sm border border-amber-100">
                 <p className="flex items-center">
                   <Info className="h-4 w-4 mr-2" />
                   Sie haben die maximale Anzahl von {maxBlossoms} Blüten
@@ -136,11 +170,15 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
       {blossoms.length > 0 && (
         <CardFooter>
           <Button
-            className="w-full"
             onClick={onConfirm}
-            variant={isOverRecommended ? "secondary" : "default"}
+            className={cn(
+              "w-full transition-all duration-200",
+              isOptimal || !isOverRecommended
+                ? "bg-violet-100 hover:bg-violet-200 text-violet-700 border border-violet-200"
+                : "bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200",
+            )}
           >
-            {blossoms.length === recommendedBlossoms && !hasConfirmedInitial
+            {isOptimal && !hasConfirmedInitial
               ? "Auswahl bestätigen und ggf. erweitern"
               : "Auswahl abschließen"}
           </Button>

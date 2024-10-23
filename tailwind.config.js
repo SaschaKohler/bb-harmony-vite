@@ -51,6 +51,16 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        violet: {
+          50: "#f8f6fe",
+          100: "#f0ebfc",
+          200: "#e4daf9",
+          300: "#d3c3f6",
+          400: "#b79cf0",
+          500: "#9a71e8",
+          600: "#8657db",
+          700: "#7446c4",
+        },
         harmony: {
           blue: "hsl(225, 73%, 57%)", // Unsicherheit
           purple: "hsl(271, 81%, 53%)", // Angst

@@ -22,56 +22,50 @@ const BachbluetenRad = () => {
     setSelectedSector((prev) => (prev?.group === sector.group ? null : sector));
   }, []);
 
-  const handleBlossomSelect = useCallback(
-    (blossom: string) => {
-      setSelectedBlossoms((prev) => {
-        // Wenn die Blüte bereits ausgewählt ist, entferne sie
-        if (prev.includes(blossom)) {
-          return prev.filter((b) => b !== blossom);
-        }
-
-        const currentCount = prev.length;
-        const initialLimit = 7;
-        const maxLimit = 10;
-
-        // Prüfe die verschiedenen Szenarien
-        if (!hasConfirmedInitial && currentCount >= initialLimit) {
-          toast.info("Bitte bestätigen Sie zuerst", {
+  const handleBlossomSelect = useCallback((blossom: string) => {
+    setSelectedBlossoms((prev) => {
+      // Wenn die Blüte bereits ausgewählt ist, entferne sie
+      if (prev.includes(blossom)) {
+        const newSelection = prev.filter((b) => b !== blossom);
+        // Prüfe ob die Mindestanzahl noch erreicht ist
+        if (newSelection.length < 4 && prev.length >= 4) {
+          toast.warning("Mindestanzahl beachten", {
             description:
-              "Sie haben 7 Blüten ausgewählt. Bestätigen Sie diese Auswahl, um bei Bedarf weitere Blüten hinzuzufügen.",
-            duration: 4000,
-          });
-          return prev;
-        }
-
-        if (hasConfirmedInitial && currentCount >= maxLimit) {
-          toast.error("Maximale Anzahl erreicht", {
-            description: "Es können maximal 10 Blüten ausgewählt werden.",
-            duration: 4000,
-          });
-          return prev;
-        }
-
-        // Zeige verschiedene Hinweise je nach Anzahl
-        if (currentCount === 6) {
-          toast.info("Optimale Anzahl erreicht", {
-            description:
-              "Sie haben 7 Blüten ausgewählt. Dies ist die empfohlene Menge für eine ausgewogene Mischung.",
-            duration: 4000,
-          });
-        } else if (hasConfirmedInitial && currentCount === 9) {
-          toast.warning("Letzte Blüte möglich", {
-            description:
-              "Sie können noch eine Blüte hinzufügen. Bedenken Sie, dass weniger oft mehr ist.",
+              "Bitte wählen Sie mindestens 4 Blüten für eine wirksame Mischung.",
             duration: 4000,
           });
         }
+        return newSelection;
+      }
 
-        return [...prev, blossom];
-      });
-    },
-    [hasConfirmedInitial],
-  );
+      // Prüfe die Maximalanzahl
+      if (prev.length >= 7) {
+        toast.warning("Maximale Anzahl erreicht", {
+          description:
+            "Für eine optimale Wirkung sollten nicht mehr als 7 Blüten kombiniert werden.",
+          duration: 4000,
+        });
+        return prev;
+      }
+
+      // Zeige Hinweise je nach Anzahl
+      if (prev.length === 3) {
+        toast.success("Mindestanzahl erreicht", {
+          description:
+            "Sie haben die Mindestanzahl von 4 Blüten erreicht. Sie können bis zu 3 weitere Blüten hinzufügen.",
+          duration: 4000,
+        });
+      } else if (prev.length === 6) {
+        toast.info("Optimale Anzahl erreicht", {
+          description:
+            "Sie haben die empfohlene Höchstanzahl von 7 Blüten erreicht.",
+          duration: 4000,
+        });
+      }
+
+      return [...prev, blossom];
+    });
+  }, []);
 
   const handleBlossomRemove = useCallback((blossom: string) => {
     setSelectedBlossoms((prev) => prev.filter((b) => b !== blossom));
