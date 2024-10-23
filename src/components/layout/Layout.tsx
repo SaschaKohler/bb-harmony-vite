@@ -7,7 +7,7 @@ import TopNavigation from "./TopNavigation";
 const Layout: React.FC = () => {
   return (
     <SidebarProvider>
-      <div className="flex h-screen">
+      <div className="flex h-screen w-full">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           <TopNavigation />

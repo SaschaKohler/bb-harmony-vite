@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, User, LogOut, Settings } from "lucide-react";
 
 const TopNavigation: React.FC = () => {
@@ -40,13 +40,14 @@ const TopNavigation: React.FC = () => {
             </button>
             {isUserMenuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
-                <a
-                  href="#"
+                <Link
+                  to="/profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                  onClick={() => setIsUserMenuOpen(false)}
                 >
                   <User className="mr-2 w-4 h-4" />
                   Profil
-                </a>
+                </Link>
                 <a
                   href="#"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"

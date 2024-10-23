@@ -13,7 +13,7 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { Home, Activity, LogOut, User2 } from "lucide-react";
+import { Home, Activity, LogOut, User2, Users } from "lucide-react";
 
 interface MenuItem {
   title: string;
@@ -61,6 +61,19 @@ export const AppSidebar: React.FC = () => {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Kunden</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/clients">
+                  <Users />
+                  <span>Kundenliste</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

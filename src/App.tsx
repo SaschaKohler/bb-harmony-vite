@@ -11,6 +11,8 @@ import Layout from "./components/layout/Layout";
 import Dashboard from "./pages/Dashboard";
 import BachblutenRad from "./pages/BachbluetenRad";
 import PublicRoute from "./components/auth/PublicRoute";
+import ProfilePage from "./pages/ProfilePage";
+import ClientListPage from "./pages/ClientListPage";
 
 function App() {
   return (
@@ -25,6 +27,9 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/bachbluten-rad" element={<BachblutenRad />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/clients" element={<ClientListPage />} />{" "}
+              {/* Neue Route für die Kundenliste */}
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />{" "}
