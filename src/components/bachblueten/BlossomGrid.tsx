@@ -39,6 +39,11 @@ const buttonVariants = {
     "cursor-not-allowed",
   ),
 };
+const getBlossomImagePath = (blossom: string) => {
+  // Konvertiere den Blütennamen in kleinbuchstaben und ersetze Sonderzeichen
+  const imageName = blossom.toLowerCase().replace(/\s+/g, "_");
+  return `/src/assets/blossoms/${imageName}.png`;
+};
 
 export const BlossomGrid: React.FC<BlossomGridProps> = ({
   blossoms,
@@ -81,6 +86,7 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
         const blossomInfo = blossomData[blossom];
         const isSelected = selectedBlossoms.includes(blossom);
         const isDisabled = isBlossomDisabled(blossom);
+        const imagePath = getBlossomImagePath(blossom);
 
         return (
           <TooltipProvider key={blossom}>
@@ -107,7 +113,7 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
                       isSelected ? "text-violet-700" : "text-gray-700",
                     )}
                   >
-                    {blossom}
+                    {blossom} Nr.{blossomInfo.nummer}
                   </span>
                   <span
                     className={cn(
@@ -122,12 +128,18 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
               <TooltipContent
                 side="top"
                 className={cn(
-                  "max-w-[200px]",
+                  "flex flex-col items-center gap-2 p-2",
+                  "max-w-[250px]",
                   "bg-white/90 backdrop-blur-sm",
                   "border border-violet-100",
                 )}
               >
-                <p className="text-sm">{getTooltipText(blossom)}</p>
+                <img
+                  src={imagePath}
+                  alt={`${blossom} Blüte`}
+                  className="w-24 h-24 object-cover rounded-md"
+                />
+                <p className="text-sm">{blossomInfo.affirmation}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

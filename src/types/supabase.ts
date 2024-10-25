@@ -11,21 +11,47 @@ export type Database = {
     Tables: {
       bach_flowers: {
         Row: {
+          affirmation: string | null
+          color: string | null
           description: string | null
+          emotion_id: string | null
           id: string
-          name: string
+          name_english: string
+          name_german: string | null
+          name_latin: string | null
+          number: number | null
         }
         Insert: {
+          affirmation?: string | null
+          color?: string | null
           description?: string | null
+          emotion_id?: string | null
           id?: string
-          name: string
+          name_english: string
+          name_german?: string | null
+          name_latin?: string | null
+          number?: number | null
         }
         Update: {
+          affirmation?: string | null
+          color?: string | null
           description?: string | null
+          emotion_id?: string | null
           id?: string
-          name?: string
+          name_english?: string
+          name_german?: string | null
+          name_latin?: string | null
+          number?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bach_flowers_emotion_id_fkey"
+            columns: ["emotion_id"]
+            isOneToOne: false
+            referencedRelation: "emotion"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       clients: {
         Row: {
@@ -67,6 +93,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      emotion: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string | null
+        }
+        Relationships: []
       }
       inventory: {
         Row: {

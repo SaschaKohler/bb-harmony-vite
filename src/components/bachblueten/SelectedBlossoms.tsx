@@ -23,6 +23,10 @@ interface SelectedBlossomsProps {
   maxBlossoms?: number;
   recommendedBlossoms?: number;
 }
+const getBlossomImagePath = (blossom: string) => {
+  const imageName = blossom.toLowerCase().replace(/\s+/g, "_");
+  return `/src/assets/blossoms/${imageName}.png`;
+};
 
 export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
   blossoms,
@@ -91,42 +95,60 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
               {blossoms.map((blossom) => {
                 const blossomInfo = blossomData[blossom];
+                const imagePath = getBlossomImagePath(blossom);
                 return (
                   <div
                     key={blossom}
                     className={cn(
-                      "group relative rounded-lg p-2",
+                      "group relative rounded-lg p-3",
                       "bg-violet-50/50 hover:bg-violet-50",
                       "border border-violet-100",
                       "transition-all duration-200",
                     )}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 pr-2">
-                        <p className="font-medium text-sm text-violet-700 truncate">
-                          {blossom}
-                        </p>
-                        <p className="text-xs text-violet-600/70 truncate">
-                          {blossomInfo.deutsch}
-                        </p>
+                    <div className="flex gap-3">
+                      {/* Bild Container */}
+                      <div className="relative w-16 h-16 shrink-0">
+                        <img
+                          src={imagePath}
+                          alt={`${blossom} Blüte`}
+                          className="w-full h-full object-cover rounded-md"
+                        />
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className={cn(
-                          "h-6 w-6 p-0",
-                          "opacity-0 group-hover:opacity-100",
-                          "text-violet-500 hover:text-violet-700",
-                          "hover:bg-violet-100/50",
-                          "transition-all duration-200",
-                        )}
-                        onClick={() => onRemove(blossom)}
-                      >
-                        ×
-                      </Button>
+
+                      {/* Info Container */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 pr-2">
+                            <p className="font-medium text-sm text-violet-700 truncate">
+                              {blossom}
+                            </p>
+                            <p className="text-xs text-violet-600/70 truncate">
+                              {blossomInfo.deutsch}
+                            </p>
+                            <p className="text-xs text-violet-600/60 mt-1 line-clamp-2">
+                              {blossomInfo.affirmation}
+                            </p>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                              "h-6 w-6 p-0",
+                              "opacity-0 group-hover:opacity-100",
+                              "text-violet-500 hover:text-violet-700",
+                              "hover:bg-violet-100/50",
+                              "transition-all duration-200",
+                            )}
+                            onClick={() => onRemove(blossom)}
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );

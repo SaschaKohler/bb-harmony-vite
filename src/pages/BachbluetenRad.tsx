@@ -9,6 +9,11 @@ import { SelectedBlossoms } from "@/components/bachblueten/SelectedBlossoms";
 import { sectors, blossomData } from "@/lib/bachblueten/data";
 import { toast } from "sonner";
 import type { Sector } from "@/lib/bachblueten/types";
+import {
+  FinalSelectionData,
+  FinalSelectionDialog,
+} from "@/components/bachblueten/FinalSelectionDialog";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 type ViewType = "wheel" | "colors";
 
@@ -17,6 +22,7 @@ const BachbluetenRad = () => {
   const [selectedBlossoms, setSelectedBlossoms] = useState<string[]>([]);
   const [activeView, setActiveView] = useState<ViewType>("wheel");
   const [hasConfirmedInitial, setHasConfirmedInitial] = useState(false);
+  const [showFinalDialog, setShowFinalDialog] = useState(false);
 
   const handleSectorClick = useCallback((sector: Sector) => {
     setSelectedSector((prev) => (prev?.group === sector.group ? null : sector));
@@ -81,14 +87,35 @@ const BachbluetenRad = () => {
       });
     } else {
       // Finale Bestätigung
-      console.log("Finale Auswahl:", selectedBlossoms);
-      toast.success("Auswahl abgeschlossen", {
-        description: `Sie haben ${selectedBlossoms.length} Blüten ausgewählt.`,
-        duration: 4000,
-      });
+      setShowFinalDialog(true);
+      // console.log("Finale Auswahl:", selectedBlossoms);
+      // toast.success("Auswahl abgeschlossen", {
+      //   description: `Sie haben ${selectedBlossoms.length} Blüten ausgewählt.`,
+      //   duration: 4000,
+      // });
       // Hier könnte die weitere Verarbeitung erfolgen
     }
   }, [selectedBlossoms.length, hasConfirmedInitial]);
+  const handleSaveFinalSelection = async (data: FinalSelectionData) => {
+    try {
+      // Hier würde die API-Integration kommen
+      console.log("Saving selection:", data);
+
+      toast.success("Auswahl gespeichert", {
+        description: `Die Auswahl für ${data.clientName} wurde erfolgreich gespeichert.`,
+      });
+
+      // Optional: Reset des Auswahlprozesses
+      setSelectedBlossoms([]);
+      setSelectedSector(null);
+      setHasConfirmedInitial(false);
+    } catch (error) {
+      toast.error("Fehler beim Speichern", {
+        description:
+          "Die Auswahl konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      });
+    }
+  };
 
   const renderBlossomSelection = () => {
     if (!selectedSector) return null;
@@ -107,14 +134,14 @@ const BachbluetenRad = () => {
           hasConfirmedInitial={hasConfirmedInitial}
           maxBlossoms={10}
           recommendedBlossoms={7}
-        />{" "}
+        />
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
-      <Card className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-background w-full">
+      <Card className="w-[90%] mx-auto">
         <CardHeader>
           <CardTitle>Bachblüten Harmonie-Rad</CardTitle>
         </CardHeader>
@@ -131,7 +158,7 @@ const BachbluetenRad = () => {
 
             <TabsContent value="wheel" className="mt-4">
               <div className="flex flex-col items-center space-y-6">
-                <div className="w-full max-w-[400px]">
+                <div className="w-full max-w-[600px] mx-auto">
                   <HarmonyWheel
                     sectors={sectors}
                     onSectorClick={handleSectorClick}
@@ -167,6 +194,15 @@ const BachbluetenRad = () => {
           </Tabs>
         </CardContent>
       </Card>
+      <ErrorBoundary>
+        <FinalSelectionDialog
+          open={showFinalDialog}
+          onOpenChange={setShowFinalDialog}
+          selectedBlossoms={selectedBlossoms}
+          blossomData={blossomData}
+          onSave={handleSaveFinalSelection}
+        />
+      </ErrorBoundary>
     </div>
   );
 };
