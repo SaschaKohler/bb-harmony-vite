@@ -1,5 +1,6 @@
 # Dependency directories
 node_modules/
+./src/assets/blossoms/*
 /.pnp
 .pnp.js
 
@@ -59,6 +60,9 @@ yarn-error.log*
 
 # Supabase
 .supabase
+generateFlowerData.ts
+generateFlowerData.js
+generateMockData.ts
 
 # Production
 /build

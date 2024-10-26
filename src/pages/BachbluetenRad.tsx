@@ -6,75 +6,109 @@ import { HarmonyWheel } from "@/components/bachblueten/HarmonyWheel";
 import { ColorSelector } from "@/components/bachblueten/ColorSelector";
 import { BlossomGrid } from "@/components/bachblueten/BlossomGrid";
 import { SelectedBlossoms } from "@/components/bachblueten/SelectedBlossoms";
-import { sectors, blossomData } from "@/lib/bachblueten/data";
 import { toast } from "sonner";
-import type { Sector } from "@/lib/bachblueten/types";
+import { useHarmonyWheel } from "@/hooks/useHarmonyWheel";
 import {
-  FinalSelectionData,
   FinalSelectionDialog,
+  type FinalSelectionData,
 } from "@/components/bachblueten/FinalSelectionDialog";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import type { Database } from "@/types/supabase";
+import { Blossom } from "@/lib/bachblueten/types";
 
 type ViewType = "wheel" | "colors";
+type EmotionWithFlowers = Database["public"]["Tables"]["emotion"]["Row"] & {
+  bach_flowers: Database["public"]["Tables"]["bach_flowers"]["Row"][];
+};
 
-const BachbluetenRad = () => {
-  const [selectedSector, setSelectedSector] = useState<Sector | null>(null);
+const BachblutenRad = () => {
+  const {
+    emotions,
+    loading,
+    error,
+    selectedEmotion,
+    selectEmotion,
+    getBlossomData,
+  } = useHarmonyWheel();
+
+  console.log("BachblutenRad render:", {
+    hasSelectedEmotion: !!selectedEmotion,
+    hasSelectEmotion: !!selectEmotion,
+  }); // Debug Log
+
   const [selectedBlossoms, setSelectedBlossoms] = useState<string[]>([]);
   const [activeView, setActiveView] = useState<ViewType>("wheel");
   const [hasConfirmedInitial, setHasConfirmedInitial] = useState(false);
   const [showFinalDialog, setShowFinalDialog] = useState(false);
 
-  const handleSectorClick = useCallback((sector: Sector) => {
-    setSelectedSector((prev) => (prev?.group === sector.group ? null : sector));
-  }, []);
+  const handleEmotionClick = useCallback(
+    (emotion: EmotionWithFlowers | null) => {
+      console.log("handleEmotionClick called with:", emotion); // Debug Log
+      selectEmotion(emotion);
+    },
+    [selectEmotion],
+  );
 
-  const handleBlossomSelect = useCallback((blossom: string) => {
-    setSelectedBlossoms((prev) => {
-      // Wenn die Blüte bereits ausgewählt ist, entferne sie
-      if (prev.includes(blossom)) {
-        const newSelection = prev.filter((b) => b !== blossom);
-        // Prüfe ob die Mindestanzahl noch erreicht ist
-        if (newSelection.length < 4 && prev.length >= 4) {
-          toast.warning("Mindestanzahl beachten", {
+  // Konvertiere Blüten-IDs in Blüten-Daten für die SelectedBlossoms
+  const getSelectedBlossomsData = useCallback(() => {
+    return selectedBlossoms.reduce(
+      (acc, blossomId) => {
+        const flower = getBlossomData(blossomId);
+        if (flower) {
+          acc[flower.id] = {
+            englisch: flower.name_english,
+            nummer: flower.number,
+            deutsch: flower.name_german,
+            affirmation: flower.affirmation,
+            gruppe: flower.emotion_name,
+          };
+        }
+        return acc;
+      },
+      {} as Record<string, Blossom>,
+    );
+  }, [selectedBlossoms, getBlossomData]);
+  const handleBlossomSelect = useCallback(
+    (blossomName: string) => {
+      setSelectedBlossoms((prev) => {
+        if (prev.includes(blossomName)) {
+          const newSelection = prev.filter((b) => b !== blossomName);
+          if (newSelection.length < 4 && prev.length >= 4) {
+            toast.warning("Mindestanzahl beachten", {
+              description:
+                "Bitte wählen Sie mindestens 4 Blüten für eine wirksame Mischung.",
+            });
+          }
+          return newSelection;
+        }
+
+        if (prev.length >= 7 && !hasConfirmedInitial) {
+          toast.warning("Maximale Anzahl erreicht", {
             description:
-              "Bitte wählen Sie mindestens 4 Blüten für eine wirksame Mischung.",
-            duration: 4000,
+              "Für eine optimale Wirkung sollten nicht mehr als 7 Blüten kombiniert werden.",
+          });
+          return prev;
+        }
+
+        if (prev.length === 3) {
+          toast.success("Mindestanzahl erreicht", {
+            description: "Sie haben die Mindestanzahl von 4 Blüten erreicht.",
+          });
+        } else if (prev.length === 6) {
+          toast.info("Optimale Anzahl erreicht", {
+            description:
+              "Sie haben die empfohlene Höchstanzahl von 7 Blüten erreicht.",
           });
         }
-        return newSelection;
-      }
 
-      // Prüfe die Maximalanzahl
-      if (prev.length >= 7) {
-        toast.warning("Maximale Anzahl erreicht", {
-          description:
-            "Für eine optimale Wirkung sollten nicht mehr als 7 Blüten kombiniert werden.",
-          duration: 4000,
-        });
-        return prev;
-      }
+        return [...prev, blossomName];
+      });
+    },
+    [hasConfirmedInitial],
+  );
 
-      // Zeige Hinweise je nach Anzahl
-      if (prev.length === 3) {
-        toast.success("Mindestanzahl erreicht", {
-          description:
-            "Sie haben die Mindestanzahl von 4 Blüten erreicht. Sie können bis zu 3 weitere Blüten hinzufügen.",
-          duration: 4000,
-        });
-      } else if (prev.length === 6) {
-        toast.info("Optimale Anzahl erreicht", {
-          description:
-            "Sie haben die empfohlene Höchstanzahl von 7 Blüten erreicht.",
-          duration: 4000,
-        });
-      }
-
-      return [...prev, blossom];
-    });
-  }, []);
-
-  const handleBlossomRemove = useCallback((blossom: string) => {
-    setSelectedBlossoms((prev) => prev.filter((b) => b !== blossom));
+  const handleBlossomRemove = useCallback((blossomId: string) => {
+    setSelectedBlossoms((prev) => prev.filter((b) => b !== blossomId));
   }, []);
 
   const handleConfirm = useCallback(() => {
@@ -86,28 +120,21 @@ const BachbluetenRad = () => {
         duration: 5000,
       });
     } else {
-      // Finale Bestätigung
       setShowFinalDialog(true);
-      // console.log("Finale Auswahl:", selectedBlossoms);
-      // toast.success("Auswahl abgeschlossen", {
-      //   description: `Sie haben ${selectedBlossoms.length} Blüten ausgewählt.`,
-      //   duration: 4000,
-      // });
-      // Hier könnte die weitere Verarbeitung erfolgen
     }
   }, [selectedBlossoms.length, hasConfirmedInitial]);
+
   const handleSaveFinalSelection = async (data: FinalSelectionData) => {
     try {
-      // Hier würde die API-Integration kommen
+      // Hier würde die Supabase-Integration kommen
       console.log("Saving selection:", data);
 
       toast.success("Auswahl gespeichert", {
         description: `Die Auswahl für ${data.clientName} wurde erfolgreich gespeichert.`,
       });
 
-      // Optional: Reset des Auswahlprozesses
       setSelectedBlossoms([]);
-      setSelectedSector(null);
+      selectEmotion(null);
       setHasConfirmedInitial(false);
     } catch (error) {
       toast.error("Fehler beim Speichern", {
@@ -118,19 +145,22 @@ const BachbluetenRad = () => {
   };
 
   const renderBlossomSelection = () => {
-    if (!selectedSector) return null;
+    console.log(
+      "renderBlossomSelection called, selectedEmotion:",
+      selectedEmotion,
+    ); // Debug Log
+    if (!selectedEmotion) return null;
 
     return (
       <div className="w-full">
-        <h3 className="text-lg font-medium mb-2">{selectedSector.group}</h3>
+        <h3 className="text-lg font-medium mb-2">{selectedEmotion.name}</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          {selectedSector.description}
+          {selectedEmotion.description}
         </p>
         <BlossomGrid
-          blossoms={selectedSector.blossoms}
+          blossoms={selectedEmotion.bach_flowers}
           selectedBlossoms={selectedBlossoms}
           onBlossomSelect={handleBlossomSelect}
-          blossomData={blossomData}
           hasConfirmedInitial={hasConfirmedInitial}
           maxBlossoms={10}
           recommendedBlossoms={7}
@@ -138,6 +168,22 @@ const BachbluetenRad = () => {
       </div>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-red-500">
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background w-full">
@@ -160,21 +206,25 @@ const BachbluetenRad = () => {
               <div className="flex flex-col items-center space-y-6">
                 <div className="w-full max-w-[600px] mx-auto">
                   <HarmonyWheel
-                    sectors={sectors}
-                    onSectorClick={handleSectorClick}
-                    activeSector={selectedSector}
+                    className="mx-auto"
+                    onSectorClick={handleEmotionClick}
                   />
                 </div>
-                {renderBlossomSelection()}
+                <div className="w-full">
+                  {console.log("About to render blossoms section")}{" "}
+                  {/* Debug log */}
+                  {renderBlossomSelection()}
+                  {/* Direkt die Funktion aufrufen */}
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="colors" className="mt-4">
               <div className="space-y-6">
                 <ColorSelector
-                  sectors={sectors}
-                  onSectorClick={handleSectorClick}
-                  activeSector={selectedSector}
+                  sectors={emotions}
+                  onSectorClick={handleEmotionClick}
+                  activeSector={selectedEmotion}
                 />
                 {renderBlossomSelection()}
               </div>
@@ -184,7 +234,7 @@ const BachbluetenRad = () => {
               <SelectedBlossoms
                 blossoms={selectedBlossoms}
                 onRemove={handleBlossomRemove}
-                blossomData={blossomData}
+                blossomData={getSelectedBlossomsData()}
                 onConfirm={handleConfirm}
                 hasConfirmedInitial={hasConfirmedInitial}
                 maxBlossoms={10}
@@ -199,7 +249,7 @@ const BachbluetenRad = () => {
           open={showFinalDialog}
           onOpenChange={setShowFinalDialog}
           selectedBlossoms={selectedBlossoms}
-          blossomData={blossomData}
+          blossomData={getSelectedBlossomsData()}
           onSave={handleSaveFinalSelection}
         />
       </ErrorBoundary>
@@ -207,4 +257,4 @@ const BachbluetenRad = () => {
   );
 };
 
-export default BachbluetenRad;
+export default BachblutenRad;

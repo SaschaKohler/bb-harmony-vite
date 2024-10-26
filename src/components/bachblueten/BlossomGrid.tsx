@@ -8,13 +8,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { Blossom } from "@/lib/bachblueten/types";
+import type { Database } from "@/types/supabase";
+
+type BachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
 
 interface BlossomGridProps {
-  blossoms: string[];
+  blossoms: BachFlower[];
   selectedBlossoms: string[];
-  onBlossomSelect: (blossom: string) => void;
-  blossomData: Record<string, Blossom>;
+  onBlossomSelect: (blossomId: string) => void;
   hasConfirmedInitial?: boolean;
   maxBlossoms?: number;
   recommendedBlossoms?: number;
@@ -39,9 +40,9 @@ const buttonVariants = {
     "cursor-not-allowed",
   ),
 };
-const getBlossomImagePath = (blossom: string) => {
-  // Konvertiere den Blütennamen in kleinbuchstaben und ersetze Sonderzeichen
-  const imageName = blossom.toLowerCase().replace(/\s+/g, "_");
+
+const getBlossomImagePath = (nameEnglish: string) => {
+  const imageName = nameEnglish.toLowerCase().replace(/\s+/g, "_");
   return `/src/assets/blossoms/${imageName}.png`;
 };
 
@@ -49,13 +50,12 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
   blossoms,
   selectedBlossoms,
   onBlossomSelect,
-  blossomData,
   hasConfirmedInitial = false,
   maxBlossoms = 10,
   recommendedBlossoms = 7,
 }) => {
-  const isBlossomDisabled = (blossom: string) => {
-    const isSelected = selectedBlossoms.includes(blossom);
+  const isBlossomDisabled = (blossomId: string) => {
+    const isSelected = selectedBlossoms.includes(blossomId);
     if (isSelected) return false;
     if (!hasConfirmedInitial) {
       return selectedBlossoms.length >= recommendedBlossoms;
@@ -63,8 +63,13 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
     return selectedBlossoms.length >= maxBlossoms;
   };
 
-  const getTooltipText = (blossom: string) => {
-    const isSelected = selectedBlossoms.includes(blossom);
+  console.log("BlossomGrid Props:", {
+    blossoms,
+    selectedBlossoms,
+  });
+
+  const getTooltipText = (blossom: BachFlower) => {
+    const isSelected = selectedBlossoms.includes(blossom.id);
     if (isSelected) {
       return "Klicken zum Entfernen";
     }
@@ -77,19 +82,18 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
     if (hasConfirmedInitial && selectedBlossoms.length >= maxBlossoms) {
       return "Maximale Anzahl erreicht";
     }
-    return blossomData[blossom].affirmation;
+    return blossom.affirmation;
   };
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
       {blossoms.map((blossom) => {
-        const blossomInfo = blossomData[blossom];
-        const isSelected = selectedBlossoms.includes(blossom);
-        const isDisabled = isBlossomDisabled(blossom);
-        const imagePath = getBlossomImagePath(blossom);
+        const isSelected = selectedBlossoms.includes(blossom.id);
+        const isDisabled = isBlossomDisabled(blossom.id);
+        const imagePath = getBlossomImagePath(blossom.name_english);
 
         return (
-          <TooltipProvider key={blossom}>
+          <TooltipProvider key={blossom.id}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -104,7 +108,7 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
                         ? buttonVariants.selected
                         : buttonVariants.default,
                   )}
-                  onClick={() => onBlossomSelect(blossom)}
+                  onClick={() => onBlossomSelect(blossom.id)}
                   disabled={isDisabled && !isSelected}
                 >
                   <span
@@ -113,7 +117,7 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
                       isSelected ? "text-violet-700" : "text-gray-700",
                     )}
                   >
-                    {blossom} Nr.{blossomInfo.nummer}
+                    {blossom.name_english} Nr.{blossom.number}
                   </span>
                   <span
                     className={cn(
@@ -121,7 +125,7 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
                       isSelected ? "text-violet-600/80" : "text-gray-500",
                     )}
                   >
-                    {blossomInfo.deutsch}
+                    {blossom.name_german}
                   </span>
                 </Button>
               </TooltipTrigger>
@@ -136,10 +140,10 @@ export const BlossomGrid: React.FC<BlossomGridProps> = ({
               >
                 <img
                   src={imagePath}
-                  alt={`${blossom} Blüte`}
+                  alt={`${blossom.name_english} Blüte`}
                   className="w-24 h-24 object-cover rounded-md"
                 />
-                <p className="text-sm">{blossomInfo.affirmation}</p>
+                <p className="text-sm">{blossom.affirmation}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

@@ -43,7 +43,7 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
   const isOptimal = blossoms.length === recommendedBlossoms;
   const canAddMore =
     hasConfirmedInitial && blossoms.length >= recommendedBlossoms;
-
+  console.log(blossomData);
   const getProgressColor = () => {
     if (isOptimal) return "bg-violet-100";
     if (isOverRecommended) return "bg-amber-100";
@@ -98,7 +98,7 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
               {blossoms.map((blossom) => {
                 const blossomInfo = blossomData[blossom];
-                const imagePath = getBlossomImagePath(blossom);
+                const imagePath = getBlossomImagePath(blossomInfo.englisch);
                 return (
                   <div
                     key={blossom}
@@ -124,7 +124,7 @@ export const SelectedBlossoms: React.FC<SelectedBlossomsProps> = ({
                         <div className="flex items-start justify-between">
                           <div className="flex-1 pr-2">
                             <p className="font-medium text-sm text-violet-700 truncate">
-                              {blossom}
+                              {blossomInfo.englisch}
                             </p>
                             <p className="text-xs text-violet-600/70 truncate">
                               {blossomInfo.deutsch}

@@ -8,43 +8,30 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useHarmonyWheel } from "@/hooks/useHarmonyWheel";
-import type { Database } from "@/types/supabase";
+import type { Sector } from "@/lib/bachblueten/types";
 
-type Emotion = Database["public"]["Tables"]["emotion"]["Row"];
-type BachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
-
-interface EmotionWithFlowers extends Emotion {
-  bach_flowers: BachFlower[];
+interface HarmonyWheelProps {
+  sectors: Sector[];
+  onSectorClick: (sector: Sector) => void;
+  activeSector: Sector | null;
+  className?: string;
 }
 
-interface WheelSectorProps {
-  emotion: EmotionWithFlowers;
+interface SectorProps {
+  sector: Sector;
   index: number;
   totalSectors: number;
-  onSectorClick: (emotion: EmotionWithFlowers) => void;
+  onSectorClick: (sector: Sector) => void;
   isActive: boolean;
 }
 
-const WheelSector: React.FC<WheelSectorProps> = ({
-  emotion,
+const WheelSector: React.FC<SectorProps> = ({
+  sector,
   index,
   totalSectors,
   onSectorClick,
   isActive,
 }) => {
-  console.log("WheelSector render:", {
-    emotionName: emotion.name,
-    hasClickHandler: !!onSectorClick,
-  }); // Debug log
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("Sector clicked, emotion:", emotion); // Verbessertes Logging
-    onSectorClick(emotion); // Direkt das emotion Objekt übergeben
-  };
-
   const angle = (index * 360) / totalSectors;
   const skew = 90 - 360 / totalSectors;
 
@@ -87,12 +74,12 @@ const WheelSector: React.FC<WheelSectorProps> = ({
                 (r) => `rotate(${angle + r}deg) skew(${skew}deg)`,
               ),
             }}
-            onClick={handleClick}
+            onClick={() => onSectorClick(sector)}
           >
             <animated.div
               className="absolute inset-0 origin-[0%_0%] border border-white/20"
               style={{
-                backgroundColor: emotion.color || "#gray",
+                backgroundColor: sector.color,
                 scale: springProps.scale,
                 opacity: springProps.opacity,
                 filter: springProps.brightness.to((b) => `brightness(${b})`),
@@ -110,22 +97,20 @@ const WheelSector: React.FC<WheelSectorProps> = ({
         >
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-base">{emotion.name}</h4>
+              <h4 className="font-medium text-base">{sector.group}</h4>
               <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                {emotion.bach_flowers.length} Blüten
+                {sector.blossoms.length} Blüten
               </span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              {emotion.description}
+              {sector.description}
             </p>
             <div className="pt-2 border-t border-border">
               <h5 className="text-xs font-medium mb-1 text-muted-foreground">
                 Blüten in dieser Gruppe:
               </h5>
               <p className="text-xs text-muted-foreground">
-                {emotion.bach_flowers
-                  .map((flower) => flower.name_german || flower.name_english)
-                  .join(", ")}
+                {sector.blossoms.join(", ")}
               </p>
             </div>
           </div>
@@ -135,24 +120,12 @@ const WheelSector: React.FC<WheelSectorProps> = ({
   );
 };
 
-interface HarmonyWheelProps {
-  className?: string;
-  onSectorClick: (emotion: EmotionWithFlowers | null) => void; // Neue Prop
-}
-
 export const HarmonyWheel: React.FC<HarmonyWheelProps> = ({
-  className,
+  sectors,
   onSectorClick,
+  activeSector,
+  className,
 }) => {
-  const { emotions, loading, error, selectedEmotion, selectEmotion } =
-    useHarmonyWheel();
-  console.log("HarmonyWheel render:", {
-    emotionsCount: emotions.length,
-    hasSelectEmotion: !!selectEmotion,
-  }); // Debug Log
-  const handleSectorClick = (emotion: EmotionWithFlowers) => {
-    onSectorClick(emotion);
-  };
   // Animation für den zentralen Kreis
   const centerSpring = useSpring({
     from: { scale: 0, rotate: -180 },
@@ -161,34 +134,18 @@ export const HarmonyWheel: React.FC<HarmonyWheelProps> = ({
     config: config.gentle,
   });
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center w-[300px] h-[300px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center w-[300px] h-[300px] text-red-500">
-        <p>Error: {error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className={cn("relative w-[300px] h-[300px]", className)}>
       <div className="relative w-full h-full">
         <div className="absolute inset-0 rounded-full overflow-hidden bg-white/50 shadow-lg">
-          {emotions.map((emotion, index) => (
+          {sectors.map((sector, index) => (
             <WheelSector
-              key={emotion.id}
-              emotion={emotion}
+              key={sector.group}
+              sector={sector}
               index={index}
-              totalSectors={emotions.length}
-              onSectorClick={handleSectorClick}
-              isActive={selectedEmotion?.id === emotion.id}
+              totalSectors={sectors.length}
+              onSectorClick={onSectorClick}
+              isActive={activeSector?.group === sector.group}
             />
           ))}
         </div>

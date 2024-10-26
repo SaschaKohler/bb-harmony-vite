@@ -118,6 +118,44 @@ export type Database = {
         }
         Relationships: []
       }
+      flower_selections: {
+        Row: {
+          client_id: string
+          created_at: string | null
+          date: string
+          id: string
+          notes: string | null
+          therapist_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string | null
+          date: string
+          id?: string
+          notes?: string | null
+          therapist_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string | null
+          date?: string
+          id?: string
+          notes?: string | null
+          therapist_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flower_selections_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inventory: {
         Row: {
           id: string
@@ -310,6 +348,39 @@ export type Database = {
             columns: ["therapist_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      selection_flowers: {
+        Row: {
+          flower_id: string
+          position: number
+          selection_id: string
+        }
+        Insert: {
+          flower_id: string
+          position: number
+          selection_id: string
+        }
+        Update: {
+          flower_id?: string
+          position?: number
+          selection_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "selection_flowers_flower_id_fkey"
+            columns: ["flower_id"]
+            isOneToOne: false
+            referencedRelation: "bach_flowers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "selection_flowers_selection_id_fkey"
+            columns: ["selection_id"]
+            isOneToOne: false
+            referencedRelation: "flower_selections"
             referencedColumns: ["id"]
           },
         ]

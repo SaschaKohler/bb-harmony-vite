@@ -20,23 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandSeparator,
-} from "@/components/ui/command";
-import {
-  CheckIcon,
-  ChevronsUpDown,
-  PlusCircle,
-  CalendarIcon,
-  Download,
-  Printer,
-  ArrowLeft,
-} from "lucide-react";
+import { CalendarIcon, Download, Printer, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
 import type { Blossom } from "@/lib/bachblueten/types";
@@ -98,11 +82,6 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
     email: "",
     phone: "",
   });
-
-  // Debug useEffect um State-Änderungen zu überwachen
-  useEffect(() => {
-    console.log("Clients state changed:", clients);
-  }, [clients]);
 
   const fetchClients = useCallback(async () => {
     if (!user?.id) {
@@ -190,36 +169,80 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
 
   const handleSave = async () => {
     if (!selectedClient && !isNewClient) return;
+    if (!user?.id) return;
 
     let clientId = selectedClient?.id;
     let finalClient = selectedClient;
 
-    if (isNewClient) {
-      const newClient = await handleNewClientSubmit();
-      if (newClient) {
+    try {
+      // 1. Wenn neuer Client, erst diesen anlegen
+      if (isNewClient) {
+        const { data: newClient, error: clientError } = await supabase
+          .from("clients")
+          .insert([
+            {
+              first_name: newClientData.firstName,
+              last_name: newClientData.lastName,
+              email: newClientData.email,
+              phone: newClientData.phone,
+              therapist_id: user.id,
+            },
+          ])
+          .select()
+          .single();
+
+        if (clientError) throw clientError;
         clientId = newClient.id;
         finalClient = newClient;
-      } else {
-        return;
       }
+
+      // 2. Haupteintrag für die Blütenauswahl erstellen
+      const { data: selection, error: selectionError } = await supabase
+        .from("flower_selections")
+        .insert([
+          {
+            client_id: clientId,
+            therapist_id: user.id,
+            date: date,
+            notes: notes,
+          },
+        ])
+        .select()
+        .single();
+
+      if (selectionError) throw selectionError;
+
+      // 3. Ausgewählte Blüten mit Position speichern
+      const selectionFlowers = selectedBlossoms.map((blossomId, index) => ({
+        selection_id: selection.id,
+        flower_id: blossomId,
+        position: index + 1,
+      }));
+
+      const { error: flowersError } = await supabase
+        .from("selection_flowers")
+        .insert(selectionFlowers);
+
+      if (flowersError) throw flowersError;
+
+      // 4. Dialog schließen und Parent über erfolgreiche Speicherung informieren
+      onSave({
+        id: selection.id,
+        clientId,
+        clientName: `${finalClient?.first_name} ${finalClient?.last_name}`,
+        clientEmail: finalClient?.email,
+        date,
+        blossoms: selectedBlossoms,
+        notes,
+        createdAt: new Date(selection.created_at),
+        updatedAt: new Date(selection.created_at),
+      });
+
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error saving selection:", error);
+      // Hier solltest du dem Benutzer eine Fehlermeldung anzeigen
     }
-
-    const selectionData: FinalSelectionData = {
-      id: crypto.randomUUID(),
-      clientId,
-      clientName: finalClient
-        ? `${finalClient.first_name} ${finalClient.last_name}`
-        : `${newClientData.firstName} ${newClientData.lastName}`,
-      clientEmail: finalClient?.email || newClientData.email,
-      date,
-      blossoms: selectedBlossoms,
-      notes,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    onSave(selectionData);
-    onOpenChange(false);
   };
 
   const resetForm = () => {
@@ -404,7 +427,7 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
                         </span>
                         <div className="min-w-0">
                           <p className="font-medium text-sm text-violet-700 truncate">
-                            {blossom}
+                            Nr.{blossomInfo.nummer} {blossomInfo.englisch}
                           </p>
                           <p className="text-xs text-violet-600/70 truncate">
                             {blossomInfo.deutsch}
