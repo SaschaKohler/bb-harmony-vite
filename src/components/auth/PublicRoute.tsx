@@ -1,16 +1,26 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext"; // Stellen Sie sicher, dass dieser Pfad korrekt ist
+// components/auth/PublicRoute.tsx
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
-const PublicRoute: React.FC = () => {
-  const { user } = useAuth();
+export const PublicRoute = () => {
+  const location = useLocation();
+  const auth = useAuth();
 
-  if (user) {
-    // Benutzer ist bereits authentifiziert, Umleitung zur Hauptseite
-    return <Navigate to="/" replace />;
+  // Während der Authentifizierungsstatus geladen wird, zeigen wir nichts an
+  if (auth.isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    );
   }
 
-  // Benutzer ist nicht authentifiziert, Render der öffentlichen Route
+  // Wenn der Benutzer eingeloggt ist, leiten wir zur vorherigen Seite oder zum Dashboard weiter
+  if (auth.isAuthenticated) {
+    return <Navigate to={location.state?.from?.pathname || "/"} replace />;
+  }
+
+  // Ansonsten zeigen wir die öffentliche Route an
   return <Outlet />;
 };
 

@@ -30,15 +30,6 @@ import { SimpleCombobox } from "../ui/simple-combobox";
 
 type Client = Database["public"]["Tables"]["clients"]["Row"];
 
-// interface Client {
-//   id: string;
-//   therapist_id: string;
-//   first_name: string;
-//   last_name: string;
-//   email: string | null;
-//   phone: string | null;
-// }
-
 interface FinalSelectionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -57,7 +48,14 @@ export interface FinalSelectionData {
   notes: string;
   createdAt: Date;
   updatedAt: Date;
+  durationWeeks: number; // NEU
+  dosageNotes: string; // NEU
+  followUpDate: Date | null; // NEU
+  status: "active" | "completed"; // NEU
 }
+
+const defaultDosageNote = "4x täglich 4 Tropfen in ein Glas Wasser";
+const defaultDuration = 4; // 4 Wochen
 
 export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
   open,
@@ -75,6 +73,9 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
   const [openCombobox, setOpenCombobox] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [durationWeeks, setDurationWeeks] = useState<number>(defaultDuration);
+  const [dosageNotes, setDosageNotes] = useState(defaultDosageNote);
+  const [followUpDate, setFollowUpDate] = useState<Date | null>(null);
 
   const [newClientData, setNewClientData] = useState({
     firstName: "",
@@ -136,36 +137,14 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
     }
   }, [open, fetchClients]);
 
-  const handleNewClientSubmit = async () => {
-    const { data: session } = await supabase.auth.getSession();
-    if (!session?.session?.user?.id) return;
-
-    try {
-      const { data, error } = await supabase
-        .from("clients")
-        .insert([
-          {
-            first_name: newClientData.firstName,
-            last_name: newClientData.lastName,
-            email: newClientData.email,
-            phone: newClientData.phone,
-            therapist_id: session.session.user.id,
-          },
-        ])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setSelectedClient(data);
-      setIsNewClient(false);
-      await fetchClients();
-      return data;
-    } catch (error) {
-      console.error("Error creating client:", error);
-      return null;
+  useEffect(() => {
+    // Automatically set follow-up date based on duration
+    if (date && durationWeeks) {
+      const followUp = new Date(date);
+      followUp.setDate(followUp.getDate() + durationWeeks * 7);
+      setFollowUpDate(followUp);
     }
-  };
+  }, [date, durationWeeks]);
 
   const handleSave = async () => {
     if (!selectedClient && !isNewClient) return;
@@ -196,7 +175,6 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
         finalClient = newClient;
       }
 
-      // 2. Haupteintrag für die Blütenauswahl erstellen
       const { data: selection, error: selectionError } = await supabase
         .from("flower_selections")
         .insert([
@@ -205,13 +183,16 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
             therapist_id: user.id,
             date: date,
             notes: notes,
+            duration_weeks: durationWeeks, // NEU
+            dosage_notes: defaultDosageNote, // NEU
+            follow_up_date: followUpDate, // NEU
+            status: "active", // NEU
           },
         ])
         .select()
         .single();
 
       if (selectionError) throw selectionError;
-
       // 3. Ausgewählte Blüten mit Position speichern
       const selectionFlowers = selectedBlossoms.map((blossomId, index) => ({
         selection_id: selection.id,
@@ -236,12 +217,15 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
         notes,
         createdAt: new Date(selection.created_at),
         updatedAt: new Date(selection.created_at),
+        durationWeeks, // NEU
+        dosageNotes: defaultDosageNote, // NEU
+        followUpDate, // NEU
+        status: "active", // NEU
       });
 
       onOpenChange(false);
     } catch (error) {
       console.error("Error saving selection:", error);
-      // Hier solltest du dem Benutzer eine Fehlermeldung anzeigen
     }
   };
 
@@ -256,8 +240,10 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
     });
     setNotes("");
     setDate(new Date());
+    setDurationWeeks(defaultDuration); // NEU
+    setDosageNotes(defaultDosageNote); // NEU
+    setFollowUpDate(null); // NEU
   };
-
   useEffect(() => {
     if (!open) {
       resetForm();
@@ -273,194 +259,219 @@ export const FinalSelectionDialog: React.FC<FinalSelectionDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Finale Blütenauswahl</DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-6 py-4">
-          {/* Kundenauswahl */}
-          <div className="grid gap-4">
-            <h3 className="text-lg font-medium">Kundeninformationen</h3>
+        <div className="flex-1 overflow-y-auto">
+          <div className="space-y-8 py-4">
+            {/* Behandlungsdauer - NEU an erster Stelle */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="duration">Behandlungsdauer</Label>
+                <span className="text-sm text-muted-foreground">
+                  Standard: 4 Wochen
+                </span>
+              </div>
+              <div className="flex items-baseline gap-3">
+                <Input
+                  id="duration"
+                  type="number"
+                  min={1}
+                  max={12}
+                  value={durationWeeks}
+                  onChange={(e) =>
+                    setDurationWeeks(parseInt(e.target.value) || 4)
+                  }
+                  className="w-16 ml-2"
+                />
+                <span className="text-sm">Wochen</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Behandlung bis zum:{" "}
+                {format(followUpDate || new Date(), "dd.MM.yyyy", {
+                  locale: de,
+                })}
+              </p>
+            </div>
 
-            {!isNewClient ? (
-              <div className="flex gap-2">
+            {/* Kundeninformationen */}
+            <div className="space-y-4">
+              <h3 className="text-base font-medium">Kundeninformationen</h3>
+              {!isNewClient ? (
                 <SimpleCombobox
                   clients={clients}
                   selectedClient={selectedClient}
                   setSelectedClient={setSelectedClient}
                   setIsNewClient={setIsNewClient}
                   isLoading={isLoading}
+                  placeholder="Kunde auswählen..."
                 />
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="firstName">Vorname</Label>
-                    <Input
-                      id="firstName"
-                      value={newClientData.firstName}
-                      onChange={(e) =>
-                        setNewClientData((prev) => ({
-                          ...prev,
-                          firstName: e.target.value,
-                        }))
-                      }
-                    />
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">Vorname</Label>
+                      <Input
+                        id="firstName"
+                        value={newClientData.firstName}
+                        onChange={(e) =>
+                          setNewClientData((prev) => ({
+                            ...prev,
+                            firstName: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Nachname</Label>
+                      <Input
+                        id="lastName"
+                        value={newClientData.lastName}
+                        onChange={(e) =>
+                          setNewClientData((prev) => ({
+                            ...prev,
+                            lastName: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="lastName">Nachname</Label>
-                    <Input
-                      id="lastName"
-                      value={newClientData.lastName}
-                      onChange={(e) =>
-                        setNewClientData((prev) => ({
-                          ...prev,
-                          lastName: e.target.value,
-                        }))
-                      }
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newClientData.email}
+                        onChange={(e) =>
+                          setNewClientData((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Telefon</Label>
+                      <Input
+                        id="phone"
+                        value={newClientData.phone}
+                        onChange={(e) =>
+                          setNewClientData((prev) => ({
+                            ...prev,
+                            phone: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
                   </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsNewClient(false)}
+                    className="w-fit"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Zurück zur Kundenauswahl
+                  </Button>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={newClientData.email}
-                      onChange={(e) =>
-                        setNewClientData((prev) => ({
-                          ...prev,
-                          email: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="phone">Telefon</Label>
-                    <Input
-                      id="phone"
-                      value={newClientData.phone}
-                      onChange={(e) =>
-                        setNewClientData((prev) => ({
-                          ...prev,
-                          phone: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsNewClient(false)}
-                  className="w-fit"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Zurück zur Kundenauswahl
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Datum */}
-          <div className="grid gap-2">
-            <Label>Datum der Auswahl</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground",
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? (
-                    format(date, "PPP", { locale: de })
-                  ) : (
-                    <span>Datum wählen</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(date) => date && setDate(date)}
-                  initialFocus
-                  locale={de}
-                  disabled={(date) =>
-                    date > new Date() || date < new Date("2000-01-01")
-                  }
-                  className="rounded-md border"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          {/* Ausgewählte Blüten */}
-          <div className="grid gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium">Ausgewählte Blüten</h3>
-              <span className="text-sm text-muted-foreground">
-                {selectedBlossoms.length} Blüten ausgewählt
-              </span>
+              )}
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {selectedBlossoms.map((blossom, index) => {
-                const blossomInfo = blossomData[blossom];
-                return (
-                  <Card
-                    key={blossom}
+
+            {/* Datum */}
+            <div className="space-y-2">
+              <Label>Datum der Auswahl</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
                     className={cn(
-                      "bg-violet-50/50",
-                      "hover:shadow-sm transition-shadow",
-                      "border-violet-100",
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground",
                     )}
                   >
-                    <CardContent className="p-3">
-                      <div className="flex gap-2 items-start">
-                        <span className="text-violet-500 text-sm font-medium">
-                          {(index + 1).toString().padStart(2, "0")}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="font-medium text-sm text-violet-700 truncate">
-                            Nr.{blossomInfo.nummer} {blossomInfo.englisch}
-                          </p>
-                          <p className="text-xs text-violet-600/70 truncate">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? (
+                      format(date, "d. MMMM yyyy", { locale: de })
+                    ) : (
+                      <span>Datum wählen</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(date) => date && setDate(date)}
+                    initialFocus
+                    locale={de}
+                    className="rounded-md border"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Ausgewählte Blüten */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-medium">Ausgewählte Blüten</h3>
+                <span className="text-sm text-muted-foreground">
+                  {selectedBlossoms.length} Blüten ausgewählt
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                {selectedBlossoms.map((blossom, index) => {
+                  const blossomInfo = blossomData[blossom];
+                  return (
+                    <Card
+                      key={blossom}
+                      className={cn(
+                        "bg-violet-50/50",
+                        "hover:shadow-sm transition-shadow",
+                        "border-violet-100",
+                      )}
+                    >
+                      <CardContent className="p-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-violet-500 text-sm font-medium">
+                              {(index + 1).toString().padStart(2, "0")}
+                            </span>
+                            <span className="font-medium text-sm text-violet-700">
+                              Nr.{blossomInfo.nummer} {blossomInfo.englisch}
+                            </span>
+                          </div>
+                          <p className="text-xs text-violet-600/70 pl-6">
                             {blossomInfo.deutsch}
                           </p>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          {/* Notizen */}
-          <div className="grid gap-2">
-            <Label
-              htmlFor="notes"
-              className="flex items-center justify-between"
-            >
-              Notizen & Begründung
-              <span className="text-xs text-muted-foreground">Optional</span>
-            </Label>
-            <Textarea
-              id="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Notizen zur Auswahl und Begründung der gewählten Blüten..."
-              className="min-h-[100px] resize-y"
-            />
+            {/* Notizen */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="notes">Notizen & Begründung</Label>
+                <span className="text-xs text-muted-foreground">Optional</span>
+              </div>
+              <Textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Notizen zur Auswahl und Begründung der gewählten Blüten..."
+                className="min-h-[100px] resize-none"
+              />
+            </div>
           </div>
         </div>
 
-        <DialogFooter className="flex justify-between items-center">
+        {/* Footer */}
+        <DialogFooter className="flex justify-between items-center border-t mt-6 pt-4">
           <div className="flex gap-2">
             <Button variant="outline" size="icon">
               <Printer className="h-4 w-4" />

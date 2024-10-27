@@ -13,7 +13,7 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { Home, Activity, LogOut, User2, Users } from "lucide-react";
+import { Home, Activity, LogOut, User2, Users, Flower } from "lucide-react";
 
 interface MenuItem {
   title: string;
@@ -21,9 +21,14 @@ interface MenuItem {
   icon: React.ElementType;
 }
 
-const items: MenuItem[] = [
+const navItems: MenuItem[] = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Bachblüten Rad", url: "/bachbluten-rad", icon: Activity },
+];
+
+const clientNavItems: MenuItem[] = [
+  { title: "Blütenauswahlen", url: "/flower-selections", icon: Flower },
+  { title: "Kundenliste", url: "/Clients", icon: Flower },
 ];
 
 export const AppSidebar: React.FC = () => {
@@ -49,7 +54,7 @@ export const AppSidebar: React.FC = () => {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link to={item.url}>
@@ -64,16 +69,20 @@ export const AppSidebar: React.FC = () => {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Kunden</SidebarGroupLabel>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link to="/clients">
-                  <Users />
-                  <span>Kundenliste</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {clientNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link to={item.url}>
+                      <item.icon className="mr-2 h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

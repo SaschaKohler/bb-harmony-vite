@@ -1,124 +1,101 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AuthWrapper } from "./AuthWrapper";
+import { toast } from "sonner";
+import { Icons } from "@/components/ui/icons";
+
+const registerSchema = z
+  .object({
+    email: z.string().email("Ungültige E-Mail-Adresse"),
+    password: z.string().min(6, "Passwort muss mindestens 6 Zeichen lang sein"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwörter stimmen nicht überein",
+    path: ["confirmPassword"],
+  });
+
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
 interface RegistrationFormProps {
-  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  onSuccess?: () => void;
 }
 
-export function RegistrationForm({ setIsLogin }: RegistrationFormProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const { signUp, signInWithGoogle } = useAuth();
-  const navigate = useNavigate();
+export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { signUp } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords don't match");
-      return;
-    }
-    try {
-      await signUp(email, password);
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Failed to create an account");
-    }
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+  });
 
-  const handleGoogleSignIn = async () => {
+  const onSubmit = async (data: RegisterFormValues) => {
     try {
-      await signInWithGoogle();
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Failed to sign up with Google");
+      setIsLoading(true);
+      await signUp(data.email, data.password);
+      toast.success(
+        "Registrierung erfolgreich! Bitte bestätigen Sie Ihre E-Mail-Adresse.",
+      );
+      onSuccess?.();
+    } catch (error) {
+      toast.error("Registrierung fehlgeschlagen: " + (error as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <AuthWrapper>
-      <Card className="mx-auto max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Create an account</CardTitle>
-          <CardDescription>
-            Enter your email below to create your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            <Button type="submit" className="w-full">
-              Create account
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleGoogleSignIn}
-            >
-              Sign up with Google
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-            <Button
-              variant="link"
-              className="p-0"
-              onClick={() => setIsLogin(true)}
-            >
-              Log In
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </AuthWrapper>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="email">E-Mail</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="name@example.com"
+          {...register("email")}
+        />
+        {errors.email && (
+          <p className="text-sm text-destructive">{errors.email.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="password">Passwort</Label>
+        <Input id="password" type="password" {...register("password")} />
+        {errors.password && (
+          <p className="text-sm text-destructive">{errors.password.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
+        <Input
+          id="confirmPassword"
+          type="password"
+          {...register("confirmPassword")}
+        />
+        {errors.confirmPassword && (
+          <p className="text-sm text-destructive">
+            {errors.confirmPassword.message}
+          </p>
+        )}
+      </div>
+
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : null}
+        Registrieren
+      </Button>
+    </form>
   );
-}
+};

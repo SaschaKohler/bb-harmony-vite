@@ -123,8 +123,12 @@ export type Database = {
           client_id: string
           created_at: string | null
           date: string
+          dosage_notes: string | null
+          duration_weeks: number | null
+          follow_up_date: string | null
           id: string
           notes: string | null
+          status: string | null
           therapist_id: string
           updated_at: string | null
         }
@@ -132,8 +136,12 @@ export type Database = {
           client_id: string
           created_at?: string | null
           date: string
+          dosage_notes?: string | null
+          duration_weeks?: number | null
+          follow_up_date?: string | null
           id?: string
           notes?: string | null
+          status?: string | null
           therapist_id: string
           updated_at?: string | null
         }
@@ -141,8 +149,12 @@ export type Database = {
           client_id?: string
           created_at?: string | null
           date?: string
+          dosage_notes?: string | null
+          duration_weeks?: number | null
+          follow_up_date?: string | null
           id?: string
           notes?: string | null
+          status?: string | null
           therapist_id?: string
           updated_at?: string | null
         }
@@ -274,84 +286,6 @@ export type Database = {
           },
         ]
       }
-      mixture_flowers: {
-        Row: {
-          bach_flower_id: string
-          drops: number
-          id: string
-          mixture_id: string
-        }
-        Insert: {
-          bach_flower_id: string
-          drops: number
-          id?: string
-          mixture_id: string
-        }
-        Update: {
-          bach_flower_id?: string
-          drops?: number
-          id?: string
-          mixture_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "mixture_flowers_bach_flower_id_fkey"
-            columns: ["bach_flower_id"]
-            isOneToOne: false
-            referencedRelation: "bach_flowers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mixture_flowers_mixture_id_fkey"
-            columns: ["mixture_id"]
-            isOneToOne: false
-            referencedRelation: "mixtures"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      mixtures: {
-        Row: {
-          client_id: string | null
-          created_at: string | null
-          id: string
-          name: string
-          notes: string | null
-          therapist_id: string
-        }
-        Insert: {
-          client_id?: string | null
-          created_at?: string | null
-          id?: string
-          name: string
-          notes?: string | null
-          therapist_id: string
-        }
-        Update: {
-          client_id?: string | null
-          created_at?: string | null
-          id?: string
-          name?: string
-          notes?: string | null
-          therapist_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "mixtures_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mixtures_therapist_id_fkey"
-            columns: ["therapist_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       selection_flowers: {
         Row: {
           flower_id: string
@@ -417,7 +351,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_client_selections: {
+        Args: {
+          p_client_id: string
+        }
+        Returns: {
+          id: string
+          date: string
+          notes: string
+          duration_weeks: number
+          dosage_notes: string
+          status: string
+          flower_count: number
+          is_current: boolean
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

@@ -1,117 +1,122 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AuthWrapper } from "./AuthWrapper";
+import { toast } from "sonner";
+import { Icons } from "@/components/ui/icons";
+
+const loginSchema = z.object({
+  email: z.string().email("Ungültige E-Mail-Adresse"),
+  password: z.string().min(6, "Passwort muss mindestens 6 Zeichen lang sein"),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 interface LoginFormProps {
-  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  onSuccess?: () => void;
 }
 
-export function LoginForm({ setIsLogin }: LoginFormProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+export const LoginForm = ({ onSuccess }: LoginFormProps) => {
+  const [isLoading, setIsLoading] = useState(false);
   const { signIn, signInWithGoogle } = useAuth();
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormValues) => {
     try {
-      await signIn(email, password);
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Failed to log in");
+      setIsLoading(true);
+      await signIn(data.email, data.password);
+      onSuccess?.();
+    } catch (error) {
+      toast.error("Anmeldung fehlgeschlagen: " + (error as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleLogin = async () => {
     try {
+      setIsLoading(true);
       await signInWithGoogle();
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Failed to log in with Google");
+      onSuccess?.();
+    } catch (error) {
+      toast.error(
+        "Google Anmeldung fehlgeschlagen: " + (error as Error).message,
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <AuthWrapper>
-      <Card className="mx-auto max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <Link
-                  to="/forgot-password"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Forgot your password?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleGoogleSignIn}
-            >
-              Login with Google
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
-            <Button
-              variant="link"
-              className="p-0"
-              onClick={() => setIsLogin(false)}
-            >
-              Sign up
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </AuthWrapper>
+    <div className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">E-Mail</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="name@example.com"
+            {...register("email")}
+          />
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="password">Passwort</Label>
+          <Input id="password" type="password" {...register("password")} />
+          {errors.password && (
+            <p className="text-sm text-destructive">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? (
+            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
+          Anmelden
+        </Button>
+      </form>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Oder fortfahren mit
+          </span>
+        </div>
+      </div>
+
+      <Button
+        variant="outline"
+        type="button"
+        className="w-full"
+        onClick={handleGoogleLogin}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.google className="mr-2 h-4 w-4" />
+        )}
+        Google
+      </Button>
+    </div>
   );
-}
+};

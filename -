@@ -12,6 +12,7 @@ import Layout from "@/components/layout/Layout";
 import { routes } from "@/routes";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 function App() {
   return (
@@ -61,8 +62,8 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
-        <Toaster position="top-right" closeButton richColors />
       </AuthProvider>
+      <Toaster position="top-right" closeButton richColors />
     </Router>
   );
 }
