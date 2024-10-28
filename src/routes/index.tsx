@@ -1,15 +1,25 @@
 import { lazy, ComponentType } from "react";
-import { Home, Compass, Users, FileText, User, LogIn } from "lucide-react";
+import {
+  Home,
+  Compass,
+  Users,
+  FileText,
+  User,
+  LogIn,
+  Settings,
+} from "lucide-react";
 
 // Lazy loaded components
-const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Dashboard = lazy(() => import("@/pages/dashboard"));
 const BachblutenRad = lazy(() => import("@/pages/BachbluetenRad"));
 const ClientListPage = lazy(() => import("@/pages/clients"));
 const FlowerSelectionListPage = lazy(() => import("@/pages/flower-selections"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const UnifiedAuthPage = lazy(() => import("@/components/auth/UnifiedAuthPage"));
+const AdminPage = lazy(() => import("@/pages/admin"));
 
 interface RouteConfig {
+  groupLabel: string;
   path: string;
   element: ComponentType;
   name: string;
@@ -25,6 +35,7 @@ interface RoutesConfig {
 export const routes: RoutesConfig = {
   public: [
     {
+      groupLabel: "auth",
       path: "/auth",
       element: UnifiedAuthPage,
       name: "Authentication",
@@ -33,34 +44,46 @@ export const routes: RoutesConfig = {
   ],
   protected: [
     {
+      groupLabel: "auth",
       path: "/",
       element: Dashboard,
       name: "Dashboard",
       icon: Home,
     },
     {
+      groupLabel: "auth",
       path: "/bachbluten-rad",
       element: BachblutenRad,
       name: "Bachblüten Rad",
       icon: Compass,
     },
     {
+      groupLabel: "auth",
       path: "/clients",
       element: ClientListPage,
       name: "Klienten",
       icon: Users,
     },
     {
+      groupLabel: "auth",
       path: "/flower-selections",
       element: FlowerSelectionListPage,
       name: "Blüten-Mischungen",
       icon: FileText,
     },
     {
+      groupLabel: "auth",
       path: "/profile",
       element: ProfilePage,
       name: "Profil",
       icon: User,
+    },
+    {
+      groupLabel: "auth",
+      path: "/admin",
+      element: AdminPage,
+      name: "Admin",
+      icon: Settings,
     },
   ],
 } as const;
