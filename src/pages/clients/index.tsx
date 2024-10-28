@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import type { Database } from "@/types/supabase";
 import {
@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ClientFilters } from "./components/ClientFilters";
+import { ClientFormDialog } from "./components/ClientFormDialog";
 import {
   ArrowUpDown,
   User,
@@ -34,6 +35,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { toast } from "sonner";
 
 // Erweiterte Client Type Definition
 type ClientWithStats = Database["public"]["Tables"]["clients"]["Row"] & {
@@ -43,6 +45,12 @@ type ClientWithStats = Database["public"]["Tables"]["clients"]["Row"] & {
   };
   last_visit?: string;
   flower_selections?: Database["public"]["Tables"]["flower_selections"]["Row"][];
+};
+
+const handleNewMixture = (clientId: string) => {
+  // TODO: Implement Mixture-creation
+  toast.info(`Neue Mixture für Client ${clientId}`);
+  throw new Error("Function not implemented.");
 };
 
 const columns: ColumnDef<ClientWithStats>[] = [
@@ -134,19 +142,21 @@ const columns: ColumnDef<ClientWithStats>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (
       <div className="flex justify-end gap-2">
+        <ClientFormDialog
+          client={row.original}
+          onSuccess={table.options.meta?.refetchData}
+          trigger={
+            <Button variant="outline" size="sm">
+              <Settings2 className="h-4 w-4" />
+            </Button>
+          }
+        />
         <Button
           variant="outline"
           size="sm"
-          onClick={() => console.log("Edit", row.original.id)}
-        >
-          <Settings2 className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => console.log("New Mixture", row.original.id)}
+          onClick={() => handleNewMixture(row.original.id)}
         >
           <TestTube className="h-4 w-4" />
         </Button>
@@ -161,11 +171,7 @@ export default function ClientListPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [nameFilter, setNameFilter] = useState("");
 
-  useEffect(() => {
-    fetchClients();
-  }, []);
-
-  async function fetchClients() {
+  const fetchClients = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -215,7 +221,11 @@ export default function ClientListPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    fetchClients();
+  }, [fetchClients]);
 
   const filteredData = React.useMemo(() => {
     return clients.filter((client) => {
@@ -233,6 +243,9 @@ export default function ClientListPage() {
     onSortingChange: setSorting,
     state: {
       sorting,
+    },
+    meta: {
+      refetchData: fetchClients,
     },
   });
 
@@ -253,10 +266,11 @@ export default function ClientListPage() {
             {filteredData.length} Kunden insgesamt
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Neuer Kunde
-        </Button>
+        <ClientFormDialog onSuccess={fetchClients} />
+        {/* <Button> */}
+        {/*   <Plus className="h-4 w-4 mr-2" /> */}
+        {/*   Neuer Kunde */}
+        {/* </Button> */}
       </div>
 
       <div className="bg-white p-4 rounded-lg shadow-sm border mb-6">
