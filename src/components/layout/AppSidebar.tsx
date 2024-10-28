@@ -15,11 +15,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Home, Activity, LogOut, User2, Users, Flower } from "lucide-react";
 import { getSidebarNavItems } from "@/routes";
+import { cn } from "@/lib/utils";
 
 export const AppSidebar: React.FC = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const navItems = getSidebarNavItems();
+  const navGroups = getSidebarNavItems();
 
   const handleLogout = async () => {
     try {
@@ -36,23 +37,34 @@ export const AppSidebar: React.FC = () => {
         <h2 className="text-xl font-semibold p-4">Bachblüten Admin</h2>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.path}>
-                      {item.icon}
-                      <span>{item.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {navGroups.map((group) => (
+          <SidebarGroup key={group.label}>
+            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.path}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={location.pathname === item.path}
+                    >
+                      <Link
+                        to={item.path}
+                        className={cn(
+                          "flex items-center gap-2",
+                          location.pathname === item.path && "text-primary",
+                        )}
+                      >
+                        {item.icon}
+                        <span>{item.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

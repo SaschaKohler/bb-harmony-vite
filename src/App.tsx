@@ -27,23 +27,8 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route element={<PublicRoute />}>
-              {routes.public.map(({ path, element: Element }) => (
-                <Route
-                  key={path}
-                  path={path}
-                  element={
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <Element />
-                    </Suspense>
-                  }
-                />
-              ))}
-            </Route>
-
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<Layout />}>
-                {routes.protected.map(({ path, element: Element }) => (
+              {routes.public.map((group) =>
+                group.routes.map(({ path, element: Element }) => (
                   <Route
                     key={path}
                     path={path}
@@ -53,7 +38,26 @@ function App() {
                       </Suspense>
                     }
                   />
-                ))}
+                )),
+              )}
+            </Route>
+
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<Layout />}>
+                {routes.protected.map((group) =>
+                  group.routes.map(({ path, element: Element }) => (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={
+                        <Suspense fallback={<LoadingSpinner />}>
+                          <Element />
+                        </Suspense>
+                      }
+                    />
+                  )),
+                )}
               </Route>
             </Route>
 
