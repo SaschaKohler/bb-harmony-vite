@@ -49,6 +49,7 @@ const INITIAL_STATE: AuthState = {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, setState] = useState<AuthState>(INITIAL_STATE);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [persistedAuth, setPersistedAuth] = useLocalStorage<{
     session: Session | null;
@@ -74,6 +75,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     throw error;
   }, []);
 
+  // Token-Refresh Logic
+  useEffect(() => {
+    const refreshToken = async () => {
+      try {
+        // Token alle 14 Minuten erneuern (wenn Session 15 Minuten läuft)
+        const result = await refreshAuthToken();
+        // Update user state
+        setUser(result.user);
+      } catch (error) {
+        // Bei Fehler ausloggen
+        signOut();
+      }
+    };
+
+    // Refresh-Interval setzen
+    const interval = setInterval(refreshToken, 14 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   // Session Management
   useEffect(() => {
     const setupAuth = async () => {
