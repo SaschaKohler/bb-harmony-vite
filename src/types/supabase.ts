@@ -56,32 +56,50 @@ export type Database = {
       clients: {
         Row: {
           address: string | null
+          address_old: string | null
+          city: string | null
+          country: string | null
           created_at: string | null
           email: string | null
           first_name: string
+          house_number: string | null
           id: string
           last_name: string
           phone: string | null
+          postal_code: string | null
+          street: string | null
           therapist_id: string
         }
         Insert: {
           address?: string | null
+          address_old?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string | null
           email?: string | null
           first_name: string
+          house_number?: string | null
           id?: string
           last_name: string
           phone?: string | null
+          postal_code?: string | null
+          street?: string | null
           therapist_id: string
         }
         Update: {
           address?: string | null
+          address_old?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string | null
           email?: string | null
           first_name?: string
+          house_number?: string | null
           id?: string
           last_name?: string
           phone?: string | null
+          postal_code?: string | null
+          street?: string | null
           therapist_id?: string
         }
         Relationships: [
@@ -159,6 +177,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "flower_selections_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "client_addresses"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "flower_selections_client_id_fkey"
             columns: ["client_id"]
@@ -274,6 +299,13 @@ export type Database = {
             foreignKeyName: "invoices_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "client_addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
@@ -348,7 +380,53 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      client_addresses: {
+        Row: {
+          city: string | null
+          country: string | null
+          first_name: string | null
+          full_address: string | null
+          house_number: string | null
+          id: string | null
+          last_name: string | null
+          postal_code: string | null
+          street: string | null
+          therapist_id: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          first_name?: string | null
+          full_address?: never
+          house_number?: string | null
+          id?: string | null
+          last_name?: string | null
+          postal_code?: string | null
+          street?: string | null
+          therapist_id?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          first_name?: string | null
+          full_address?: never
+          house_number?: string | null
+          id?: string | null
+          last_name?: string | null
+          postal_code?: string | null
+          street?: string | null
+          therapist_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_client_selections: {
@@ -365,6 +443,10 @@ export type Database = {
           flower_count: number
           is_current: boolean
         }[]
+      }
+      migrate_addresses: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {
