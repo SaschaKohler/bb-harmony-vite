@@ -72,28 +72,47 @@ export function usePostalService() {
       // Für Österreich: Nominatim API
       if (country === "AT") {
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?country=Austria&${
-            type === "postal_code" ? "postalcode" : "city"
-          }=${query}&format=json`,
+          `https://nominatim.openstreetmap.org/search?` +
+            `country=Austria&` +
+            `${type === "postal_code" ? "postalcode" : "city"}=${query}&` +
+            `format=json&addressdetails=1`,
+          {
+            headers: {
+              "User-Agent": "BachbluetenApp/1.0",
+            },
+          },
         );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
         const data = await response.json();
-        console.log(data);
+        console.log("API Response:", data); // Debug
 
         const locations = data
-          .filter((item: any) => item.address?.postcode && item.address?.city)
+          .filter((item: any) => item.address?.postcode)
           .map((item: any) => ({
             postal_code: item.address.postcode,
-            city: item.address.city,
-            state: item.address.state,
+            city:
+              item.address.village ||
+              item.address.town ||
+              item.address.city ||
+              item.display_name.split(",")[0].trim(),
+            state: item.address.state || "Upper Austria",
             country: "AT" as const,
+            display_name: item.display_name,
           }));
 
-        // Cache Ergebnis
-        API_CACHE.set(cacheKey, locations);
-        return locations;
-      }
+        console.log("Processed locations:", locations); // Debug
 
-      // Für Deutschland: Zippopotam API
+        if (locations.length > 0) {
+          // Cache nur wenn wir Ergebnisse haben
+          API_CACHE.set(cacheKey, locations);
+        }
+
+        return locations;
+      } // Für Deutschland: Zippopotam API
       else {
         const response = await fetch(
           `https://api.zippopotam.us/de/${

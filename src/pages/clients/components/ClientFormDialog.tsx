@@ -27,10 +27,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Combobox } from "@/components/ui/combobox";
 import { Plus, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePostalService } from "@/lib/services/postal-service";
 
 // Schema für die Formularvalidierung
 const clientSchema = z.object({
@@ -71,6 +71,10 @@ export function ClientFormDialog({
     Array<{ city: string; postal_code: string }>
   >([]);
   const { user } = useAuth();
+  const [postalQuery, setPostalQuery] = useState("");
+  const [cityQuery, setCityQuery] = useState("");
+
+  const { isValidPostalCode, findLocations } = usePostalService();
 
   const form = useForm<ClientFormValues>({
     resolver: zodResolver(clientSchema),
@@ -97,7 +101,7 @@ export function ClientFormDialog({
         `https://nominatim.openstreetmap.org/search?country=${country}&postalcode=${postalCode}&format=json`,
       );
       const data = await response.json();
-
+      console.log(data);
       const uniqueCities = Array.from(
         new Set(
           data.map((item: any) => ({
@@ -116,12 +120,49 @@ export function ClientFormDialog({
     }
   };
 
-  // Handle postal code change
-  const handlePostalCodeChange = (value: string) => {
+  // Handler für PLZ-Änderung
+  const handlePostalCodeChange = async (value: string) => {
+    console.log("handlePostalCodeChange");
+    setPostalQuery(value);
     form.setValue("postal_code", value);
-    if (value.length >= 4) {
-      const country = form.getValues("country");
-      fetchCities(value, country);
+
+    const country = form.getValues("country");
+    if (isValidPostalCode(value, country)) {
+      setIsLoadingCities(true);
+      try {
+        const locations = await findLocations(value, country, "postal_code");
+        if (locations.length > 0) {
+          const firstLocation = locations[0];
+          console.log(firstLocation);
+          form.setValue("city", firstLocation.city);
+          setCities(locations);
+        }
+      } catch (error) {
+        console.error("Error fetching city:", error);
+      } finally {
+        setIsLoadingCities(false);
+      }
+    }
+  };
+  // Handler für Stadt-Änderung
+  const handleCityChange = async (value: string) => {
+    setCityQuery(value);
+    form.setValue("city", value);
+
+    if (value.length >= 3) {
+      setIsLoadingCities(true);
+      try {
+        const locations = await findLocations(
+          value,
+          form.getValues("country"),
+          "city",
+        );
+        setCities(locations);
+      } catch (error) {
+        console.error("Error fetching postal codes:", error);
+      } finally {
+        setIsLoadingCities(false);
+      }
     }
   };
 
@@ -325,6 +366,7 @@ export function ClientFormDialog({
                         {...field}
                         onChange={(e) => handlePostalCodeChange(e.target.value)}
                       />
+                      {/* )} */}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -337,29 +379,32 @@ export function ClientFormDialog({
                   <FormItem>
                     <FormLabel>Stadt *</FormLabel>
                     <FormControl>
-                      {cities.length > 0 ? (
-                        <Combobox
-                          options={cities.map((city) => ({
-                            label: `${city.city} (${city.postal_code})`,
-                            value: city.city,
-                          }))}
-                          value={field.value}
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            const cityData = cities.find(
-                              (c) => c.city === value,
-                            );
-                            if (cityData) {
-                              form.setValue(
-                                "postal_code",
-                                cityData.postal_code,
-                              );
-                            }
-                          }}
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          onChange={(e) => handleCityChange(e.target.value)}
                         />
-                      ) : (
-                        <Input {...field} />
-                      )}
+                        {cities.length > 0 && (
+                          <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg">
+                            {cities.map((location, index) => (
+                              <div
+                                key={`${location.postal_code}-${index}`}
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                onClick={() => {
+                                  form.setValue("city", location.city);
+                                  form.setValue(
+                                    "postal_code",
+                                    location.postal_code,
+                                  );
+                                  setCities([]); // Liste schließen
+                                }}
+                              >
+                                {location.city} ({location.postal_code})
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
