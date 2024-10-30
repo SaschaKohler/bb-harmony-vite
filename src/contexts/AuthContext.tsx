@@ -49,7 +49,6 @@ const INITIAL_STATE: AuthState = {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, setState] = useState<AuthState>(INITIAL_STATE);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [persistedAuth, setPersistedAuth] = useLocalStorage<{
     session: Session | null;
@@ -79,95 +78,96 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const refreshToken = async () => {
       try {
-        // Token alle 14 Minuten erneuern (wenn Session 15 Minuten läuft)
-        const result = await refreshAuthToken();
-        // Update user state
-        setUser(result.user);
+        const { data, error } = await supabase.auth.refreshSession();
+        if (error) throw error;
+
+        if (data.session) {
+          // Auf session prüfen, nicht user
+          setState((prev) => ({
+            ...prev,
+            user: data.session.user,
+            session: data.session,
+            isAuthenticated: true,
+          }));
+
+          setPersistedAuth({
+            session: data.session,
+            user: data.session.user,
+          });
+        }
       } catch (error) {
-        // Bei Fehler ausloggen
-        signOut();
+        console.error("Error refreshing token:", error);
+        await signOut();
       }
     };
 
-    // Refresh-Interval setzen
     const interval = setInterval(refreshToken, 14 * 60 * 1000);
-
     return () => clearInterval(interval);
   }, []);
+
   // Session Management
   useEffect(() => {
+    let mounted = true;
+
     const setupAuth = async () => {
       try {
-        // Prüfe auf gespeicherte Session
-        if (persistedAuth.session && persistedAuth.user) {
-          setState((prev) => ({
-            ...prev,
+        if (persistedAuth.session && persistedAuth.user && mounted) {
+          setState({
             session: persistedAuth.session,
             user: persistedAuth.user,
             isAuthenticated: true,
             isLoading: false,
-          }));
+          });
         }
 
-        // Hole aktuelle Session
         const {
           data: { session },
         } = await supabase.auth.getSession();
+
+        if (!mounted) return;
+
         if (session) {
-          const { data: userData } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
-
-          const enhancedUser = {
-            ...session.user,
-            ...userData,
-          };
-
+          // User-Daten synchron laden
           setState({
-            user: enhancedUser,
+            user: session.user,
             session,
             isAuthenticated: true,
             isLoading: false,
           });
 
-          setPersistedAuth({ session, user: enhancedUser });
+          setPersistedAuth({
+            session,
+            user: session.user,
+          });
         } else {
-          setState((prev) => ({ ...prev, isLoading: false }));
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+          }));
         }
 
-        // Auth State Listener
+        // Auth State Listener vereinfachen
         const {
           data: { subscription },
         } = supabase.auth.onAuthStateChange(async (event, session) => {
-          console.log("Auth state changed:", event);
-          // Zeige den Toast nur bei spezifischen Events
-          if (event === "SIGNED_IN") {
-            toast.success("Erfolgreich angemeldet!");
-          } else if (event === "SIGNED_OUT") {
-            toast.success("Erfolgreich abgemeldet!");
-          }
+          if (!mounted) return;
+
           if (session) {
-            const { data: userData } = await supabase
-              .from("users")
-              .select("*")
-              .eq("id", session.user.id)
-              .single();
-
-            const enhancedUser = {
-              ...session.user,
-              ...userData,
-            };
-
             setState({
-              user: enhancedUser,
+              user: session.user,
               session,
               isAuthenticated: true,
               isLoading: false,
             });
 
-            setPersistedAuth({ session, user: enhancedUser });
+            setPersistedAuth({
+              session,
+              user: session.user,
+            });
+
+            if (event === "SIGNED_IN") {
+              toast.success("Erfolgreich angemeldet!");
+            }
           } else {
             setState({
               user: null,
@@ -175,22 +175,85 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               isAuthenticated: false,
               isLoading: false,
             });
-            setPersistedAuth({ session: null, user: null });
+
+            setPersistedAuth({
+              session: null,
+              user: null,
+            });
+
+            if (event === "SIGNED_OUT") {
+              toast.success("Erfolgreich abgemeldet!");
+            }
           }
         });
 
         return () => {
+          mounted = false;
           subscription.unsubscribe();
         };
       } catch (error) {
         console.error("Auth setup error:", error);
-        setState((prev) => ({ ...prev, isLoading: false }));
+        if (mounted) {
+          setState((prev) => ({ ...prev, isLoading: false }));
+        }
       }
     };
 
     setupAuth();
   }, []);
 
+  useEffect(() => {
+    const handleAuthStateChange = async (
+      event: AuthChangeEvent,
+      session: Session | null,
+    ) => {
+      console.log("Auth state change:", event, session); // Debug
+
+      switch (event) {
+        case "SIGNED_IN":
+          if (session) {
+            // Direkt State setzen
+            setState((prevState) => ({
+              ...prevState,
+              user: session.user,
+              session: session,
+              isAuthenticated: true,
+              isLoading: false,
+            }));
+
+            // Persistieren
+            setPersistedAuth({
+              session: session,
+              user: session.user,
+            });
+          }
+          break;
+
+        case "SIGNED_OUT":
+        case "USER_DELETED":
+          setState({
+            user: null,
+            session: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
+          setPersistedAuth({
+            session: null,
+            user: null,
+          });
+          break;
+      }
+    };
+
+    // Auth State Listener
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(handleAuthStateChange);
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
   // Auth Methods
   const signIn = async (email: string, password: string) => {
     try {
@@ -201,7 +264,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if (error) throw error;
+      setState({
+        user: data.session?.user || null,
+        session: data.session,
+        isAuthenticated: !!data.session,
+        isLoading: false,
+      });
 
+      // LocalStorage Update
+      setPersistedAuth({
+        session: data.session,
+        user: data.session?.user || null,
+      });
       navigate("/");
     } catch (error) {
       handleAuthError(error as AuthError, "Anmelden");

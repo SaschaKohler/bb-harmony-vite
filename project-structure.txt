@@ -3,7 +3,6 @@
 ├── components.json
 ├── eslint.config.js
 ├── generateFlowerData.ts
-├── generateMockData.js
 ├── generateMockData.ts
 ├── index.html
 ├── package-lock.json
@@ -67,6 +66,7 @@
 │   │   │   ├── ProtectedRoute.tsx
 │   │   │   ├── PublicRoute.tsx
 │   │   │   ├── RegistrationForm.tsx
+│   │   │   ├── UnifiedAuthPage.test.tsx
 │   │   │   └── UnifiedAuthPage.tsx
 │   │   ├── bachblueten
 │   │   │   ├── BlossomGrid.tsx
@@ -82,18 +82,23 @@
 │   │   ├── theme-provider.tsx
 │   │   ├── theme-toggle.tsx
 │   │   └── ui
+│   │       ├── alert-dialog.tsx
 │   │       ├── alert.tsx
 │   │       ├── badge.tsx
 │   │       ├── button.tsx
 │   │       ├── calendar.tsx
 │   │       ├── card.tsx
+│   │       ├── combobox.tsx
 │   │       ├── command.tsx
 │   │       ├── dialog.tsx
 │   │       ├── form.tsx
+│   │       ├── icons.tsx
 │   │       ├── input.tsx
 │   │       ├── label.tsx
+│   │       ├── loading-spinner.tsx
 │   │       ├── popover.tsx
 │   │       ├── progress.tsx
+│   │       ├── select.tsx
 │   │       ├── separator.tsx
 │   │       ├── sheet.tsx
 │   │       ├── sidebar.tsx
@@ -107,8 +112,11 @@
 │   │       ├── toaster.tsx
 │   │       └── tooltip.tsx
 │   ├── contexts
+│   │   ├── AuthContext.test.tsx
 │   │   └── AuthContext.tsx
 │   ├── hooks
+│   │   ├── use-debounce.ts
+│   │   ├── use-local-storage.ts
 │   │   ├── use-mobile.tsx
 │   │   ├── use-toast.ts
 │   │   └── useHarmonyWheel.ts
@@ -119,6 +127,8 @@
 │   │   │   └── types.ts
 │   │   ├── harmonyWheel
 │   │   │   └── types.ts
+│   │   ├── services
+│   │   │   └── postal-service.ts
 │   │   ├── supabaseClient.ts
 │   │   └── utils.ts
 │   ├── main.tsx
@@ -127,16 +137,32 @@
 │   │   ├── BachbluetenRad.tsx
 │   │   ├── BachbluetenRad_old.tsx
 │   │   ├── ClientListPage_old.tsx
-│   │   ├── Dashboard.tsx
 │   │   ├── ProfilePage.tsx
+│   │   ├── admin
+│   │   │   ├── components
+│   │   │   │   ├── BachFlowersList.tsx
+│   │   │   │   ├── FlowerFormDialog.tsx
+│   │   │   │   ├── SectorFormDialog.tsx
+│   │   │   │   └── SectorsList.tsx
+│   │   │   └── index.tsx
 │   │   ├── clients
 │   │   │   ├── components
+│   │   │   │   └── ClientFormDialog.tsx
+│   │   │   └── index.tsx
+│   │   ├── dashboard
+│   │   │   ├── components
+│   │   │   │   ├── ActiveClientsTable.tsx
+│   │   │   │   └── RecentSelectionsTable.tsx
 │   │   │   └── index.tsx
 │   │   └── flower-selections
 │   │       ├── components
 │   │       │   ├── FlowerSelectionDetails.tsx
 │   │       │   └── SelectionFilters.tsx
 │   │       └── index.tsx
+│   ├── routes
+│   │   └── index.tsx
+│   ├── test
+│   │   └── setup.ts
 │   ├── types
 │   │   ├── supabase.js
 │   │   └── supabase.ts
@@ -147,4 +173,4 @@
 ├── tsconfig.node.json
 └── vite.config.ts
 
-20 directories, 127 files
+27 directories, 146 files

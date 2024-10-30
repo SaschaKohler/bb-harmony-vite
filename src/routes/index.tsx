@@ -7,6 +7,7 @@ import {
   User,
   LogIn,
   Settings,
+  MessageCircle,
 } from "lucide-react";
 
 // Lazy loaded components
@@ -17,6 +18,7 @@ const FlowerSelectionListPage = lazy(() => import("@/pages/flower-selections"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const UnifiedAuthPage = lazy(() => import("@/components/auth/UnifiedAuthPage"));
 const AdminPage = lazy(() => import("@/pages/admin"));
+const TherapyConsultation = lazy(() => import("@/pages/TherapyConsultation"));
 
 interface RouteConfig {
   path: string;
@@ -76,6 +78,12 @@ export const routes: RoutesConfig = {
           element: FlowerSelectionListPage,
           name: "Blüten-Mischungen",
           icon: FileText,
+        },
+        {
+          path: "/beratung",
+          element: TherapyConsultation,
+          name: "Beratung",
+          icon: MessageCircle,
         },
       ],
     },

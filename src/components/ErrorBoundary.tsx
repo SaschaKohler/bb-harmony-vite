@@ -1,5 +1,8 @@
-// ErrorBoundary.tsx
+// src/components/ErrorBoundary.tsx
 import React from "react";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { RefreshCw } from "lucide-react";
 
 interface Props {
   children: React.ReactNode;
@@ -7,6 +10,7 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  error?: Error;
 }
 
 export class ErrorBoundary extends React.Component<Props, State> {
@@ -14,30 +18,39 @@ export class ErrorBoundary extends React.Component<Props, State> {
     hasError: false,
   };
 
-  public static getDerivedStateFromError(_: Error): State {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Error caught by boundary:", error, errorInfo);
   }
 
-  public render() {
+  handleReset = () => {
+    this.setState({ hasError: false, error: undefined });
+  };
+
+  render() {
     if (this.state.hasError) {
       return (
-        <div className="p-4 rounded-md bg-red-50 border border-red-200">
-          <h2 className="text-lg font-medium text-red-800">
-            Ein Fehler ist aufgetreten
-          </h2>
-          <p className="text-sm text-red-600">
-            Bitte laden Sie die Seite neu oder kontaktieren Sie den Support.
-          </p>
-          <button
-            className="mt-2 px-4 py-2 text-sm font-medium text-red-600 hover:text-red-500"
-            onClick={() => this.setState({ hasError: false })}
-          >
-            Neu laden
-          </button>
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <Alert variant="destructive" className="max-w-lg">
+            <AlertTitle>Etwas ist schiefgelaufen</AlertTitle>
+            <AlertDescription className="mt-2">
+              <p className="mb-4">
+                {this.state.error?.message ||
+                  "Ein unerwarteter Fehler ist aufgetreten."}
+              </p>
+              <Button
+                variant="outline"
+                onClick={this.handleReset}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Neu laden
+              </Button>
+            </AlertDescription>
+          </Alert>
         </div>
       );
     }
