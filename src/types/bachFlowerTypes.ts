@@ -30,7 +30,24 @@ export interface WizardAction {
     | "SET_RECOMMENDED_FLOWERS";
   payload?: any;
 }
-
+export interface RecommendedFlower {
+  flower: {
+    id: string;
+    number: number;
+    name_german: string | null;
+    name_english: string;
+    affirmation: string | null;
+    description: string | null;
+    emotion_id: string | null;
+  };
+  drops: number;
+  reasoning: string;
+}
+// Für die Mock-Response
+export interface MockResponse {
+  content: string;
+  flowers: RecommendedFlower[];
+}
 // API Response Types für Frontend
 export interface FlowerRecommendation {
   flower: BachFlower;

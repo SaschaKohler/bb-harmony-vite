@@ -9,24 +9,22 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabaseClient";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User2, Send, Loader2, Bot, MessageSquare, Flower } from "lucide-react";
 import { ClaudeConsultationService } from "@/lib/services/claudeConsultationService";
 import { useAuth } from "@/contexts/AuthContext";
 import { FlowerRecommendationView } from "@/components/bach-flowers/FlowerRecommendations";
+import { RecommendedFlower } from "@/types/bachFlowerTypes";
+
+const isDevelopment = import.meta.env.VITE_USE_MOCK_API === "true";
 
 interface Message {
   id: string;
   role: "assistant" | "user";
   content: string;
   timestamp: Date;
-}
-
-interface RecommendedFlower {
-  flower: any; // Typ aus deiner Supabase DB
-  drops: number;
-  reasoning: string;
 }
 
 const TherapyConsultation = () => {
@@ -39,6 +37,7 @@ const TherapyConsultation = () => {
     RecommendedFlower[]
   >([]);
   const [currentTab, setCurrentTab] = useState("chat");
+  const [showAssignmentDialog, setShowAssignmentDialog] = useState(false);
 
   // Initialisiere die Beratung
   useEffect(() => {
@@ -86,7 +85,7 @@ const TherapyConsultation = () => {
 
       setMessages((prev) => [...prev, userMessage]);
 
-      // Hole Antwort von Claude
+      // Hole Antwort von Claude/
       const response = await ClaudeConsultationService.getTherapeuticResponse(
         [...messages, userMessage].map((m) => ({
           role: m.role,
@@ -101,15 +100,17 @@ const TherapyConsultation = () => {
         content: response,
         timestamp: new Date(),
       };
-
+      console.log(response);
       setMessages((prev) => [...prev, assistantMessage]);
 
       // Prüfe auf Blütenempfehlungen in der Antwort
       if (messages.length > 16) {
         // Empfehlungsphase
-        const newRecommendations = extractRecommendations(response);
-        if (newRecommendations.length > 0) {
-          setRecommendedFlowers(newRecommendations);
+        const extractedFlowers = await extractRecommendations(response);
+        console.log("Extracted Flowers with DB data:", extractedFlowers);
+
+        if (extractedFlowers.length > 0) {
+          setRecommendedFlowers(extractedFlowers);
           setCurrentTab("recommendations");
         }
       }
@@ -128,37 +129,58 @@ const TherapyConsultation = () => {
     }
   };
 
-  const extractRecommendations = (response: string): RecommendedFlower[] => {
-    // Hier könnte eine komplexere Logik zur Extraktion der Empfehlungen stehen
-    // Für jetzt nur ein Beispiel
+  const extractRecommendations = async (
+    response: string,
+  ): Promise<RecommendedFlower[]> => {
     const recommendations: RecommendedFlower[] = [];
 
-    // Implementiere die Extraktion basierend auf dem Antwortformat
-    //
-    // Regulärer Ausdruck um Blüten-Einträge zu finden
-    // Sucht nach "1. Blütenname (Englischer Name) - Beschreibung"
-    const flowerRegex = /(\d+)\.\s+([^(]+)\s*\(([^)]+)\)\s*-\s*([^.]+)/g;
+    if (isDevelopment) {
+      const recommendations: RecommendedFlower[] = [];
+      const flowerRegex =
+        /\d+\.\s+Nr\.(\d+)\s+([^(]+)\(([^)]+)\)\s*-\s*([^.]+)/g;
 
-    let match;
-    while ((match = flowerRegex.exec(response)) !== null) {
-      const [_, number, germanName, englishName, description] = match;
+      try {
+        let match;
+        while ((match = flowerRegex.exec(response)) !== null) {
+          const [_, blossomNumber, germanName, englishName, description] =
+            match;
 
-      // Finde die entsprechende Blüte in der Datenbank
-      const flower = {
-        id: `flower_${number}`, // Temporäre ID, sollte mit DB-ID ersetzt werden
-        number: parseInt(number),
-        name_german: germanName.trim(),
-        name_english: englishName.trim(),
-        description: description.trim(),
-      };
+          // Hole die Blüte aus der Datenbank
+          const { data: flower, error } = await supabase
+            .from("bach_flowers")
+            .select("*")
+            .eq("number", parseInt(blossomNumber))
+            .single();
 
-      recommendations.push({
-        flower,
-        drops: 4, // Standard-Dosierung
-        reasoning: description.trim(),
-      });
+          if (error) throw error;
+          if (!flower) {
+            console.error(`Blüte Nr. ${blossomNumber} nicht gefunden`);
+            continue;
+          }
+
+          // Füge die Empfehlung mit den Datenbankdaten hinzu
+          recommendations.push({
+            flower: {
+              id: flower.id,
+              number: flower.number,
+              name_german: flower.name_german,
+              name_english: flower.name_english,
+              description: flower.description,
+              affirmation: flower.affirmation,
+              emotion_id: flower.emotion_id,
+            },
+            drops: 4, // oder aus dem Text extrahieren
+            reasoning: description.trim(),
+          });
+        }
+
+        return recommendations;
+      } catch (error) {
+        console.error("Error fetching flowers:", error);
+        return [];
+      }
     }
-
+    // ... Rest des Codes
     return recommendations;
   };
 
@@ -298,12 +320,7 @@ const TherapyConsultation = () => {
 
         <TabsContent value="recommendations">
           {recommendedFlowers.length > 0 ? (
-            <FlowerRecommendationView
-              flowers={recommendedFlowers}
-              clientId={user?.id}
-              therapistId={user?.id}
-              onSave={() => handleSaveRecommendation(recommendedFlowers)}
-            />
+            <FlowerRecommendationView flowers={recommendedFlowers} />
           ) : (
             <Card>
               <CardContent className="pt-6">

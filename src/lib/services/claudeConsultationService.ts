@@ -6,10 +6,22 @@ import type { Database } from "@/types/supabase";
 type BachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
 type Emotion = Database["public"]["Tables"]["emotion"]["Row"];
 
+// Umgebungsvariablen
+const isDevelopment = import.meta.env.VITE_USE_MOCK_API === "true";
 const anthropic = new Anthropic({
   apiKey: import.meta.env.VITE_CLAUDE_API_KEY,
   dangerouslyAllowBrowser: true,
 });
+
+// Mock-Antworten für Development
+const MOCK_RESPONSES = [
+  "Wie fühlen Sie sich in solchen Situationen?",
+  "Können Sie mir mehr darüber erzählen, was Sie dabei empfinden?",
+  "Was würde Ihnen in dieser Situation helfen?",
+  "Wie gehen Sie normalerweise mit solchen Herausforderungen um?",
+  "Welche Gefühle löst das bei Ihnen aus?",
+  "Was würden Sie sich in dieser Situation wünschen?",
+];
 
 export interface ConsultationMessage {
   role: "assistant" | "user";
@@ -159,6 +171,99 @@ WICHTIGE REGELN:
     return flowers || [];
   }
 
+  private static async getRandomFlowers(count: number): Promise<BachFlower[]> {
+    try {
+      const { data: flowers, error } = await supabase
+        .from("bach_flowers")
+        .select("*");
+
+      if (error) throw error;
+      if (!flowers) return [];
+
+      const shuffled = flowers.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    } catch (error) {
+      console.error("Error fetching flowers:", error);
+      return [];
+    }
+  }
+
+  private static generateMockRecommendation = async (
+    messageCount: number,
+  ): Promise<string> => {
+    if (messageCount <= 16) {
+      return MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)];
+    }
+
+    try {
+      // Hole alle Bach-Blüten aus der Datenbank
+      const { data: flowers, error } = await supabase
+        .from("bach_flowers")
+        .select(
+          `
+        id,
+        number,
+        name_german,
+        name_english,
+        description,
+        affirmation,
+        emotion_id
+      `,
+        )
+        .order("number");
+
+      if (error) throw error;
+      if (!flowers || flowers.length === 0) {
+        throw new Error("Keine Bach-Blüten in der Datenbank gefunden");
+      }
+      console.log(flowers);
+
+      // Wähle zufällig 4-7 Blüten aus
+      const flowerCount = Math.floor(Math.random() * 4) + 4;
+      const selectedFlowers = flowers
+        .sort(() => 0.5 - Math.random())
+        .slice(0, flowerCount);
+
+      console.log(selectedFlowers);
+
+      const recommendation = selectedFlowers
+        .map((flower, index) => {
+          return {
+            index: index + 1,
+            id: flower.id, // Wichtig: Speichere die korrekte ID
+            number: flower.number,
+            name_german: flower.name_german,
+            name_english: flower.name_english,
+            description: flower.description || "Ihre Situation zu verbessern",
+            drops: Math.floor(Math.random() * 3) + 2, // Zufällig 2-4 Tropfen
+            affirmation: flower.affirmation || "Ich fühle mich ausgeglichen",
+          };
+        })
+        .map(
+          (flower) =>
+            `${flower.index}. Nr.${flower.number} ${flower.name_german} (${flower.name_english}) - Diese Blüte kann Ihnen helfen, ${
+              flower.description
+            }. Die Affirmation "${flower.affirmation}" kann Sie dabei unterstützen. Empfohlene Dosierung: ${flower.drops} Tropfen.`,
+        )
+        .join("\n\n");
+
+      console.log(recommendation);
+
+      return `Gut, dann lass uns nun zu Phase 5 kommen und die passenden Bach-Blüten für deine Situation auswählen. 
+Basierend auf deinen Schilderungen schlage ich folgende ${flowerCount} Blüten vor:
+
+${recommendation}
+
+Diese Mischung wurde speziell für deine Situation zusammengestellt. Die Blüten ergänzen sich in ihrer Wirkung 
+und unterstützen dich bei deinem Entwicklungsprozess.
+
+Lass mich wissen, was du dazu denkst! Ich kann die Auswahl noch einmal überdenken oder näher erläutern, wenn du möchtest.`;
+    } catch (error) {
+      console.error("Error generating mock recommendation:", error);
+      return "Entschuldigung, es gab einen Fehler bei der Erstellung der Empfehlung. Bitte versuchen Sie es später erneut.";
+    }
+  };
+
   private static async getEmotions(): Promise<Emotion[]> {
     const { data: emotions, error } = await supabase
       .from("emotion")
@@ -206,6 +311,10 @@ DOSIERUNGSRICHTLINIEN:
     messages: ConsultationMessage[],
     isFirstMessage: boolean = false,
   ): Promise<string> {
+    if (isDevelopment) {
+      return this.generateMockRecommendation(messages.length);
+    }
+
     try {
       const messageCount = messages.length;
       const flowerContext = await this.buildFlowerContext();
@@ -281,6 +390,10 @@ Wie kann ich Ihnen heute helfen? Erzählen Sie mir von Ihrer aktuellen Situation
 
   // Neue Methode für die erste Kontaktaufnahme
   static async startConsultation(): Promise<string> {
+    if (isDevelopment) {
+      return "Willkommen zur Bach-Blüten Beratung (Development Mode). Wie kann ich Ihnen heute helfen?";
+    }
+
     try {
       const knowledgeBase = await this.initializeKnowledgeBase();
       const initialPrompt = `${this.systemPrompt}\n\n${knowledgeBase}\n\nBereite dich auf die Beratung vor und bestätige, dass du alle Bach-Blüten-Informationen zur Verfügung hast.`;
@@ -355,7 +468,8 @@ ${response}`;
   ): Promise<string> {
     try {
       const currentDate = new Date().toISOString();
-
+      console.log("clientId", clientId);
+      console.log("therapistId", therapistId);
       // Erstelle neue Blüten-Selektion
       const { data: selection, error: selectionError } = await supabase
         .from("flower_selections")
