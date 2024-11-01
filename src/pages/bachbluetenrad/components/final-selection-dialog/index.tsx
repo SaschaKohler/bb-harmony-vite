@@ -30,7 +30,7 @@ import { SimpleCombobox } from "@/components/ui/simple-combobox";
 
 type Client = Database["public"]["Tables"]["clients"]["Row"];
 
-interface FinalSelectionDialogProps {
+export interface FinalSelectionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   selectedBlossoms: string[];
