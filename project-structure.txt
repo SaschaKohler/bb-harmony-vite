@@ -72,13 +72,6 @@
 │   │   │   ├── FlowerRecommendations.tsx
 │   │   │   ├── RecommendationAssignmentDialog.tsx
 │   │   │   └── TherapeuticWizard.tsx
-│   │   ├── bachblueten
-│   │   │   ├── BlossomGrid.tsx
-│   │   │   ├── ColorSelector.tsx
-│   │   │   ├── FinalSelectionDialog.tsx
-│   │   │   ├── HarmonyWheel.tsx
-│   │   │   ├── HarmonyWheel_old.tsx
-│   │   │   └── SelectedBlossoms.tsx
 │   │   ├── layout
 │   │   │   ├── AppSidebar.tsx
 │   │   │   ├── Layout.tsx
@@ -143,9 +136,6 @@
 │   ├── main.tsx
 │   ├── pages
 │   │   ├── AuthPage.tsx
-│   │   ├── BachbluetenRad.tsx
-│   │   ├── BachbluetenRad_old.tsx
-│   │   ├── ClientListPage_old.tsx
 │   │   ├── ProfilePage.tsx
 │   │   ├── TherapyConsultation.tsx
 │   │   ├── admin
@@ -155,6 +145,22 @@
 │   │   │   │   ├── SectorFormDialog.tsx
 │   │   │   │   └── SectorsList.tsx
 │   │   │   └── index.tsx
+│   │   ├── bachbluetenrad
+│   │   │   ├── components
+│   │   │   │   ├── blossom-grid
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── color-selector
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── final-selection-dialog
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── harmony-wheel
+│   │   │   │   │   └── index.tsx
+│   │   │   │   └── selected-blossoms
+│   │   │   │       └── index.tsx
+│   │   │   ├── hooks
+│   │   │   ├── index.tsx
+│   │   │   ├── types
+│   │   │   └── utils
 │   │   ├── clients
 │   │   │   ├── components
 │   │   │   │   └── ClientFormDialog.tsx
@@ -184,4 +190,4 @@
 ├── tsconfig.node.json
 └── vite.config.ts
 
-28 directories, 156 files
+37 directories, 153 files

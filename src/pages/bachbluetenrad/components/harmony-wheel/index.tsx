@@ -18,7 +18,7 @@ interface EmotionWithFlowers extends Emotion {
   bach_flowers: BachFlower[];
 }
 
-interface WheelSectorProps {
+export interface WheelSectorProps {
   emotion: EmotionWithFlowers;
   index: number;
   totalSectors: number;
@@ -26,7 +26,7 @@ interface WheelSectorProps {
   isActive: boolean;
 }
 
-const WheelSector: React.FC<WheelSectorProps> = ({
+export const WheelSector: React.FC<WheelSectorProps> = ({
   emotion,
   index,
   totalSectors,
@@ -135,7 +135,7 @@ const WheelSector: React.FC<WheelSectorProps> = ({
   );
 };
 
-interface HarmonyWheelProps {
+export interface HarmonyWheelProps {
   className?: string;
   onSectorClick: (emotion: EmotionWithFlowers | null) => void; // Neue Prop
 }

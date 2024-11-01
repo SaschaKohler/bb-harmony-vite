@@ -12,7 +12,7 @@ import type { Database } from "@/types/supabase";
 
 type BachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
 
-interface BlossomGridProps {
+export interface BlossomGridProps {
   blossoms: BachFlower[];
   selectedBlossoms: string[];
   onBlossomSelect: (blossomId: string) => void;

@@ -2,14 +2,14 @@
 import React, { useState, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { HarmonyWheel } from "./components/harmony-wheel";
-import { ColorSelector } from "./components/color-selector";
-import { BlossomGrid } from "./components/blossom-grid";
-import { SelectedBlossoms } from "./components/selected-blossoms";
 import {
+  HarmonyWheel,
+  BlossomGrid,
+  SelectedBlossoms,
   FinalSelectionDialog,
   type FinalSelectionData,
-} from "./components/final-selection-dialog";
+} from "./components";
+import { ColorSelector } from "./components/color-selector";
 import { toast } from "sonner";
 import { useHarmonyWheel } from "@/hooks/useHarmonyWheel";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
