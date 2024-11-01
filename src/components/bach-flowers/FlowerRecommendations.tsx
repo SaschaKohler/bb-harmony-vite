@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,14 +14,12 @@ import {
   Save,
   FileDown,
   Printer,
-  Check,
   Clock,
   Flower,
   Droplets,
   CalendarIcon,
 } from "lucide-react";
 import type { Database } from "@/types/supabase";
-import { ClaudeConsultationService } from "@/lib/services/claudeConsultationService";
 import {
   Dialog,
   DialogContent,

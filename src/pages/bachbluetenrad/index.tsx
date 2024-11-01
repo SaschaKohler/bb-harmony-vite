@@ -2,16 +2,16 @@
 import React, { useState, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { HarmonyWheel } from "@/components/bachblueten/HarmonyWheel";
-import { ColorSelector } from "@/components/bachblueten/ColorSelector";
-import { BlossomGrid } from "@/components/bachblueten/BlossomGrid";
-import { SelectedBlossoms } from "@/components/bachblueten/SelectedBlossoms";
-import { toast } from "sonner";
-import { useHarmonyWheel } from "@/hooks/useHarmonyWheel";
+import { HarmonyWheel } from "./components/harmony-wheel";
+import { ColorSelector } from "./components/color-selector";
+import { BlossomGrid } from "./components/blossom-grid";
+import { SelectedBlossoms } from "./components/selected-blossoms";
 import {
   FinalSelectionDialog,
   type FinalSelectionData,
-} from "@/components/bachblueten/FinalSelectionDialog";
+} from "./components/final-selection-dialog";
+import { toast } from "sonner";
+import { useHarmonyWheel } from "@/hooks/useHarmonyWheel";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import type { Database } from "@/types/supabase";
 import { Blossom } from "@/lib/bachblueten/types";

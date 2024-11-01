@@ -184,38 +184,6 @@ const TherapyConsultation = () => {
     return recommendations;
   };
 
-  const handleSaveRecommendation = async (flowers: RecommendedFlower[]) => {
-    if (!user?.id) {
-      toast.error("Nicht eingeloggt");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const notes = JSON.stringify(
-        flowers.map((f) => ({
-          id: f.flower.id,
-          drops: f.drops,
-          reasoning: f.reasoning,
-        })),
-      );
-
-      await ClaudeConsultationService.saveRecommendation(
-        user.id, // client_id (in diesem Fall der gleiche User)
-        user.id, // therapist_id
-        flowers.map((f) => f.flower),
-        notes,
-      );
-
-      toast.success("Empfehlung erfolgreich gespeichert");
-    } catch (error) {
-      console.error("Save error:", error);
-      toast.error("Fehler beim Speichern der Empfehlung");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="container mx-auto py-6">
       <Tabs value={currentTab} onValueChange={setCurrentTab}>

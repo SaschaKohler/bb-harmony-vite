@@ -26,7 +26,7 @@ import { supabase } from "@/lib/supabaseClient";
 import type { Blossom } from "@/lib/bachblueten/types";
 import type { Database } from "@/types/supabase";
 import { useAuth } from "@/contexts/AuthContext";
-import { SimpleCombobox } from "../ui/simple-combobox";
+import { SimpleCombobox } from "@/components/ui/simple-combobox";
 
 type Client = Database["public"]["Tables"]["clients"]["Row"];
 

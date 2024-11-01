@@ -12,7 +12,7 @@ import {
 
 // Lazy loaded components
 const Dashboard = lazy(() => import("@/pages/dashboard"));
-const BachblutenRad = lazy(() => import("@/pages/BachbluetenRad"));
+const BachblutenRad = lazy(() => import("@/pages/bachbluetenrad"));
 const ClientListPage = lazy(() => import("@/pages/clients"));
 const FlowerSelectionListPage = lazy(() => import("@/pages/flower-selections"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));

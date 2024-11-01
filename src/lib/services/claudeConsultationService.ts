@@ -171,23 +171,6 @@ WICHTIGE REGELN:
     return flowers || [];
   }
 
-  private static async getRandomFlowers(count: number): Promise<BachFlower[]> {
-    try {
-      const { data: flowers, error } = await supabase
-        .from("bach_flowers")
-        .select("*");
-
-      if (error) throw error;
-      if (!flowers) return [];
-
-      const shuffled = flowers.sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, count);
-    } catch (error) {
-      console.error("Error fetching flowers:", error);
-      return [];
-    }
-  }
-
   private static generateMockRecommendation = async (
     messageCount: number,
   ): Promise<string> => {
@@ -264,19 +247,6 @@ Lass mich wissen, was du dazu denkst! Ich kann die Auswahl noch einmal überdenk
     }
   };
 
-  private static async getEmotions(): Promise<Emotion[]> {
-    const { data: emotions, error } = await supabase
-      .from("emotion")
-      .select("*");
-
-    if (error) {
-      console.error("Error fetching emotions:", error);
-      throw new Error("Fehler beim Laden der Emotionen");
-    }
-
-    return emotions || [];
-  }
-
   private static async buildFlowerContext(): Promise<string> {
     try {
       const flowers = await this.getAvailableFlowers();
@@ -328,13 +298,6 @@ Lassen Sie uns mit der Beratung beginnen:
 Wie kann ich Ihnen heute helfen? Erzählen Sie mir von Ihrer aktuellen Situation.`;
       }
       // Bestimme die aktuelle Gesprächsphase
-      const phases = {
-        1: "Situationsverständnis: Erkunde die aktuelle Lebenssituation.",
-        2: "Emotionale Tiefe: Erforsche die genannten Gefühle.",
-        3: "Bewältigungsmuster: Untersuche den Umgang mit Herausforderungen.",
-        4: "Ressourcen: Erkunde Kraftquellen und positive Aspekte.",
-        5: "Empfehlungsphase: Erstelle eine personalisierte Bach-Blüten Auswahl.",
-      };
 
       const currentPhase =
         messageCount <= 4
