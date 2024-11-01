@@ -18,7 +18,7 @@ const FlowerSelectionListPage = lazy(() => import("@/pages/flower-selections"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const UnifiedAuthPage = lazy(() => import("@/components/auth/UnifiedAuthPage"));
 const AdminPage = lazy(() => import("@/pages/admin"));
-const TherapyConsultation = lazy(() => import("@/pages/TherapyConsultation"));
+const TherapyConsultation = lazy(() => import("@/pages/therapy-consultation"));
 
 interface RouteConfig {
   path: string;

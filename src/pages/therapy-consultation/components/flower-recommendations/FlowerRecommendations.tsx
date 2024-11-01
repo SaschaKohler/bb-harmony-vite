@@ -36,15 +36,15 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
-import { SimpleCombobox } from "../ui/simple-combobox";
+import { SimpleCombobox } from "@/components/ui/simple-combobox";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { RecommendedFlower } from "@/types/bachFlowerTypes";
 
 type Client = Database["public"]["Tables"]["clients"]["Row"];
 
-interface RecommendationViewProps {
+export interface RecommendationViewProps {
   flowers: RecommendedFlower[]; // Verwende das gleiche Interface
 }
 

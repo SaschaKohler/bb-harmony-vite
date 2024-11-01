@@ -23,13 +23,13 @@ import { CalendarIcon, Download, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/contexts/AuthContext";
-import { SimpleCombobox } from "../ui/simple-combobox";
+import { SimpleCombobox } from "@/components/ui/simple-combobox";
 import type { Database } from "@/types/supabase";
 
 type BachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
 type Client = Database["public"]["Tables"]["clients"]["Row"];
 
-interface RecommendationAssignmentDialogProps {
+export interface RecommendationAssignmentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   recommendedFlowers: Array<{

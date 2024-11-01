@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User2, Send, Loader2, Bot, MessageSquare, Flower } from "lucide-react";
 import { ClaudeConsultationService } from "@/lib/services/claudeConsultationService";
 import { useAuth } from "@/contexts/AuthContext";
-import { FlowerRecommendationView } from "@/components/bach-flowers/FlowerRecommendations";
+import { FlowerRecommendationView } from "./components";
 import { RecommendedFlower } from "@/types/bachFlowerTypes";
 
 const isDevelopment = import.meta.env.VITE_USE_MOCK_API === "true";
