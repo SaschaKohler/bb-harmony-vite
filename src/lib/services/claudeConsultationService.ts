@@ -1,4 +1,6 @@
 // src/services/claudeConsultationService.ts
+import { config, devLog } from "@/config";
+
 import Anthropic from "@anthropic-ai/sdk";
 import { supabase } from "@/lib/supabaseClient";
 import type { Database } from "@/types/supabase";
@@ -7,9 +9,8 @@ type BachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
 type Emotion = Database["public"]["Tables"]["emotion"]["Row"];
 
 // Umgebungsvariablen
-const isDevelopment = import.meta.env.VITE_USE_MOCK_API === "true";
 const anthropic = new Anthropic({
-  apiKey: import.meta.env.VITE_CLAUDE_API_KEY,
+  apiKey: config.claude.apiKey,
   dangerouslyAllowBrowser: true,
 });
 
@@ -230,7 +231,7 @@ WICHTIGE REGELN:
         )
         .join("\n\n");
 
-      console.log(recommendation);
+      devLog(recommendation);
 
       return `Gut, dann lass uns nun zu Phase 5 kommen und die passenden Bach-Blüten für deine Situation auswählen. 
 Basierend auf deinen Schilderungen schlage ich folgende ${flowerCount} Blüten vor:
@@ -281,7 +282,7 @@ DOSIERUNGSRICHTLINIEN:
     messages: ConsultationMessage[],
     isFirstMessage: boolean = false,
   ): Promise<string> {
-    if (isDevelopment) {
+    if (config.claude.useMockApi) {
       return this.generateMockRecommendation(messages.length);
     }
 
@@ -353,7 +354,7 @@ Wie kann ich Ihnen heute helfen? Erzählen Sie mir von Ihrer aktuellen Situation
 
   // Neue Methode für die erste Kontaktaufnahme
   static async startConsultation(): Promise<string> {
-    if (isDevelopment) {
+    if (config.claude.useMockApi) {
       return "Willkommen zur Bach-Blüten Beratung (Development Mode). Wie kann ich Ihnen heute helfen?";
     }
 

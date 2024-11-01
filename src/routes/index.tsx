@@ -19,7 +19,7 @@ const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const UnifiedAuthPage = lazy(() => import("@/components/auth/UnifiedAuthPage"));
 const AdminPage = lazy(() => import("@/pages/admin"));
 const TherapyConsultation = lazy(() => import("@/pages/therapy-consultation"));
-
+const BachbluetenWizard = lazy(() => import("@/pages/bachblueten-wizard"));
 interface RouteConfig {
   path: string;
   element: ComponentType;
@@ -74,16 +74,22 @@ export const routes: RoutesConfig = {
           icon: Compass,
         },
         {
-          path: "/flower-selections",
-          element: FlowerSelectionListPage,
-          name: "Blüten-Mischungen",
-          icon: FileText,
+          path: "/bachblueten-wizard",
+          element: BachbluetenWizard,
+          name: "Bachblüten Wizard",
+          icon: Compass,
         },
         {
           path: "/beratung",
           element: TherapyConsultation,
           name: "Beratung",
           icon: MessageCircle,
+        },
+        {
+          path: "/flower-selections",
+          element: FlowerSelectionListPage,
+          name: "Blüten-Mischungen",
+          icon: FileText,
         },
       ],
     },

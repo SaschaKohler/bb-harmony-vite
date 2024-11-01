@@ -14,7 +14,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User2, Send, Loader2, Bot, MessageSquare, Flower } from "lucide-react";
 import { ClaudeConsultationService } from "@/lib/services/claudeConsultationService";
-import { useAuth } from "@/contexts/AuthContext";
 import { FlowerRecommendationView } from "./components";
 import { RecommendedFlower } from "@/types/bachFlowerTypes";
 
@@ -28,7 +27,6 @@ interface Message {
 }
 
 const TherapyConsultation = () => {
-  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
