@@ -69,8 +69,6 @@
 │   │   │   ├── UnifiedAuthPage.test.tsx
 │   │   │   └── UnifiedAuthPage.tsx
 │   │   ├── bach-flowers
-│   │   │   ├── FlowerRecommendations.tsx
-│   │   │   ├── RecommendationAssignmentDialog.tsx
 │   │   │   └── TherapeuticWizard.tsx
 │   │   ├── layout
 │   │   │   ├── AppSidebar.tsx
@@ -95,12 +93,14 @@
 │   │       ├── loading-spinner.tsx
 │   │       ├── popover.tsx
 │   │       ├── progress.tsx
+│   │       ├── scroll-area.tsx
 │   │       ├── select.tsx
 │   │       ├── separator.tsx
 │   │       ├── sheet.tsx
 │   │       ├── sidebar.tsx
 │   │       ├── simple-combobox.tsx
 │   │       ├── skeleton.tsx
+│   │       ├── slider.tsx
 │   │       ├── sonner.tsx
 │   │       ├── table.tsx
 │   │       ├── tabs.tsx
@@ -108,6 +108,8 @@
 │   │       ├── toast.tsx
 │   │       ├── toaster.tsx
 │   │       └── tooltip.tsx
+│   ├── config
+│   │   └── index.ts
 │   ├── contexts
 │   │   ├── AuthContext.test.tsx
 │   │   ├── AuthContext.tsx
@@ -137,7 +139,6 @@
 │   ├── pages
 │   │   ├── AuthPage.tsx
 │   │   ├── ProfilePage.tsx
-│   │   ├── TherapyConsultation.tsx
 │   │   ├── admin
 │   │   │   ├── components
 │   │   │   │   ├── BachFlowersList.tsx
@@ -145,6 +146,23 @@
 │   │   │   │   ├── SectorFormDialog.tsx
 │   │   │   │   └── SectorsList.tsx
 │   │   │   └── index.tsx
+│   │   ├── bachblueten-wizard
+│   │   │   ├── components
+│   │   │   │   ├── emotions-auswahl
+│   │   │   │   │   ├── emotion-card.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── symptome-auswahl
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── symptom-card.tsx
+│   │   │   │   └── wizard-content.tsx
+│   │   │   ├── context
+│   │   │   │   └── wizard-context.tsx
+│   │   │   ├── hooks
+│   │   │   │   ├── use-wizard-context.ts
+│   │   │   │   └── use-wizard-data.ts
+│   │   │   ├── index.tsx
+│   │   │   └── types
+│   │   │       └── index.ts
 │   │   ├── bachbluetenrad
 │   │   │   ├── components
 │   │   │   │   ├── blossom-grid
@@ -155,6 +173,7 @@
 │   │   │   │   │   └── index.tsx
 │   │   │   │   ├── harmony-wheel
 │   │   │   │   │   └── index.tsx
+│   │   │   │   ├── index.ts
 │   │   │   │   └── selected-blossoms
 │   │   │   │       └── index.tsx
 │   │   │   ├── hooks
@@ -170,11 +189,21 @@
 │   │   │   │   ├── ActiveClientsTable.tsx
 │   │   │   │   └── RecentSelectionsTable.tsx
 │   │   │   └── index.tsx
-│   │   └── flower-selections
+│   │   ├── flower-selections
+│   │   │   ├── components
+│   │   │   │   ├── FlowerSelectionDetails.tsx
+│   │   │   │   └── SelectionFilters.tsx
+│   │   │   └── index.tsx
+│   │   └── therapy-consultation
 │   │       ├── components
-│   │       │   ├── FlowerSelectionDetails.tsx
-│   │       │   └── SelectionFilters.tsx
-│   │       └── index.tsx
+│   │       │   ├── flower-recommendations
+│   │       │   │   ├── FlowerRecommendations.tsx
+│   │       │   │   └── RecommendationAssignmentDialog.tsx
+│   │       │   └── index.ts
+│   │       ├── hooks
+│   │       ├── index.tsx
+│   │       ├── types
+│   │       └── utils
 │   ├── routes
 │   │   └── index.tsx
 │   ├── test
@@ -190,4 +219,4 @@
 ├── tsconfig.node.json
 └── vite.config.ts
 
-37 directories, 153 files
+51 directories, 168 files

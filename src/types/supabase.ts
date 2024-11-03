@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           affirmation: string | null
           color: string | null
+          created_at: string | null
           description: string | null
           emotion_id: string | null
           id: string
@@ -20,10 +21,12 @@ export type Database = {
           name_german: string | null
           name_latin: string | null
           number: number | null
+          updated_at: string | null
         }
         Insert: {
           affirmation?: string | null
           color?: string | null
+          created_at?: string | null
           description?: string | null
           emotion_id?: string | null
           id?: string
@@ -31,10 +34,12 @@ export type Database = {
           name_german?: string | null
           name_latin?: string | null
           number?: number | null
+          updated_at?: string | null
         }
         Update: {
           affirmation?: string | null
           color?: string | null
+          created_at?: string | null
           description?: string | null
           emotion_id?: string | null
           id?: string
@@ -42,6 +47,7 @@ export type Database = {
           name_german?: string | null
           name_latin?: string | null
           number?: number | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -69,6 +75,7 @@ export type Database = {
           postal_code: string | null
           street: string | null
           therapist_id: string
+          updated_at: string | null
         }
         Insert: {
           address?: string | null
@@ -85,6 +92,7 @@ export type Database = {
           postal_code?: string | null
           street?: string | null
           therapist_id: string
+          updated_at?: string | null
         }
         Update: {
           address?: string | null
@@ -101,6 +109,7 @@ export type Database = {
           postal_code?: string | null
           street?: string | null
           therapist_id?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -119,6 +128,7 @@ export type Database = {
           description: string | null
           id: string
           name: string | null
+          updated_at: string | null
         }
         Insert: {
           color?: string | null
@@ -126,6 +136,7 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string | null
+          updated_at?: string | null
         }
         Update: {
           color?: string | null
@@ -133,6 +144,7 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -193,8 +205,48 @@ export type Database = {
           },
         ]
       }
+      flower_symptom_relations: {
+        Row: {
+          created_at: string | null
+          flower_id: string | null
+          id: string
+          is_primary: boolean | null
+          symptom_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          flower_id?: string | null
+          id?: string
+          is_primary?: boolean | null
+          symptom_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          flower_id?: string | null
+          id?: string
+          is_primary?: boolean | null
+          symptom_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flower_symptom_relations_flower_id_fkey"
+            columns: ["flower_id"]
+            isOneToOne: false
+            referencedRelation: "bach_flowers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flower_symptom_relations_symptom_id_fkey"
+            columns: ["symptom_id"]
+            isOneToOne: false
+            referencedRelation: "symptoms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inventory: {
         Row: {
+          created_at: string | null
           id: string
           item_name: string
           item_type: string
@@ -202,8 +254,10 @@ export type Database = {
           quantity: number
           therapist_id: string
           unit: string
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string | null
           id?: string
           item_name: string
           item_type: string
@@ -211,8 +265,10 @@ export type Database = {
           quantity: number
           therapist_id: string
           unit: string
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           id?: string
           item_name?: string
           item_type?: string
@@ -220,6 +276,7 @@ export type Database = {
           quantity?: number
           therapist_id?: string
           unit?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -233,28 +290,34 @@ export type Database = {
       }
       invoice_items: {
         Row: {
+          created_at: string | null
           description: string
           id: string
           invoice_id: string
           quantity: number
           total_price: number
           unit_price: number
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string | null
           description: string
           id?: string
           invoice_id: string
           quantity: number
           total_price: number
           unit_price: number
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           description?: string
           id?: string
           invoice_id?: string
           quantity?: number
           total_price?: number
           unit_price?: number
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -269,30 +332,36 @@ export type Database = {
       invoices: {
         Row: {
           client_id: string
+          created_at: string | null
           date: string
           id: string
           invoice_number: string
           status: string
           therapist_id: string
           total_amount: number
+          updated_at: string | null
         }
         Insert: {
           client_id: string
+          created_at?: string | null
           date: string
           id?: string
           invoice_number: string
           status: string
           therapist_id: string
           total_amount: number
+          updated_at?: string | null
         }
         Update: {
           client_id?: string
+          created_at?: string | null
           date?: string
           id?: string
           invoice_number?: string
           status?: string
           therapist_id?: string
           total_amount?: number
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -318,21 +387,62 @@ export type Database = {
           },
         ]
       }
-      selection_flowers: {
+      secondary_symptoms: {
         Row: {
-          flower_id: string
-          position: number
-          selection_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          primary_symptom_id: string | null
+          weight: number | null
         }
         Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          primary_symptom_id?: string | null
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          primary_symptom_id?: string | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "secondary_symptoms_primary_symptom_id_fkey"
+            columns: ["primary_symptom_id"]
+            isOneToOne: false
+            referencedRelation: "symptoms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      selection_flowers: {
+        Row: {
+          created_at: string | null
           flower_id: string
           position: number
           selection_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          flower_id: string
+          position: number
+          selection_id: string
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           flower_id?: string
           position?: number
           selection_id?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -351,6 +461,65 @@ export type Database = {
           },
         ]
       }
+      symptom_groups: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          emotion_category: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          emotion_category: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          emotion_category?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      symptoms: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          group_id: string | null
+          id: string
+          indication_type: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          group_id?: string | null
+          id?: string
+          indication_type?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          group_id?: string | null
+          id?: string
+          indication_type?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "symptoms_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "symptom_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           avatar_url: string | null
@@ -358,6 +527,7 @@ export type Database = {
           email: string
           id: string
           last_login: string | null
+          updated_at: string | null
           username: string
         }
         Insert: {
@@ -366,6 +536,7 @@ export type Database = {
           email: string
           id?: string
           last_login?: string | null
+          updated_at?: string | null
           username: string
         }
         Update: {
@@ -374,6 +545,7 @@ export type Database = {
           email?: string
           id?: string
           last_login?: string | null
+          updated_at?: string | null
           username?: string
         }
         Relationships: []
@@ -443,6 +615,12 @@ export type Database = {
           flower_count: number
           is_current: boolean
         }[]
+      }
+      get_symptom_id: {
+        Args: {
+          symptom_name: string
+        }
+        Returns: string
       }
       migrate_addresses: {
         Args: Record<PropertyKey, never>
