@@ -1,5 +1,3 @@
-// src/pages/bachblueten-wizard/components/wizard-content.tsx
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
@@ -45,22 +43,6 @@ export const WizardContent: React.FC = () => {
         return selectedFlowers.length >= 1 && selectedFlowers.length <= 7;
       default:
         return true;
-    }
-  };
-
-  // Render den aktuellen Schritt-Titel
-  const renderStepTitle = () => {
-    switch (currentStep) {
-      case "welcome":
-        return "Willkommen";
-      case "emotion-groups":
-        return "Gefühlsbereiche";
-      case "symptoms":
-        return "Symptome";
-      case "result":
-        return "Deine Empfehlung";
-      default:
-        return "";
     }
   };
 
@@ -167,7 +149,11 @@ export const WizardContent: React.FC = () => {
 
         {currentStep !== "result" && (
           <Button onClick={nextStep} disabled={!canProceed()}>
-            {currentStep === "symptoms" ? "Empfehlung anzeigen" : "Weiter"}
+            {currentStep === "flower-preview"
+              ? "Empfehlung erstellen"
+              : currentStep === "symptoms"
+                ? "Blüten anzeigen"
+                : "Weiter"}
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         )}

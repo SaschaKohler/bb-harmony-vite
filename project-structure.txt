@@ -151,6 +151,8 @@
 │   │   │   │   ├── emotions-auswahl
 │   │   │   │   │   ├── emotion-card.tsx
 │   │   │   │   │   └── index.tsx
+│   │   │   │   ├── flower-preview
+│   │   │   │   │   └── index.tsx
 │   │   │   │   ├── primary-symptoms
 │   │   │   │   │   └── index.tsx
 │   │   │   │   ├── secondary-symptoms
@@ -159,6 +161,8 @@
 │   │   │   │   │   ├── index.tsx
 │   │   │   │   │   └── symptom-card.tsx
 │   │   │   │   └── wizard-content.tsx
+│   │   │   ├── constants
+│   │   │   │   └── emotion-groups.ts
 │   │   │   ├── context
 │   │   │   │   └── wizard-context.tsx
 │   │   │   ├── hooks
@@ -223,4 +227,4 @@
 ├── tsconfig.node.json
 └── vite.config.ts
 
-53 directories, 170 files
+55 directories, 172 files
