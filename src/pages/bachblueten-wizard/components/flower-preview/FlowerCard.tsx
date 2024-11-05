@@ -52,6 +52,16 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
   onSelect,
 }) => {
   //
+  // In der FlowerCard-Komponente vor dem useMemo
+  console.log("FlowerCard Debug:", {
+    flowerId: flower.id,
+    flowerName: flower.name_german,
+    priority,
+    matchedSymptomsCount: matchedSymptoms.length,
+    symptomRelationsCount: flower.flower_symptom_relations.length,
+    matchedSymptoms,
+    flower_symptom_relations: flower.flower_symptom_relations,
+  });
   const groupedSymptoms = useMemo(() => {
     const emotionGroups = [
       ...new Set(matchedSymptoms.map((s) => s.emotion_category)),

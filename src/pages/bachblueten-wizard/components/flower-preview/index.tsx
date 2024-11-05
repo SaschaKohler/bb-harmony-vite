@@ -168,28 +168,6 @@ export const BluetenVorschau: React.FC = () => {
                     </div>
                   ),
                 )}
-                {/* {priorityGroups.mediumPriority.map( */}
-                {/*   ({ flower, scores, matchedSymptoms }) => ( */}
-                {/*     <FlowerCard */}
-                {/*       key={flower.id} */}
-                {/*       flower={flower} */}
-                {/*       scores={{ */}
-                {/*         primarySymptomMatch: scores.primarySymptomMatch, */}
-                {/*         emotionalGroupMatch: scores.emotionalGroupMatch, */}
-                {/*         symptomGroupCoverage: scores.symptomGroupCoverage, */}
-                {/*         total: scores.total, */}
-                {/*       }} */}
-                {/*       matchedSymptoms={matchedSymptoms} */}
-                {/*       priority="medium" */}
-                {/*       isSelected={selectedFlowers.includes(flower.id)} */}
-                {/*       onSelect={() => */}
-                {/*         selectedFlowers.includes(flower.id) */}
-                {/*           ? deselectFlower(flower.id) */}
-                {/*           : selectFlower(flower.id) */}
-                {/*       } */}
-                {/*     /> */}
-                {/*   ), */}
-                {/* )} */}
               </div>
             </section>
           )}
@@ -227,28 +205,6 @@ export const BluetenVorschau: React.FC = () => {
                     </div>
                   ),
                 )}
-                {/* {priorityGroups.additionalOptions.map( */}
-                {/*   ({ flower, scores, matchedSymptoms }) => ( */}
-                {/*     <FlowerCard */}
-                {/*       key={flower.id} */}
-                {/*       flower={flower} */}
-                {/*       scores={{ */}
-                {/*         primarySymptomMatch: scores.primarySymptomMatch, */}
-                {/*         emotionalGroupMatch: scores.emotionalGroupMatch, */}
-                {/*         symptomGroupCoverage: scores.symptomGroupCoverage, */}
-                {/*         total: scores.total, */}
-                {/*       }} */}
-                {/*       matchedSymptoms={matchedSymptoms} */}
-                {/*       priority="low" */}
-                {/*       isSelected={selectedFlowers.includes(flower.id)} */}
-                {/*       onSelect={() => */}
-                {/*         selectedFlowers.includes(flower.id) */}
-                {/*           ? deselectFlower(flower.id) */}
-                {/*           : selectFlower(flower.id) */}
-                {/*       } */}
-                {/*     /> */}
-                {/*   ), */}
-                {/* )} */}
               </div>
             </section>
           )}
