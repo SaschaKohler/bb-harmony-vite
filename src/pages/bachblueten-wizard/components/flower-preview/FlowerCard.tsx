@@ -11,13 +11,6 @@ import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EMOTION_GROUPS } from "../../constants/emotion-groups";
 
-// interface FlowerScore {
-//   primarySymptomMatch: number;
-//   emotionalGroupMatch: number;
-//   symptomGroupCoverage: number;
-//   total: number;
-// }
-
 interface MatchedSymptom {
   id: string;
   name: string;
@@ -63,43 +56,6 @@ interface FlowerCardProps {
   isSelected: boolean;
   onSelect: (event: React.MouseEvent) => void;
 }
-
-// interface FlowerCardProps {
-//   flower: {
-//     id: string;
-//     name_german: string;
-//     name_latin: string;
-//     name_english: string;
-//     description?: string | null;
-//   };
-//   scores: {
-//     primarySymptomMatch: number;
-//     secondarySymptomMatch: number;
-//     emotionalGroupMatch: number;
-//     symptomGroupCoverage: number;
-//     total: number;
-//   };
-//   matchedSymptoms: {
-//     primary: Array<{
-//       id: string;
-//       name: string;
-//       emotion_category: string;
-//       description?: string;
-//     }>;
-//     secondary: Array<{
-//       symptom: {
-//         id: string;
-//         name: string;
-//         emotion_category: string;
-//         description?: string;
-//       };
-//       weight: number;
-//     }>;
-//   };
-//   priority: "high" | "medium" | "low";
-//   isSelected: boolean;
-//   onSelect: (event: React.MouseEvent) => void;
-// }
 
 export const FlowerCard: React.FC<FlowerCardProps> = ({
   flower,

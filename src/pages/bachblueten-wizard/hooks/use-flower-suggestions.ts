@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { Database } from "@/types/supabase";
-
+import { ScoringParameters } from "@/types/bachblueten/scoring-types";
 // export type BachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
 // export type Symptom = Database["public"]["Tables"]["symptoms"]["Row"];
 // import {
@@ -84,7 +84,18 @@ export function useFlowerSuggestions(
   symptoms: Symptom[],
   selectedEmotionGroups: string[],
   selectedSymptoms: string[],
+  parameters?: ScoringParameters, // Optional für Tests
 ): SuggestionResult {
+  const {
+    primaryWeight = 3.0,
+    secondaryWeight = 0.6,
+    emotionalGroupWeight = 2.0,
+    coverageWeight = 1.0,
+  } = parameters || {};
+
+  // Nutze die Parameter in deinen Berechnungen
+  const primarySymptomScore = primaryMatches.length * primaryWeight;
+
   const calculateScores = useCallback(() => {
     // Return empty result if data is missing
     if (!bachFlowers?.length || !symptoms?.length || !selectedSymptoms.length) {
