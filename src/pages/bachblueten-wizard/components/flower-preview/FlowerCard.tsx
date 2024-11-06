@@ -6,16 +6,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { FlowerScore } from "../../hooks/use-flower-suggestions";
 import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EMOTION_GROUPS } from "../../constants/emotion-groups";
 
-interface FlowerScore {
-  primarySymptomMatch: number;
-  emotionalGroupMatch: number;
-  symptomGroupCoverage: number;
-  total: number;
-}
+// interface FlowerScore {
+//   primarySymptomMatch: number;
+//   emotionalGroupMatch: number;
+//   symptomGroupCoverage: number;
+//   total: number;
+// }
 
 interface MatchedSymptom {
   id: string;
@@ -23,25 +24,82 @@ interface MatchedSymptom {
   emotion_category: string;
   description?: string;
 }
-
 interface FlowerCardProps {
   flower: {
     id: string;
     name_german: string;
-    name_latin: string;
+    name_latin: string | null;
     name_english: string;
-    description?: string | null;
-    flower_symptom_relations: Array<{
+    flower_symptom_relations?: Array<{
       symptom_id: string;
       is_primary: boolean;
     }>;
   };
-  scores: FlowerScore;
-  matchedSymptoms: MatchedSymptom[];
+  scores: {
+    primarySymptomMatch: number;
+    secondarySymptomMatch: number;
+    emotionalGroupMatch: number;
+    symptomGroupCoverage: number;
+    total: number;
+  };
+  matchedSymptoms: {
+    primary: Array<{
+      id: string;
+      name: string;
+      emotion_category: string;
+      description?: string;
+    }>;
+    secondary: Array<{
+      symptom: {
+        id: string;
+        name: string;
+        emotion_category: string;
+        description?: string;
+      };
+      weight: number;
+    }>;
+  };
   priority: "high" | "medium" | "low";
   isSelected: boolean;
-  onSelect: () => void;
+  onSelect: (event: React.MouseEvent) => void;
 }
+
+// interface FlowerCardProps {
+//   flower: {
+//     id: string;
+//     name_german: string;
+//     name_latin: string;
+//     name_english: string;
+//     description?: string | null;
+//   };
+//   scores: {
+//     primarySymptomMatch: number;
+//     secondarySymptomMatch: number;
+//     emotionalGroupMatch: number;
+//     symptomGroupCoverage: number;
+//     total: number;
+//   };
+//   matchedSymptoms: {
+//     primary: Array<{
+//       id: string;
+//       name: string;
+//       emotion_category: string;
+//       description?: string;
+//     }>;
+//     secondary: Array<{
+//       symptom: {
+//         id: string;
+//         name: string;
+//         emotion_category: string;
+//         description?: string;
+//       };
+//       weight: number;
+//     }>;
+//   };
+//   priority: "high" | "medium" | "low";
+//   isSelected: boolean;
+//   onSelect: (event: React.MouseEvent) => void;
+// }
 
 export const FlowerCard: React.FC<FlowerCardProps> = ({
   flower,
@@ -57,69 +115,50 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
     flowerId: flower.id,
     flowerName: flower.name_german,
     priority,
-    matchedSymptomsCount: matchedSymptoms.length,
-    symptomRelationsCount: flower.flower_symptom_relations.length,
-    matchedSymptoms,
-    flower_symptom_relations: flower.flower_symptom_relations,
+    matchedSymptomsCount: {
+      primary: matchedSymptoms.primary.length,
+      secondary: matchedSymptoms.secondary.length,
+    },
+    symptomRelationsCount: flower.flower_symptom_relations?.length || 0,
+    matchedSymptoms: {
+      primary: matchedSymptoms.primary.map((s) => s.name),
+      secondary: matchedSymptoms.secondary.map((s) => s.symptom.name),
+    },
+    flower_symptom_relations: flower.flower_symptom_relations?.map((rel) => ({
+      symptom_id: rel.symptom_id,
+      is_primary: rel.is_primary,
+    })),
   });
+
   const groupedSymptoms = useMemo(() => {
-    const emotionGroups = [
-      ...new Set(matchedSymptoms.map((s) => s.emotion_category)),
-    ];
+    // Sammle alle einzigartigen Emotionsgruppen
+    const emotionGroups = new Set([
+      ...matchedSymptoms.primary.map((s) => s.emotion_category),
+      ...matchedSymptoms.secondary.map((s) => s.symptom.emotion_category),
+    ]);
 
-    return emotionGroups
-      .map((groupName) => {
-        const groupSymptoms = matchedSymptoms.filter(
-          (s) => s.emotion_category === groupName,
-        );
-
-        // Bei medium/low priority nur sekundäre Symptome berücksichtigen
-        if (priority !== "high") {
-          const onlySecondarySymptoms = groupSymptoms.filter((symptom) =>
-            flower.flower_symptom_relations.some(
-              (rel) => rel.symptom_id === symptom.id && !rel.is_primary,
-            ),
-          );
-
-          return {
-            groupName,
-            primarySymptoms: [],
-            secondarySymptoms: onlySecondarySymptoms,
-          };
-        }
-
-        // Bei high priority normale Aufteilung
-        const primarySymptoms = groupSymptoms.filter((symptom) =>
-          flower.flower_symptom_relations.some(
-            (rel) => rel.symptom_id === symptom.id && rel.is_primary,
-          ),
-        );
-
-        const secondarySymptoms = groupSymptoms.filter((symptom) =>
-          flower.flower_symptom_relations.some(
-            (rel) => rel.symptom_id === symptom.id && !rel.is_primary,
-          ),
-        );
-
-        return {
-          groupName,
-          primarySymptoms,
-          secondarySymptoms,
-        };
-      })
-      .filter((group) =>
-        // Filtere Gruppen ohne Symptome aus
-        priority === "high"
-          ? group.primarySymptoms.length > 0 ||
-            group.secondarySymptoms.length > 0
-          : group.secondarySymptoms.length > 0,
-      );
-  }, [matchedSymptoms, flower.flower_symptom_relations, priority]);
+    return Array.from(emotionGroups).map((groupName) => {
+      return {
+        groupName,
+        primarySymptoms:
+          priority === "high"
+            ? matchedSymptoms.primary.filter(
+                (s) => s.emotion_category === groupName,
+              )
+            : [],
+        secondarySymptoms: matchedSymptoms.secondary
+          .filter((s) => s.symptom.emotion_category === groupName)
+          .sort((a, b) => b.weight - a.weight),
+      };
+    });
+  }, [matchedSymptoms, priority]);
 
   return (
     <Card
       className={cn(
-        "relative p-4 cursor-pointer transition-all duration-200",
+        "p-4 cursor-pointer transition-all duration-200",
+        "relative h-full", // Volle Höhe
+        "flex flex-col", // Flexbox für gleichmäßige Verteilung
         "hover:shadow-lg hover:-translate-y-0.5",
         isSelected && "ring-2 ring-primary shadow-md bg-primary/5",
       )}
@@ -178,7 +217,7 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
                     <div className="flex flex-wrap gap-1">
                       {primarySymptoms.map((symptom) => (
                         <Badge
-                          key={symptom.id}
+                          key={`primary-${symptom.id}`}
                           variant="outline"
                           className="text-xs"
                           style={{
@@ -202,9 +241,9 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
                         : "Unterstützende Wirkung:"}
                     </p>
                     <div className="flex flex-wrap gap-1">
-                      {secondarySymptoms.map((symptom) => (
+                      {secondarySymptoms.map(({ symptom, weight }) => (
                         <Badge
-                          key={symptom.id}
+                          key={`secondary-${symptom.id}`}
                           variant="outline"
                           className="text-xs opacity-80"
                           style={{

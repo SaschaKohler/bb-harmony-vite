@@ -1,12 +1,7 @@
 import { createContext, useReducer, ReactNode } from "react";
 import { EmotionGroupName, EMOTION_GROUPS } from "../constants/emotion-groups";
 
-import {
-  WizardContextType,
-  WizardState,
-  WizardSchritt,
-  DBBachFlower,
-} from "../types";
+import { WizardContextType, WizardState, WizardSchritt } from "../types";
 
 const initialState: WizardState = {
   currentStep: "welcome",
@@ -32,7 +27,7 @@ type WizardAction =
 const NEXT_STEPS: Record<WizardSchritt, WizardSchritt> = {
   welcome: "emotion-groups",
   "emotion-groups": "symptoms",
-  symptoms: "flower-preview", // Hier fehlte der flower-preview Schritt
+  symptoms: "flower-preview",
   "flower-preview": "result",
   result: "result",
 };
@@ -137,54 +132,6 @@ export const WizardContext = createContext<WizardContextType | undefined>(
 
 export function WizardProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(wizardReducer, initialState);
-
-  // const calculateRecommendation = (bachFlowers: DBBachFlower[]) => {
-  //   // Intensität summieren
-  //   const intensitaetGesamt = Object.values(state.emotionIntensities).reduce(
-  //     (sum, intensity) => sum + intensity,
-  //     0,
-  //   );
-  //
-  //   // Blüten basierend auf Emotionen und Symptomen filtern
-  //   const relevanteBlueten = bachFlowers.filter(
-  //     (blume) =>
-  //       state.selectedEmotions.includes(blume.emotion_id) ||
-  //       state.selectedSymptoms.some((symptomId) =>
-  //         blume.description?.includes(symptomId.split("-")[1]),
-  //       ),
-  //   );
-  //
-  //   // Blüten nach Intensität und Anzahl der zugehörigen Symptome sortieren
-  //   const sortedBluten = relevanteBlueten.sort((a, b) => {
-  //     const intensityA = state.selectedEmotions.includes(a.emotion_id)
-  //       ? state.emotionIntensities[a.emotion_id]
-  //       : 0;
-  //     const intensityB = state.selectedEmotions.includes(b.emotion_id)
-  //       ? state.emotionIntensities[b.emotion_id]
-  //       : 0;
-  //     const symptomCountA = state.selectedSymptoms.filter((id) =>
-  //       a.description?.includes(id.split("-")[1]),
-  //     ).length;
-  //     const symptomCountB = state.selectedSymptoms.filter((id) =>
-  //       b.description?.includes(id.split("-")[1]),
-  //     ).length;
-  //
-  //     return intensityB + symptomCountB - (intensityA + symptomCountA);
-  //   });
-  //
-  //   // Top 5-7 Blüten auswählen
-  //   const empfohleneBluten = sortedBluten.slice(
-  //     0,
-  //     Math.min(sortedBluten.length, 7),
-  //   );
-  //
-  //   dispatch({ type: "SET_EMPFOHLENE_BLUTEN", empfohleneBluten });
-  //   dispatch({ type: "SET_INTENSITAET_GESAMT", intensitaetGesamt });
-  //   dispatch({
-  //     type: "SET_AUSGEWAEHLTE_BLUETEN_ANZAHL",
-  //     ausgewaehlteBluetenAnzahl: empfohleneBluten.length,
-  //   });
-  // };
 
   const value: WizardContextType = {
     ...state,

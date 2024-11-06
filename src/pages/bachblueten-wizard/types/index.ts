@@ -46,8 +46,8 @@ export interface WizardState {
   selectedSecondarySymptoms: string[];
   selectedFlowers: string[]; // Neu
   symptomWeights: Record<string, number>;
-  empfohleneBluten: string[];
-  blutenCount: number;
+  // empfohleneBluten: string[];
+  // blutenCount: number;
 }
 
 export interface WizardContextType extends WizardState {
