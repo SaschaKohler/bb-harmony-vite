@@ -7,6 +7,7 @@ import { SymptomeAuswahl } from "./symptome-auswahl";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@radix-ui/react-progress";
 import { BluetenVorschau } from "./flower-preview";
+import { ResultStep } from "./result/ResultStep";
 
 const STEPS = [
   { id: "welcome", title: "Willkommen" },
@@ -113,7 +114,7 @@ export const WizardContent: React.FC = () => {
       case "flower-preview":
         return <BluetenVorschau />;
       case "result":
-        return <div>Ergebnis</div>;
+        return <ResultStep />;
     }
   };
 

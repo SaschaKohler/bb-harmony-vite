@@ -128,7 +128,12 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
       )}
 
       {/* Blütenbild */}
-      <div className="relative aspect-square rounded-lg overflow-hidden">
+      <div
+        className={cn(
+          "relative aspect-auto rounded-lg overflow-hidden",
+          "h-32 sm:h-48 md:h-56 lg:h-64 xl:h-72 2xl:h-80",
+        )}
+      >
         <img
           src={`/images/blossoms/${flower.name_english.toLowerCase().replace(/\s+/g, "_")}.png`}
           alt={flower.name_german}

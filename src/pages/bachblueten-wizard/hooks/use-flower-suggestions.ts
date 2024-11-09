@@ -1,13 +1,10 @@
-import { useCallback, useMemo } from "react";
-import { Database } from "@/types/supabase";
-import { ScoringParameters } from "@/types/bachblueten/scoring-types";
-// export type BachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
-// export type Symptom = Database["public"]["Tables"]["symptoms"]["Row"];
-// import {
-//   FlowerScore,
-//   SuggestionResult,
-//   WeightedSymptom,
-// } from "../types/flower-suggestions";
+import { useCallback } from "react";
+import type {
+  BachFlower,
+  Symptom,
+  ScoringParameters,
+  SuggestionResult,
+} from "@/types/bachblueten";
 // Typen
 interface WeightedSymptom {
   symptom: Symptom;
@@ -19,38 +16,6 @@ interface BachFlowerRelation {
   is_primary: boolean;
 }
 
-interface BachFlower {
-  id: string;
-  name_german: string;
-  name_latin: string | null;
-  name_english: string;
-  affirmation: string | null;
-  color: string | null;
-  created_at: string | null;
-  description: string | null;
-  emotion_id: string | null;
-  number: number | null;
-  updated_at: string | null;
-  flower_symptom_relations: BachFlowerRelation[];
-}
-
-interface SecondarySymptomDefinition {
-  id: string;
-  primary_symptom_id: string;
-  weight: number;
-  name: string;
-  description?: string;
-}
-
-interface Symptom {
-  id: string;
-  name: string;
-  description: string | null;
-  group_id: string | null;
-  emotion_category: string;
-  indication_type: string;
-  secondary_symptoms?: SecondarySymptomDefinition[];
-}
 interface FlowerScore {
   flower: BachFlower;
   scores: {
@@ -66,19 +31,6 @@ interface FlowerScore {
   };
 }
 
-interface SuggestionResult {
-  priorityGroups: {
-    highPriority: FlowerScore[];
-    mediumPriority: FlowerScore[];
-    additionalOptions: FlowerScore[];
-  };
-  statistics: {
-    totalMatches: number;
-    averageScore: number;
-    coveragePerGroup: Record<string, number>;
-  };
-}
-
 export function useFlowerSuggestions(
   bachFlowers: BachFlower[],
   symptoms: Symptom[],
@@ -86,18 +38,17 @@ export function useFlowerSuggestions(
   selectedSymptoms: string[],
   parameters?: ScoringParameters, // Optional für Tests
 ): SuggestionResult {
-  const {
-    primaryWeight = 3.0,
-    secondaryWeight = 0.6,
-    emotionalGroupWeight = 2.0,
-    coverageWeight = 1.0,
-  } = parameters || {};
-
   // Nutze die Parameter in deinen Berechnungen
-  const primarySymptomScore = primaryMatches.length * primaryWeight;
 
   const calculateScores = useCallback(() => {
     // Return empty result if data is missing
+    const {
+      primaryWeight = 3.0,
+      secondaryWeight = 0.6,
+      emotionalGroupWeight = 2.0,
+      coverageWeight = 1.0,
+    } = parameters || {};
+
     if (!bachFlowers?.length || !symptoms?.length || !selectedSymptoms.length) {
       return {
         priorityGroups: {
@@ -150,10 +101,12 @@ export function useFlowerSuggestions(
         .filter((match): match is WeightedSymptom => match !== null);
 
       // Berechne Scores
-      const primarySymptomScore = primaryMatches.length * 3.0;
+      // const primarySymptomScore = primaryMatches.length * 3.0;
+
+      const primarySymptomScore = primaryMatches.length * primaryWeight;
 
       const secondarySymptomScore = secondaryMatches.reduce(
-        (sum, { weight }) => sum + weight,
+        (sum, { weight }) => sum + weight * secondaryWeight,
         0,
       );
 
@@ -167,10 +120,11 @@ export function useFlowerSuggestions(
         (group) => selectedEmotionGroups.includes(group),
       ).length;
 
-      const emotionalGroupScore = emotionalGroupMatch * 2.0;
+      // const emotionalGroupScore = emotionalGroupMatch * 2.0;
+      const emotionalGroupScore = emotionalGroupMatch * emotionalGroupWeight;
 
       // Berechne Symptomgruppen-Abdeckung
-      const symptomGroupCoverage = matchedEmotionGroups.size;
+      const symptomGroupCoverage = matchedEmotionGroups.size * coverageWeight;
 
       // Berechne Gesamtscore
       const totalScore =

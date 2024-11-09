@@ -1,3 +1,6 @@
+import { BachFlower } from "../bachFlowerTypes";
+import { Symptom, WeightedSymptom } from "./symptom-types";
+
 export interface FlowerScore {
   flower: BachFlower;
   scores: {

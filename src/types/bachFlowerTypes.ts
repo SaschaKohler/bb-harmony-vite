@@ -31,15 +31,7 @@ export interface WizardAction {
   payload?: any;
 }
 export interface RecommendedFlower {
-  flower: {
-    id: string;
-    number: number;
-    name_german: string | null;
-    name_english: string;
-    affirmation: string | null;
-    description: string | null;
-    emotion_id: string | null;
-  };
+  flower: BachFlower;
   drops: number;
   reasoning: string;
 }

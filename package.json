@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "preview": "vite preview",
     "test:scoring": "vitest src/pages/bachblueten-wizard/tests/scoring.test.ts",
+    "test:parameters": "tsx src/scripts/test-scoring-parameters.ts",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"
   },
