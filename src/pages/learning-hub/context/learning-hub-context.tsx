@@ -1,99 +1,139 @@
-import React, { createContext, useContext, useReducer, ReactNode } from "react";
-
-export type LessonStatus = "locked" | "available" | "in-progress" | "completed";
-
-export interface Lesson {
-  id: string;
-  moduleId: string;
-  title: string;
-  content: string;
-  status: LessonStatus;
-  progress: number;
-}
-
-interface LearningState {
-  completedLessons: string[];
-  lessonProgress: Record<string, number>;
-  currentLesson?: string;
-}
+import React, { createContext, useReducer, ReactNode, useEffect } from "react";
+import {
+  useUserProgress,
+  useLearningModules,
+} from "../hooks/use-learning-data";
+import type { LearningContextState, UserLessonProgress } from "../types";
+import { supabase } from "@/lib/supabaseClient";
 
 type LearningAction =
-  | { type: "START_LESSON"; lessonId: string }
-  | { type: "COMPLETE_LESSON"; lessonId: string }
-  | { type: "UPDATE_PROGRESS"; lessonId: string; progress: number };
+  | { type: "SET_CURRENT_MODULE"; moduleId: string }
+  | { type: "SET_CURRENT_LESSON"; lessonId: string }
+  | { type: "SET_CURRENT_PAGE"; page: number }
+  | { type: "UPDATE_PROGRESS"; progress: UserLessonProgress }
+  | { type: "SET_MODULES"; modules: any[] } // Type entsprechend anpassen
+  | { type: "SET_PROGRESS"; progress: Record<string, UserLessonProgress> }
+  | { type: "RESET_STATE" };
 
-const initialState: LearningState = {
-  completedLessons: [],
-  lessonProgress: {},
-  currentLesson: undefined,
+const initialState: LearningContextState = {
+  currentPage: 0,
+  modules: [],
+  userProgress: {},
 };
 
 function learningReducer(
-  state: LearningState,
+  state: LearningContextState,
   action: LearningAction,
-): LearningState {
+): LearningContextState {
   switch (action.type) {
-    case "START_LESSON":
+    case "SET_CURRENT_MODULE":
+      return {
+        ...state,
+        currentModule: action.moduleId,
+        currentLesson: undefined,
+        currentPage: 0,
+      };
+    case "SET_CURRENT_LESSON":
       return {
         ...state,
         currentLesson: action.lessonId,
-        lessonProgress: {
-          ...state.lessonProgress,
-          [action.lessonId]: state.lessonProgress[action.lessonId] || 0,
-        },
+        currentPage: 0,
       };
-    case "COMPLETE_LESSON":
+    case "SET_CURRENT_PAGE":
       return {
         ...state,
-        completedLessons: [...state.completedLessons, action.lessonId],
-        lessonProgress: {
-          ...state.lessonProgress,
-          [action.lessonId]: 100,
-        },
+        currentPage: action.page,
       };
     case "UPDATE_PROGRESS":
       return {
         ...state,
-        lessonProgress: {
-          ...state.lessonProgress,
-          [action.lessonId]: action.progress,
+        userProgress: {
+          ...state.userProgress,
+          [action.progress.lesson_id]: action.progress,
         },
       };
+    case "SET_MODULES":
+      return {
+        ...state,
+        modules: action.modules,
+      };
+    case "SET_PROGRESS":
+      return {
+        ...state,
+        userProgress: action.progress,
+      };
+    case "RESET_STATE":
+      return initialState;
     default:
       return state;
   }
 }
 
-interface LearningContextType {
-  state: LearningState;
-  startLesson: (lessonId: string) => void;
-  completeLesson: (lessonId: string) => void;
-  updateProgress: (lessonId: string, progress: number) => void;
+interface LearningContextValue {
+  state: LearningContextState;
+  setCurrentModule: (moduleId: string) => void;
+  setCurrentLesson: (lessonId: string) => void;
+  setCurrentPage: (page: number) => void;
+  updateProgress: (progress: UserLessonProgress) => void;
+  resetState: () => void;
 }
 
-export const LearningContext = createContext<LearningContextType | undefined>(
+export const LearningContext = createContext<LearningContextValue | undefined>(
   undefined,
 );
 
 export function LearningProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(learningReducer, initialState);
+  const [currentUser, setCurrentUser] = React.useState<any>(null);
 
-  const startLesson = (lessonId: string) => {
-    dispatch({ type: "START_LESSON", lessonId });
-  };
+  // Hole User-Daten asynchron
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setCurrentUser(user);
+    };
+    fetchUser();
+  }, []);
 
-  const completeLesson = (lessonId: string) => {
-    dispatch({ type: "COMPLETE_LESSON", lessonId });
-  };
+  const { data: modules } = useLearningModules();
+  const { data: progress } = useUserProgress(currentUser?.id);
 
-  const updateProgress = (lessonId: string, progress: number) => {
-    dispatch({ type: "UPDATE_PROGRESS", lessonId, progress });
+  useEffect(() => {
+    if (modules) {
+      dispatch({ type: "SET_MODULES", modules });
+    }
+  }, [modules]);
+
+  useEffect(() => {
+    if (progress) {
+      const progressMap = progress.reduce<Record<string, UserLessonProgress>>(
+        (acc, p) => ({
+          ...acc,
+          [p.lesson_id]: p,
+        }),
+        {},
+      );
+      dispatch({ type: "SET_PROGRESS", progress: progressMap });
+    }
+  }, [progress]);
+
+  const value = {
+    state,
+    setCurrentModule: (moduleId: string) =>
+      dispatch({ type: "SET_CURRENT_MODULE", moduleId }),
+    setCurrentLesson: (lessonId: string) =>
+      dispatch({ type: "SET_CURRENT_LESSON", lessonId }),
+    setCurrentPage: (page: number) =>
+      dispatch({ type: "SET_CURRENT_PAGE", page }),
+    updateProgress: (progress: UserLessonProgress) =>
+      dispatch({ type: "UPDATE_PROGRESS", progress }),
+    resetState: () => dispatch({ type: "RESET_STATE" }),
   };
 
   return (
-    <LearningContext.Provider
-      value={{ state, startLesson, completeLesson, updateProgress }}
-    >
+    <LearningContext.Provider value={value}>
       {children}
     </LearningContext.Provider>
   );

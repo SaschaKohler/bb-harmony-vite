@@ -1,3 +1,4 @@
+// src/pages/learning-hub/index.tsx
 import React from "react";
 import {
   Card,
@@ -8,44 +9,78 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { LearningProvider } from "./context/learning-hub-context";
-import { useLearning } from "./hooks/use-learning-hub-context";
-import LessonCard from "./components/LessonCard";
-import { modules } from "./data/modules";
 import { getIcon } from "./data/modules";
+import { useLearningContext } from "./hooks/use-learning-hub-context";
+import {
+  useLearningModules,
+  useLessonDetails,
+  useUserProgress,
+} from "./hooks/use-learning-data";
+import { useAuth } from "@/contexts/AuthContext";
+import LessonCard from "./components/LessonCard";
 
 const LearningHubContent = () => {
-  const { state } = useLearning();
-  const [activeModule, setActiveModule] = React.useState("basics");
+  const { user } = useAuth();
+  const [activeModule, setActiveModule] = React.useState<string | null>(null);
 
-  const calculateProgress = () => {
-    const totalLessons = modules.reduce(
-      (acc, module) => acc + module.lessons.length,
-      0,
+  const { data: modules = [], isLoading: isLoadingModules } =
+    useLearningModules();
+  const { data: lessons = [], isLoading: isLoadingLessons } =
+    useLessonDetails();
+  const { data: userProgress = [], isLoading: isLoadingProgress } =
+    useUserProgress(user?.id);
+
+  React.useEffect(() => {
+    if (modules && modules.length > 0 && !activeModule) {
+      setActiveModule(modules[0].id);
+    }
+  }, [modules]);
+
+  const calculateModuleProgress = (moduleId: string) => {
+    if (!moduleId || !lessons || !userProgress) return 0;
+
+    const moduleLessons = lessons.filter((l) => l.module_id === moduleId);
+    if (!moduleLessons || moduleLessons.length === 0) return 0;
+
+    const completedLessons = moduleLessons.filter((lesson) =>
+      userProgress.some(
+        (p) => p.lesson_id === lesson.id && p.status === "completed",
+      ),
     );
-    const completed = state.completedLessons.length;
-    return Math.round((completed / totalLessons) * 100);
+
+    return Math.round((completedLessons.length / moduleLessons.length) * 100);
   };
 
-  const handleLessonSelect = (moduleId: string, lessonId: string) => {
-    // Wird später implementiert für Navigation zur Lektion
-    console.log(`Selected lesson ${lessonId} from module ${moduleId}`);
-  };
+  if (isLoadingModules || isLoadingLessons || isLoadingProgress) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  if (!modules || modules.length === 0) {
+    return <div className="text-center py-8">Keine Module verfügbar.</div>;
+  }
 
   return (
     <div className="container mx-auto p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Bachblüten Lernprogramm</h1>
         <div className="flex items-center gap-4">
-          <Progress value={calculateProgress()} className="w-64" />
+          <Progress
+            value={activeModule ? calculateModuleProgress(activeModule) : 0}
+            className="w-64"
+          />
           <span className="text-sm text-gray-600">
-            {calculateProgress()}% abgeschlossen
+            {activeModule ? calculateModuleProgress(activeModule) : 0}% des
+            Moduls abgeschlossen
           </span>
         </div>
       </div>
 
       <Tabs
-        value={activeModule}
+        value={activeModule || modules[0]?.id}
         onValueChange={setActiveModule}
         className="space-y-4"
       >
@@ -74,16 +109,20 @@ const LearningHubContent = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
-                  {module.lessons.map((lesson) => (
-                    <LessonCard
-                      key={lesson.id}
-                      id={lesson.id}
-                      moduleId={module.id}
-                      title={lesson.title}
-                      status={lesson.status}
-                      onSelect={() => handleLessonSelect(module.id, lesson.id)}
-                    />
-                  ))}
+                  {lessons
+                    .filter((lesson) => lesson.module_id === module.id)
+                    .sort((a, b) => a.order_index - b.order_index)
+                    .map((lesson) => (
+                      <LessonCard
+                        key={lesson.id}
+                        lesson={lesson}
+                        status={calculateLessonStatus(
+                          lesson.id,
+                          userProgress,
+                          lessons,
+                        )}
+                      />
+                    ))}
                 </div>
               </CardContent>
             </Card>
@@ -94,10 +133,27 @@ const LearningHubContent = () => {
   );
 };
 
-const LearningHub = () => (
-  <LearningProvider>
-    <LearningHubContent />
-  </LearningProvider>
-);
+// Helper Funktion für den Lektions-Status
+const calculateLessonStatus = (
+  lessonId: string,
+  userProgress: any[], // Hier entsprechenden Type einsetzen
+  lessons: any[], // Hier entsprechenden Type einsetzen
+): "locked" | "available" | "in_progress" | "completed" => {
+  const progress = userProgress.find((p) => p.lesson_id === lessonId);
+  if (progress) return progress.status;
 
-export default LearningHub;
+  const lesson = lessons.find((l) => l.id === lessonId);
+  if (!lesson) return "locked";
+
+  if (!lesson.prerequisites?.length) return "available";
+
+  const allPrerequisitesCompleted = lesson.prerequisites.every((prereqId) =>
+    userProgress.some(
+      (p) => p.lesson_id === prereqId && p.status === "completed",
+    ),
+  );
+
+  return allPrerequisitesCompleted ? "available" : "locked";
+};
+
+export default LearningHubContent;

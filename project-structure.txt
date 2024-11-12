@@ -11,6 +11,47 @@
 ├── project-structure.txt
 ├── projektstruktur.txt
 ├── public
+│   └── images
+│       └── blossoms
+│           ├── agrimony.png
+│           ├── aspen.png
+│           ├── beech.png
+│           ├── centaury.png
+│           ├── cerato.png
+│           ├── cherry_plum.png
+│           ├── chestnut_bud.png
+│           ├── chicory.png
+│           ├── clematis.png
+│           ├── crab_apple.png
+│           ├── elm.png
+│           ├── gentian.png
+│           ├── gorse.png
+│           ├── heather.png
+│           ├── holly.png
+│           ├── honeysuckle.png
+│           ├── hornbeam.png
+│           ├── impatiens.png
+│           ├── larch.png
+│           ├── mimulus.png
+│           ├── mustard.png
+│           ├── oak.png
+│           ├── olive.png
+│           ├── pine.png
+│           ├── red_chestnut.png
+│           ├── rename_png.py
+│           ├── rock_rose.png
+│           ├── rock_water.png
+│           ├── scleranthus.png
+│           ├── star_of_bethlehem.png
+│           ├── sweet_chestnut.png
+│           ├── vervain.png
+│           ├── vine.png
+│           ├── walnut.png
+│           ├── water_violet.png
+│           ├── white_chestnut.png
+│           ├── wild_oat.png
+│           ├── wild_rose.png
+│           └── willow.png
 ├── src
 │   ├── App.css
 │   ├── App.tsx
@@ -114,6 +155,8 @@
 │   │   ├── AuthContext.test.tsx
 │   │   ├── AuthContext.tsx
 │   │   └── TherapyContext.tsx
+│   ├── data
+│   │   └── flower-transformations.ts
 │   ├── hooks
 │   │   ├── use-debounce.ts
 │   │   ├── use-local-storage.ts
@@ -152,9 +195,12 @@
 │   │   │   │   │   ├── emotion-card.tsx
 │   │   │   │   │   └── index.tsx
 │   │   │   │   ├── flower-preview
+│   │   │   │   │   ├── FlowerCard.tsx
 │   │   │   │   │   └── index.tsx
 │   │   │   │   ├── primary-symptoms
 │   │   │   │   │   └── index.tsx
+│   │   │   │   ├── result
+│   │   │   │   │   └── ResultStep.tsx
 │   │   │   │   ├── secondary-symptoms
 │   │   │   │   │   └── index.tsx
 │   │   │   │   ├── symptome-auswahl
@@ -166,11 +212,22 @@
 │   │   │   ├── context
 │   │   │   │   └── wizard-context.tsx
 │   │   │   ├── hooks
+│   │   │   │   ├── use-flower-suggestions.ts
 │   │   │   │   ├── use-wizard-context.ts
 │   │   │   │   └── use-wizard-data.ts
 │   │   │   ├── index.tsx
-│   │   │   └── types
-│   │   │       └── index.ts
+│   │   │   ├── tests
+│   │   │   │   ├── helpers.ts
+│   │   │   │   ├── parameter-tester.ts
+│   │   │   │   ├── run-tests.ts
+│   │   │   │   ├── scoring.test.ts
+│   │   │   │   ├── test-data.ts
+│   │   │   │   └── test-utils.ts
+│   │   │   ├── types
+│   │   │   │   ├── flower-suggestions.ts
+│   │   │   │   └── index.ts
+│   │   │   └── utils
+│   │   │       └── flower-scoring.ts
 │   │   ├── bachbluetenrad
 │   │   │   ├── components
 │   │   │   │   ├── blossom-grid
@@ -202,6 +259,19 @@
 │   │   │   │   ├── FlowerSelectionDetails.tsx
 │   │   │   │   └── SelectionFilters.tsx
 │   │   │   └── index.tsx
+│   │   ├── learning-hub
+│   │   │   ├── components
+│   │   │   │   ├── LessonCard.tsx
+│   │   │   │   └── lesson
+│   │   │   ├── context
+│   │   │   │   └── learning-hub-context.tsx
+│   │   │   ├── data
+│   │   │   │   └── modules.ts
+│   │   │   ├── hooks
+│   │   │   │   └── use-learning-hub-context.ts
+│   │   │   ├── index.tsx
+│   │   │   └── types
+│   │   │       └── index.ts
 │   │   └── therapy-consultation
 │   │       ├── components
 │   │       │   ├── flower-recommendations
@@ -214,10 +284,19 @@
 │   │       └── utils
 │   ├── routes
 │   │   └── index.tsx
+│   ├── scripts
+│   │   └── test-scoring-parameters.ts
 │   ├── test
 │   │   └── setup.ts
 │   ├── types
 │   │   ├── bachFlowerTypes.ts
+│   │   ├── bachblueten
+│   │   │   ├── emotion-types.ts
+│   │   │   ├── flower-types.ts
+│   │   │   ├── index.ts
+│   │   │   ├── scoring-types.ts
+│   │   │   ├── symptom-types.ts
+│   │   │   └── wizard-types.ts
 │   │   ├── supabase.js
 │   │   └── supabase.ts
 │   └── vite-env.d.ts
@@ -227,4 +306,4 @@
 ├── tsconfig.node.json
 └── vite.config.ts
 
-55 directories, 172 files
+70 directories, 236 files

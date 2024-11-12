@@ -22,6 +22,9 @@ const AdminPage = lazy(() => import("@/pages/admin"));
 const TherapyConsultation = lazy(() => import("@/pages/therapy-consultation"));
 const BachbluetenWizard = lazy(() => import("@/pages/bachblueten-wizard"));
 const LearningHub = lazy(() => import("@/pages/learning-hub"));
+const LessonDetailPage = lazy(
+  () => import("@/pages/learning-hub/components/lesson/LessonDetailPage"),
+);
 
 interface RouteConfig {
   path: string;
@@ -104,6 +107,11 @@ export const routes: RoutesConfig = {
           element: LearningHub,
           name: "Learning-Hub",
           icon: Brain,
+        },
+        {
+          path: "/learning-hub/:lessonId",
+          element: LessonDetailPage,
+          name: "Lektion",
         },
       ],
     },

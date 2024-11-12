@@ -1,0 +1,209 @@
+.
+├── App.css
+├── App.tsx
+├── components
+│   ├── ErrorBoundary.tsx
+│   ├── Layout.tsx
+│   ├── Sidebar.tsx
+│   ├── auth
+│   │   ├── AuthWrapper.tsx
+│   │   ├── LoginForm.tsx
+│   │   ├── ProtectedRoute.tsx
+│   │   ├── PublicRoute.tsx
+│   │   ├── RegistrationForm.tsx
+│   │   ├── UnifiedAuthPage.test.tsx
+│   │   └── UnifiedAuthPage.tsx
+│   ├── bach-flowers
+│   │   └── TherapeuticWizard.tsx
+│   ├── layout
+│   │   ├── AppSidebar.tsx
+│   │   ├── Layout.tsx
+│   │   └── TopNavigation.tsx
+│   ├── theme-provider.tsx
+│   ├── theme-toggle.tsx
+│   └── ui
+│       ├── alert-dialog.tsx
+│       ├── alert.tsx
+│       ├── badge.tsx
+│       ├── button.tsx
+│       ├── calendar.tsx
+│       ├── card.tsx
+│       ├── combobox.tsx
+│       ├── command.tsx
+│       ├── dialog.tsx
+│       ├── form.tsx
+│       ├── icons.tsx
+│       ├── input.tsx
+│       ├── label.tsx
+│       ├── loading-spinner.tsx
+│       ├── popover.tsx
+│       ├── progress.tsx
+│       ├── scroll-area.tsx
+│       ├── select.tsx
+│       ├── separator.tsx
+│       ├── sheet.tsx
+│       ├── sidebar.tsx
+│       ├── simple-combobox.tsx
+│       ├── skeleton.tsx
+│       ├── slider.tsx
+│       ├── sonner.tsx
+│       ├── table.tsx
+│       ├── tabs.tsx
+│       ├── textarea.tsx
+│       ├── toast.tsx
+│       ├── toaster.tsx
+│       └── tooltip.tsx
+├── config
+│   └── index.ts
+├── contexts
+│   ├── AuthContext.test.tsx
+│   ├── AuthContext.tsx
+│   └── TherapyContext.tsx
+├── data
+│   └── flower-transformations.ts
+├── hooks
+│   ├── use-debounce.ts
+│   ├── use-local-storage.ts
+│   ├── use-mobile.tsx
+│   ├── use-toast.ts
+│   ├── useBachFlowerService.ts
+│   ├── useHarmonyWheel.ts
+│   └── useTherapeuticDialogue.ts
+├── index.css
+├── lib
+│   ├── bachblueten
+│   │   ├── data.ts
+│   │   └── types.ts
+│   ├── harmonyWheel
+│   │   └── types.ts
+│   ├── services
+│   │   ├── claudeConsultationService.ts
+│   │   ├── claudeService.ts
+│   │   └── postal-service.ts
+│   ├── supabaseClient.ts
+│   └── utils.ts
+├── main.tsx
+├── pages
+│   ├── AuthPage.tsx
+│   ├── ProfilePage.tsx
+│   ├── admin
+│   │   ├── components
+│   │   │   ├── BachFlowersList.tsx
+│   │   │   ├── FlowerFormDialog.tsx
+│   │   │   ├── SectorFormDialog.tsx
+│   │   │   └── SectorsList.tsx
+│   │   └── index.tsx
+│   ├── bachblueten-wizard
+│   │   ├── components
+│   │   │   ├── emotions-auswahl
+│   │   │   │   ├── emotion-card.tsx
+│   │   │   │   └── index.tsx
+│   │   │   ├── flower-preview
+│   │   │   │   ├── FlowerCard.tsx
+│   │   │   │   └── index.tsx
+│   │   │   ├── primary-symptoms
+│   │   │   │   └── index.tsx
+│   │   │   ├── result
+│   │   │   │   └── ResultStep.tsx
+│   │   │   ├── secondary-symptoms
+│   │   │   │   └── index.tsx
+│   │   │   ├── symptome-auswahl
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── symptom-card.tsx
+│   │   │   └── wizard-content.tsx
+│   │   ├── constants
+│   │   │   └── emotion-groups.ts
+│   │   ├── context
+│   │   │   └── wizard-context.tsx
+│   │   ├── hooks
+│   │   │   ├── use-flower-suggestions.ts
+│   │   │   ├── use-wizard-context.ts
+│   │   │   └── use-wizard-data.ts
+│   │   ├── index.tsx
+│   │   ├── tests
+│   │   │   ├── helpers.ts
+│   │   │   ├── parameter-tester.ts
+│   │   │   ├── run-tests.ts
+│   │   │   ├── scoring.test.ts
+│   │   │   ├── test-data.ts
+│   │   │   └── test-utils.ts
+│   │   ├── types
+│   │   │   ├── flower-suggestions.ts
+│   │   │   └── index.ts
+│   │   └── utils
+│   │       └── flower-scoring.ts
+│   ├── bachbluetenrad
+│   │   ├── components
+│   │   │   ├── blossom-grid
+│   │   │   │   └── index.tsx
+│   │   │   ├── color-selector
+│   │   │   │   └── index.tsx
+│   │   │   ├── final-selection-dialog
+│   │   │   │   └── index.tsx
+│   │   │   ├── harmony-wheel
+│   │   │   │   └── index.tsx
+│   │   │   ├── index.ts
+│   │   │   └── selected-blossoms
+│   │   │       └── index.tsx
+│   │   ├── hooks
+│   │   ├── index.tsx
+│   │   ├── types
+│   │   └── utils
+│   ├── clients
+│   │   ├── components
+│   │   │   └── ClientFormDialog.tsx
+│   │   └── index.tsx
+│   ├── dashboard
+│   │   ├── components
+│   │   │   ├── ActiveClientsTable.tsx
+│   │   │   └── RecentSelectionsTable.tsx
+│   │   └── index.tsx
+│   ├── flower-selections
+│   │   ├── components
+│   │   │   ├── FlowerSelectionDetails.tsx
+│   │   │   └── SelectionFilters.tsx
+│   │   └── index.tsx
+│   ├── learning-hub
+│   │   ├── components
+│   │   │   ├── LessonCard.tsx
+│   │   │   └── lesson
+│   │   ├── context
+│   │   │   └── learning-hub-context.tsx
+│   │   ├── data
+│   │   │   └── modules.ts
+│   │   ├── hooks
+│   │   │   └── use-learning-hub-context.ts
+│   │   ├── index.tsx
+│   │   └── types
+│   │       └── index.ts
+│   └── therapy-consultation
+│       ├── components
+│       │   ├── flower-recommendations
+│       │   │   ├── FlowerRecommendations.tsx
+│       │   │   └── RecommendationAssignmentDialog.tsx
+│       │   └── index.ts
+│       ├── hooks
+│       ├── index.tsx
+│       ├── types
+│       └── utils
+├── project-structure.txt
+├── routes
+│   └── index.tsx
+├── scripts
+│   └── test-scoring-parameters.ts
+├── test
+│   └── setup.ts
+├── types
+│   ├── bachFlowerTypes.ts
+│   ├── bachblueten
+│   │   ├── emotion-types.ts
+│   │   ├── flower-types.ts
+│   │   ├── index.ts
+│   │   ├── scoring-types.ts
+│   │   ├── symptom-types.ts
+│   │   └── wizard-types.ts
+│   ├── supabase.js
+│   └── supabase.ts
+└── vite-env.d.ts
+
+64 directories, 142 files
