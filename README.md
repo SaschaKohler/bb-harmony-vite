@@ -158,4 +158,3 @@ Für Lizenzanfragen und Nutzungsrechte kontaktieren Sie bitte:
 [office@sascha-kohler.at]
 
 HINWEIS: Die Einsicht in diesen Code ist ausschließlich zu Demonstrationszwecken gestattet. Jegliche Nutzung, Implementierung oder Adaption bedarf der ausdrücklichen schriftlichen Genehmigung des Urhebers.
-Dieses Projekt ist unter der MIT Lizenz lizenziert. Siehe `LICENSE` Datei für Details.
