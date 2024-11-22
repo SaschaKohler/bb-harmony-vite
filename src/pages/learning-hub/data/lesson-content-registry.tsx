@@ -1,5 +1,3 @@
-// src/pages/learning-hub/data/lesson-content-registry.tsx
-import React from "react";
 import type {
   LessonContent,
   Question,
@@ -18,96 +16,82 @@ export const lessonsContent: Record<string, LessonContent> = {
     pages: [
       {
         id: "basics-history-1",
-        title: "Dr. Edward Bach",
+        title: "Dr. Edward Bach - Der Mensch",
         content: (
-          <>
-            <div className="space-y-4">
-              <p>
-                Dr. Edward Bach (1886-1936) war ein englischer Arzt,
-                Bakteriologe und Immunologe. Er entwickelte die
-                Bach-Blütentherapie in den 1930er Jahren.
-              </p>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">
-                  Wichtige Lebensstationen:
-                </h4>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>1886: Geboren in Moseley, Birmingham</li>
-                  <li>
-                    1912: Abschluss des Medizinstudiums am University College
-                    Hospital London
-                  </li>
-                  <li>
-                    1919: Beginn der Arbeit am London Homeopathic Hospital
-                  </li>
-                  <li>1930: Beginn der Entwicklung der Bach-Blütentherapie</li>
-                </ul>
-              </div>
+          <div className="space-y-4">
+            <p>
+              Dr. Edward Bach (1886-1936) war ein englischer Arzt, Bakteriologe
+              und Immunologe, dessen Weg von der konventionellen Medizin zur
+              Naturheilkunde das Gesundheitswesen nachhaltig prägte.
+            </p>
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Wichtige Lebensstationen:</h4>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>1886: Geboren in Moseley, Birmingham</li>
+                <li>
+                  1912: Abschluss des Medizinstudiums am University College
+                  Hospital London
+                </li>
+                <li>1919-1922: Tätigkeit am London Homeopathic Hospital</li>
+                <li>1930: Beginn der systematischen Blütenforschung</li>
+                <li>1936: Vollendung des 38-Blüten-Systems</li>
+              </ul>
             </div>
-          </>
+          </div>
         ),
       },
       {
         id: "basics-history-2",
-        title: "Entwicklung der Bach-Blütentherapie",
+        title: "Vom Schulmediziner zum Naturheiler",
         content: (
-          <>
-            <div className="space-y-4">
-              <p>
-                Die Entwicklung der Bach-Blütentherapie erfolgte in mehreren
-                Phasen:
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-semibold mb-2">
-                    Erste Phase (1928-1932)
-                  </h4>
-                  <ul className="list-disc pl-5">
-                    <li>Entdeckung der ersten drei Blüten</li>
-                    <li>Entwicklung der Sonnenmethode</li>
-                    <li>Erste Dokumentationen der Wirkungen</li>
-                  </ul>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-semibold mb-2">
-                    Zweite Phase (1932-1935)
-                  </h4>
-                  <ul className="list-disc pl-5">
-                    <li>Entdeckung weiterer Blüten</li>
-                    <li>Entwicklung der Kochmethode</li>
-                    <li>Systematisierung der Therapie</li>
-                  </ul>
-                </div>
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold">Der wissenschaftliche Weg</h3>
+            <div className="grid gap-4">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">
+                  Bakteriologische Forschung
+                </h4>
+                <p>
+                  Als anerkannter Bakteriologe entdeckte Bach sieben
+                  verschiedene Darmbakteriengruppen und ihre Verbindung zu
+                  chronischen Krankheiten. Diese "Bach-Nosoden" waren sein
+                  erster Schritt in Richtung ganzheitlicher Behandlung.
+                </p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Schlüsselerkenntnisse</h4>
+                <ul className="list-disc pl-5">
+                  <li>Zusammenhang zwischen Persönlichkeit und Krankheit</li>
+                  <li>Individualität der Krankheitsverarbeitung</li>
+                  <li>Bedeutung der emotionalen Balance</li>
+                </ul>
               </div>
             </div>
-          </>
+          </div>
         ),
       },
       {
         id: "basics-history-3",
-        title: "Die Herstellungsmethoden",
+        title: "Grundlagen der Bach-Blütentherapie",
         content: (
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">
-              Traditionelle Herstellungsverfahren
-            </h3>
+            <div className="bg-yellow-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Philosophische Basis</h4>
+              <p className="italic mb-4">
+                "Krankheit ist keine Grausamkeit, auch keine Strafe, sondern
+                lediglich ein Korrektiv, ein Instrument, dessen sich unsere
+                Seele bedient."
+              </p>
+            </div>
             <div className="grid gap-4">
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Die Sonnenmethode</h4>
-                <p>
-                  Bei der Sonnenmethode werden frisch gepflückte Blüten in einer
-                  Glasschale mit Quellwasser für etwa drei Stunden in die Sonne
-                  gelegt. Die Sonnenenergie überträgt dabei die
-                  Schwingungsmuster der Blüten auf das Wasser.
-                </p>
-              </div>
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Die Kochmethode</h4>
-                <p>
-                  Bei der Kochmethode werden die Pflanzenteile in Quellwasser
-                  für 30 Minuten gekocht. Diese Methode wird vor allem bei
-                  Bäumen und holzigen Pflanzen angewendet.
-                </p>
+                <h4 className="font-semibold mb-2">Kernprinzipien:</h4>
+                <ul className="list-disc pl-5">
+                  <li>Einheit von Körper und Seele</li>
+                  <li>Individualität der Behandlung</li>
+                  <li>Heilkraft der Natur</li>
+                  <li>Prävention durch emotionale Balance</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -115,58 +99,61 @@ export const lessonsContent: Record<string, LessonContent> = {
       },
       {
         id: "basics-history-4",
-        title: "Der Weg zur Blütentherapie",
+        title: "Entwicklung des Blütensystems",
         content: (
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">
-              Von der Schulmedizin zur Naturheilkunde
-            </h3>
-            <p>
-              Dr. Bach's Weg zur Blütentherapie war geprägt von seiner
-              wachsenden Unzufriedenheit mit der konventionellen Medizin. Als
-              erfolgreicher Chirurg und Bakteriologe beobachtete er, dass
-              Patienten mit gleichen Krankheitssymptomen oft unterschiedlich auf
-              die gleiche Behandlung reagierten.
-            </p>
-            <div className="bg-amber-50 p-4 rounded-lg">
-              <h4 className="font-semibold mb-2">Wichtige Erkenntnisse:</h4>
-              <ul className="list-disc pl-5">
-                <li>Jeder Patient ist einzigartig</li>
-                <li>Die Persönlichkeit beeinflusst den Heilungsprozess</li>
-                <li>Emotionale Harmonie führt zu körperlicher Gesundheit</li>
-                <li>Die Natur bietet sanfte Heilmittel</li>
-              </ul>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-purple-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Phase 1 (1928-1932)</h4>
+                <ul className="list-disc pl-5">
+                  <li>
+                    Entdeckung der ersten drei Blüten:
+                    <ul className="pl-5">
+                      <li>Impatiens - Ungeduld</li>
+                      <li>Mimulus - Bekannte Ängste</li>
+                      <li>Clematis - Realitätsferne</li>
+                    </ul>
+                  </li>
+                  <li>Entwicklung der Sonnenmethode</li>
+                </ul>
+              </div>
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Phase 2 (1932-1935)</h4>
+                <ul className="list-disc pl-5">
+                  <li>Entwicklung der Kochmethode</li>
+                  <li>Systematische Erforschung weiterer Blüten</li>
+                  <li>Kategorisierung der emotionalen Zustände</li>
+                </ul>
+              </div>
             </div>
           </div>
         ),
       },
       {
         id: "basics-history-5",
-        title: "Die Ursprünge der Forschung",
+        title: "Herstellungsmethoden",
         content: (
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">Erste Forschungsarbeiten</h3>
             <div className="grid gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">
-                  Bakteriologische Forschung
-                </h4>
+              <div className="bg-yellow-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Die Sonnenmethode</h4>
                 <p>
-                  Als Bakteriologe am London Homeopathic Hospital entdeckte Bach
-                  sieben verschiedene Darmbakteriengruppen, die mit spezifischen
-                  chronischen Krankheitszuständen in Verbindung standen. Diese
-                  "Bach-Nosoden" wurden in der Homöopathie verwendet.
+                  Für zarte Blüten: Dreistündige Sonnenexposition in Quellwasser
                 </p>
+                <ul className="list-disc pl-5 mt-2">
+                  <li>Natürliche Energieübertragung</li>
+                  <li>Verwendung von Morgentau</li>
+                  <li>Glasschalen als Medium</li>
+                </ul>
               </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">
-                  Verbindung zur Homöopathie
-                </h4>
-                <p>
-                  Seine Arbeit mit Nosoden führte ihn zur Homöopathie und zu Dr.
-                  Samuel Hahnemann's Erkenntnissen über Persönlichkeitstypen und
-                  deren Einfluss auf Krankheit und Heilung.
-                </p>
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Die Kochmethode</h4>
+                <p>Für Bäume und holzige Pflanzen: 30-minütiges Kochen</p>
+                <ul className="list-disc pl-5 mt-2">
+                  <li>Verwendung junger Triebe</li>
+                  <li>Quellwasser als Basis</li>
+                  <li>Spezielle Zubereitung für Knospen</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -174,27 +161,22 @@ export const lessonsContent: Record<string, LessonContent> = {
       },
       {
         id: "basics-history-6",
-        title: "Die ersten Entdeckungen",
+        title: "Das vollständige System",
         content: (
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">Die ersten Blüten</h3>
-            <p>
-              1928 entdeckte Dr. Bach die ersten drei Blütenessenzen während
-              einer Wanderung in Wales. Diese Entdeckung markierte den Beginn
-              seiner systematischen Erforschung der Blütentherapie.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Impatiens</h4>
-                <p>Für Menschen mit Ungeduld und Reizbarkeit</p>
-              </div>
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Mimulus</h4>
-                <p>Für bekannte Ängste und Schüchternheit</p>
-              </div>
-              <div className="bg-red-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Clematis</h4>
-                <p>Für Tagträumerei und mangelnde Erdung</p>
+            <h3 className="text-xl font-bold">Die 38 Blütenessenzen</h3>
+            <div className="grid gap-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Die sieben Grundthemen:</h4>
+                <ul className="list-disc pl-5">
+                  <li>Angst und ihre Erscheinungsformen</li>
+                  <li>Unsicherheit in Entscheidungen</li>
+                  <li>Mangelnde Gegenwärtigkeit</li>
+                  <li>Einsamkeit und Isolation</li>
+                  <li>Überempfindlichkeit gegenüber Einflüssen</li>
+                  <li>Mutlosigkeit und Verzweiflung</li>
+                  <li>Übermäßige Sorge um andere</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -202,182 +184,53 @@ export const lessonsContent: Record<string, LessonContent> = {
       },
       {
         id: "basics-history-7",
-        title: "Die Vervollständigung des Systems",
+        title: "Wissenschaftliche Grundlagen",
         content: (
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">Die 38 Blütenessenzen</h3>
-            <p>
-              Zwischen 1928 und 1936 entwickelte Dr. Bach sein System von 38
-              Blütenessenzen. Jede Essenz wurde sorgfältig ausgewählt und
-              getestet, um spezifische emotionale Zustände anzusprechen.
-            </p>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold mb-2">Die sieben Grundzustände:</h4>
-              <ul className="list-disc pl-5">
-                <li>Angst</li>
-                <li>Unsicherheit</li>
-                <li>Mangelndes Interesse an der Gegenwart</li>
-                <li>Einsamkeit</li>
-                <li>Überempfindlichkeit</li>
-                <li>Verzweiflung</li>
-                <li>Übermäßige Sorge um andere</li>
-              </ul>
+            <div className="grid gap-4">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Wirkungsprinzipien</h4>
+                <ul className="list-disc pl-5">
+                  <li>Energetische Übertragung</li>
+                  <li>Informationsspeicherung im Wasser</li>
+                  <li>Resonanzprinzip mit emotionalen Zuständen</li>
+                </ul>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Moderne Forschung</h4>
+                <ul className="list-disc pl-5">
+                  <li>Klinische Beobachtungsstudien</li>
+                  <li>Dokumentierte Fallberichte</li>
+                  <li>Wissenschaftliche Evaluation der Wirksamkeit</li>
+                </ul>
+              </div>
             </div>
           </div>
         ),
       },
       {
         id: "basics-history-8",
-        title: "Die Notfallmischung",
+        title: "Moderne Anwendung und Bedeutung",
         content: (
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">Rescue Remedy</h3>
-            <p>
-              Eine besondere Entwicklung war die "Rescue Remedy" oder
-              "Notfalltropfen", eine Kombination aus fünf Blütenessenzen für
-              akute Stresssituationen.
-            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Zusammensetzung:</h4>
+                <h4 className="font-semibold mb-2">Aktuelle Einsatzgebiete:</h4>
                 <ul className="list-disc pl-5">
-                  <li>Star of Bethlehem - für Schock</li>
-                  <li>Rock Rose - für Panik und Terror</li>
-                  <li>Cherry Plum - für Kontrollverlustangst</li>
-                  <li>Clematis - für die Erdung</li>
-                  <li>Impatiens - für Anspannung</li>
-                </ul>
-              </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Anwendungsgebiete:</h4>
-                <ul className="list-disc pl-5">
-                  <li>Unfälle</li>
-                  <li>Schocksituationen</li>
-                  <li>Prüfungsangst</li>
-                  <li>Akuter Stress</li>
-                  <li>Emotionale Krisen</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        ),
-      },
-      {
-        id: "basics-history-9",
-        title: "Bach's Philosophie",
-        content: (
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">Grundlegende Prinzipien</h3>
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <p className="italic mb-4">
-                "Krankheit ist keine Grausamkeit, auch keine Strafe, sondern
-                lediglich ein Korrektiv, ein Instrument, dessen sich unsere
-                Seele bedient, um uns auf unsere Fehler hinzuweisen."
-              </p>
-              <p className="text-right">- Dr. Edward Bach</p>
-            </div>
-            <div className="grid gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Kernüberzeugungen:</h4>
-                <ul className="list-disc pl-5">
-                  <li>Die Einfachheit der Heilung</li>
-                  <li>Die Einheit von Körper und Seele</li>
-                  <li>Die Heilkraft der Natur</li>
-                  <li>Die Individualität jedes Menschen</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        ),
-      },
-      {
-        id: "basics-history-10",
-        title: "Verbreitung und Anerkennung",
-        content: (
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">Weltweite Entwicklung</h3>
-            <div className="grid gap-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Wichtige Meilensteine:</h4>
-                <ul className="list-disc pl-5">
-                  <li>1936: Gründung des Bach Centre in Mount Vernon</li>
-                  <li>1941: Erste offizielle Anerkennung in England</li>
-                  <li>1976: Aufnahme in das britische Arzneibuch</li>
-                  <li>1980er: Internationale Verbreitung</li>
-                </ul>
-              </div>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Das Bach Centre heute:</h4>
-                <p>
-                  Das Bach Centre in Mount Vernon, England, bewahrt das Erbe Dr.
-                  Bachs und gewährleistet die Qualität der Original
-                  Bach-Blütentherapie durch Ausbildung und Zertifizierung von
-                  Therapeuten weltweit.
-                </p>
-              </div>
-            </div>
-          </div>
-        ),
-      },
-      {
-        id: "basics-history-11",
-        title: "Wissenschaftliche Perspektive",
-        content: (
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">Forschung und Studien</h3>
-            <div className="grid gap-4">
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Wirkungsweise</h4>
-                <p>
-                  Die Bach-Blütentherapie basiert auf dem Prinzip der
-                  Energieübertragung. Die Schwingungsmuster der Blüten werden
-                  auf das Wasser übertragen und können so die emotionale Balance
-                  wiederherstellen.
-                </p>
-              </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Moderne Untersuchungen</h4>
-                <ul className="list-disc pl-5">
-                  <li>Placebo-kontrollierte Studien</li>
-                  <li>Praxiserfahrungen</li>
-                  <li>Fallstudien</li>
-                  <li>Qualitative Forschung</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        ),
-      },
-      {
-        id: "basics-history-12",
-        title: "Bach's Vermächtnis",
-        content: (
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">Bedeutung für die Gegenwart</h3>
-            <p>
-              Dr. Bach's Arbeit hat die Naturheilkunde nachhaltig geprägt und
-              den Weg für ein ganzheitliches Verständnis von Gesundheit und
-              Heilung geebnet.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">
-                  Einfluss auf die Medizin:
-                </h4>
-                <ul className="list-disc pl-5">
-                  <li>Ganzheitlicher Behandlungsansatz</li>
-                  <li>Bedeutung der Psychosomatik</li>
-                  <li>Individualisierte Therapie</li>
+                  <li>Emotionale Selbstregulation</li>
+                  <li>Stressmanagement</li>
+                  <li>Persönlichkeitsentwicklung</li>
                   <li>Präventive Gesundheitsvorsorge</li>
                 </ul>
               </div>
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Moderne Anwendungen:</h4>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">
+                  Integration in die Medizin:
+                </h4>
                 <ul className="list-disc pl-5">
-                  <li>Stress-Management</li>
-                  <li>Emotionale Selbsthilfe</li>
-                  <li>Komplementärmedizin</li>
-                  <li>Persönlichkeitsentwicklung</li>
+                  <li>Komplementärmedizinischer Ansatz</li>
+                  <li>Ganzheitliche Therapiekonzepte</li>
+                  <li>Psychosomatische Behandlung</li>
                 </ul>
               </div>
             </div>
@@ -387,201 +240,880 @@ export const lessonsContent: Record<string, LessonContent> = {
     ],
     quiz: {
       questions: [
-        // Single Choice
+        // Biografisches Verständnis
         {
           type: "single",
-          question: "Wann wurde Dr. Edward Bach geboren?",
-          options: ["1876", "1886", "1896", "1906"],
-          correctAnswer: 1,
-          explanation: "Dr. Edward Bach wurde 1886 geboren.",
-        },
-        // Multiple Choice
-        {
-          type: "multiple",
-          question:
-            "Welche beruflichen Tätigkeiten übte Dr. Bach aus? (Mehrere Antworten möglich)",
+          question: "Was war Dr. Bachs ursprünglicher beruflicher Hintergrund?",
           options: [
-            "Schulmediziner",
-            "Bakteriologe",
-            "Psychologe",
-            "Homöopath",
-            "Apotheker",
+            "Ausschließlich Homöopath",
+            "Schulmediziner und Bakteriologe",
+            "Botaniker und Naturheilkundler",
+            "Apotheker und Chemiker",
           ],
-          correctAnswers: [0, 1, 3],
+          correctAnswer: 1,
           explanation:
-            "Dr. Bach war ausgebildeter Schulmediziner, arbeitete als Bakteriologe und später als Homöopath.",
+            "Dr. Bach begann seine Karriere als Schulmediziner und Bakteriologe, bevor er sich der Naturheilkunde zuwandte.",
         },
+
+        // Wissenschaftlicher Werdegang
         {
           type: "multiple",
           question:
-            "Welche Entwicklungen fanden in der ersten Phase (1928-1932) statt?",
+            "Welche wissenschaftlichen Entdeckungen machte Dr. Bach vor der Entwicklung der Blütentherapie?",
+          options: [
+            "Erforschung von Darmbakteriengruppen",
+            "Entwicklung der Bach-Nosoden",
+            "Erfindung der Homöopathie",
+            "Entdeckung der Sonnenmethode",
+            "Zusammenhang zwischen Persönlichkeit und Krankheit",
+          ],
+          correctAnswers: [0, 1, 4],
+          explanation:
+            "Bach erforschte Darmbakterien, entwickelte die Bach-Nosoden und erkannte den Zusammenhang zwischen Persönlichkeit und Krankheit.",
+        },
+
+        // Philosophische Grundlagen
+        {
+          type: "multiple",
+          question:
+            "Welche Kernprinzipien bilden die Basis der Bach-Blütentherapie?",
+          options: [
+            "Einheit von Körper und Seele",
+            "Ausschließlich physische Behandlung",
+            "Individualität der Behandlung",
+            "Standardisierte Therapieprotokolle",
+            "Heilkraft der Natur",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Die Therapie basiert auf der Einheit von Körper und Seele, individueller Behandlung und der Heilkraft der Natur.",
+        },
+
+        // Entwicklungsphasen
+        {
+          type: "multiple",
+          question: "Was kennzeichnet die erste Entwicklungsphase (1928-1932)?",
           options: [
             "Entdeckung der ersten drei Blüten",
             "Entwicklung der Sonnenmethode",
             "Entwicklung der Kochmethode",
-            "Systematisierung der Therapie",
+            "Systematisierung aller 38 Blüten",
             "Erste Dokumentationen der Wirkungen",
           ],
           correctAnswers: [0, 1, 4],
           explanation:
-            "In der ersten Phase entdeckte Bach die ersten drei Blüten, entwickelte die Sonnenmethode und dokumentierte erste Wirkungen.",
+            "Die erste Phase war geprägt von der Entdeckung der ersten drei Blüten, der Entwicklung der Sonnenmethode und ersten Wirkungsdokumentationen.",
         },
+
+        // Herstellungsmethoden
         {
           type: "single",
           question:
-            "In welchem Jahr begann Dr. Bach mit der Entwicklung der Bach-Blütentherapie?",
-          options: ["1928", "1930", "1932", "1934"],
-          correctAnswer: 1,
-          explanation:
-            "Dr. Bach begann 1930 mit der systematischen Entwicklung der Bach-Blütentherapie.",
-        },
-        {
-          type: "multiple",
-          question: "Welche Merkmale kennzeichnen die Sonnenmethode?",
+            "Bei welchen Pflanzenteilen wird die Kochmethode angewendet?",
           options: [
-            "Verwendung von Quellwasser",
-            "Drei Stunden Sonnenexposition",
-            "Kochen der Blüten",
-            "Verwendung einer Glasschale",
-            "Nächtliche Exposition",
+            "Bei allen Blüten",
+            "Bei zarten Frühlingsblüten",
+            "Bei Bäumen und holzigen Pflanzen",
+            "Bei Wurzeln und Knollen",
           ],
-          correctAnswers: [0, 1, 3],
-          explanation:
-            "Die Sonnenmethode verwendet Quellwasser in einer Glasschale und benötigt drei Stunden Sonnenexposition.",
-        },
-        {
-          type: "multiple",
-          question: "Welche Blüten gehören zur Rescue Remedy?",
-          options: [
-            "Star of Bethlehem",
-            "Rock Rose",
-            "Mimulus",
-            "Cherry Plum",
-            "Clematis",
-          ],
-          correctAnswers: [0, 1, 3, 4],
-          explanation:
-            "Die Rescue Remedy enthält Star of Bethlehem, Rock Rose, Cherry Plum, Clematis und Impatiens (nicht Mimulus).",
-        },
-        {
-          type: "single",
-          question:
-            "In welchem Jahr wurde das Bach Centre in Mount Vernon gegründet?",
-          options: ["1930", "1934", "1936", "1938"],
           correctAnswer: 2,
-          explanation: "Das Bach Centre wurde 1936 in Mount Vernon gegründet.",
-        },
-        {
-          type: "multiple",
-          question:
-            "Welche der folgenden Aussagen entsprechen Dr. Bach's Philosophie?",
-          options: [
-            "Krankheit ist ein Korrektiv",
-            "Körper und Seele sind eine Einheit",
-            "Komplexe Behandlungen sind am effektivsten",
-            "Die Natur bietet sanfte Heilmittel",
-            "Alle Menschen sollten gleich behandelt werden",
-          ],
-          correctAnswers: [0, 1, 3],
           explanation:
-            "Dr. Bach glaubte an die Einheit von Körper und Seele, die heilende Kraft der Natur und sah Krankheit als Korrektiv.",
+            "Die Kochmethode wird speziell bei Bäumen und holzigen Pflanzen angewendet.",
         },
+
+        // Systematische Einordnung
         {
           type: "multiple",
           question:
-            "Welche Entdeckungen machte Dr. Bach in der ersten Phase (1928-1932)?",
+            "Welche der sieben Grundthemen behandelt die Bach-Blütentherapie?",
           options: [
-            "Die ersten drei Blütenessenzen",
-            "Die Sonnenmethode",
-            "Die Kochmethode",
-            "Die Rescue Remedy",
-            "Erste Dokumentationen der Wirkungen",
+            "Angst und ihre Erscheinungsformen",
+            "Physische Schmerzen",
+            "Mangelnde Gegenwärtigkeit",
+            "Chronische Erkrankungen",
+            "Überempfindlichkeit gegenüber Einflüssen",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Angst, mangelnde Gegenwärtigkeit und Überempfindlichkeit sind drei der sieben Grundthemen.",
+        },
+
+        // Wissenschaftliche Grundlagen
+        {
+          type: "multiple",
+          question:
+            "Auf welchen Wirkungsprinzipien basiert die Bach-Blütentherapie?",
+          options: [
+            "Energetische Übertragung",
+            "Chemische Reaktionen",
+            "Informationsspeicherung im Wasser",
+            "Resonanz mit emotionalen Zuständen",
+            "Biochemische Prozesse",
+          ],
+          correctAnswers: [0, 2, 3],
+          explanation:
+            "Die Therapie basiert auf energetischer Übertragung, Informationsspeicherung im Wasser und Resonanz mit emotionalen Zuständen.",
+        },
+
+        // Moderne Anwendung
+        {
+          type: "multiple",
+          question:
+            "In welchen modernen Bereichen findet die Bach-Blütentherapie Anwendung?",
+          options: [
+            "Emotionale Selbstregulation",
+            "Chirurgische Eingriffe",
+            "Stressmanagement",
+            "Labordiagnostik",
+            "Präventive Gesundheitsvorsorge",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Die Therapie wird heute besonders in der emotionalen Selbstregulation, im Stressmanagement und in der Prävention eingesetzt.",
+        },
+
+        // Vertiefendes Wissen - Sonnenmethode
+        {
+          type: "multiple",
+          question: "Welche Faktoren sind bei der Sonnenmethode wichtig?",
+          options: [
+            "Verwendung von Quellwasser",
+            "Dreistündige Sonnenexposition",
+            "Verwendung von Metallschalen",
+            "Mondphasenbeachtung",
+            "Verwendung von Glasschalen",
           ],
           correctAnswers: [0, 1, 4],
           explanation:
-            "In der ersten Phase entdeckte er die ersten drei Blüten, entwickelte die Sonnenmethode und dokumentierte erste Wirkungen.",
+            "Die Sonnenmethode erfordert Quellwasser, eine dreistündige Sonnenexposition und die Verwendung von Glasschalen.",
         },
-        {
-          type: "single",
-          question:
-            "Wann wurde die Bach-Blütentherapie ins britische Arzneibuch aufgenommen?",
-          options: ["1966", "1976", "1986", "1996"],
-          correctAnswer: 1,
-          explanation:
-            "Die Bach-Blütentherapie wurde 1976 offiziell ins britische Arzneibuch aufgenommen.",
-        },
-        {
-          type: "multiple",
-          question: "Was kennzeichnet die Kochmethode?",
-          options: [
-            "Verwendung von Quellwasser",
-            "30-minütiges Kochen",
-            "Anwendung bei holzigen Pflanzen",
-            "Dreistündige Sonnenexposition",
-            "Verwendung von Regenwasser",
-          ],
-          correctAnswers: [0, 1, 2],
-          explanation:
-            "Die Kochmethode verwendet Quellwasser, benötigt 30 Minuten Kochzeit und wird hauptsächlich bei holzigen Pflanzen angewendet.",
-        },
+
+        // Vertiefendes Wissen - Erste Blüten
         {
           type: "multiple",
           question:
-            "Welche der folgenden Persönlichkeitsmerkmale werden von den ersten drei Blüten behandelt?",
+            "Welche emotionalen Zustände behandeln die ersten drei entdeckten Blüten?",
           options: [
             "Ungeduld",
+            "Unentschlossenheit",
             "Bekannte Ängste",
-            "Tagträumerei",
+            "Realitätsferne",
             "Wut",
-            "Einsamkeit",
           ],
-          correctAnswers: [0, 1, 2],
+          correctAnswers: [0, 2, 3],
           explanation:
-            "Die ersten drei Blüten waren Impatiens (Ungeduld), Mimulus (bekannte Ängste) und Clematis (Tagträumerei).",
+            "Die ersten drei Blüten behandeln Ungeduld (Impatiens), bekannte Ängste (Mimulus) und Realitätsferne (Clematis).",
+        },
+      ] as Question[], // Type Assertion für korrekte Typisierung
+    },
+  },
+  "basics-philosophy": {
+    id: "basics-philosophy",
+    moduleId: "basics",
+    title: "Philosophie und Grundprinzipien der Bach-Blütentherapie",
+    description:
+      "Verstehen Sie die philosophischen Grundlagen und deren praktische Bedeutung für die Bach-Blütentherapie",
+    pages: [
+      {
+        id: "basics-philosophy-1",
+        title: "Ganzheitliches Menschenbild",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Das holistische Prinzip</h4>
+              <p>
+                Die Bach-Blütentherapie basiert auf einem ganzheitlichen
+                Verständnis des Menschen, das über das rein körperliche
+                hinausgeht. Sie betrachtet den Menschen als Einheit von:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Körper (physische Ebene)</li>
+                <li>Seele (emotionale Ebene)</li>
+                <li>Geist (mentale Ebene)</li>
+              </ul>
+            </div>
+            <div className="bg-yellow-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Praxisrelevanz:</h4>
+              <p>
+                Dieses Verständnis erfordert einen therapeutischen Ansatz, der:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Die individuelle Lebensgeschichte berücksichtigt</li>
+                <li>Aktuelle Lebenssituation einbezieht</li>
+                <li>Persönliche Entwicklungspotenziale erkennt</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-philosophy-2",
+        title: "Das Verständnis von Gesundheit und Krankheit",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Gesundheit als Harmonie</h4>
+              <p>
+                Nach Dr. Bach ist Gesundheit mehr als die Abwesenheit von
+                Krankheit. Sie ist ein Zustand der Harmonie zwischen:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Körperlicher Vitalität</li>
+                <li>Emotionaler Balance</li>
+                <li>Mentaler Klarheit</li>
+                <li>Spirituellem Wohlbefinden</li>
+              </ul>
+            </div>
+            <div className="bg-red-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Krankheit als Botschaft</h4>
+              <blockquote className="italic border-l-4 pl-4 my-2">
+                "Krankheit ist in ihrer Endursache so unmateriell wie das Gemüt
+                selbst. Sie ist die Verkörperung einer mentalen Einstellung." -
+                Dr. Edward Bach
+              </blockquote>
+              <p>Krankheit wird verstanden als:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Signal für innere Disharmonie</li>
+                <li>Chance zur Entwicklung</li>
+                <li>Wegweiser für notwendige Veränderungen</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-philosophy-3",
+        title: "Die Rolle der Emotionen",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-purple-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">
+                Emotionale Balance als Schlüssel
+              </h4>
+              <p>
+                Dr. Bach erkannte Emotionen als zentrale Kraft für Gesundheit
+                und Krankheit:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Positive Emotionen stärken die Lebenskraft</li>
+                <li>Negative Emotionen schwächen das Energiesystem</li>
+                <li>Verdrängte Gefühle können krank machen</li>
+              </ul>
+            </div>
+            <div className="bg-blue-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Therapeutische Konsequenz:</h4>
+              <p>Die Behandlung zielt auf:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Bewusstwerdung emotionaler Muster</li>
+                <li>Transformation negativer Gefühlszustände</li>
+                <li>Entwicklung emotionaler Resilienz</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-philosophy-4",
+        title: "Das Prinzip der Individualität",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-yellow-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">
+                Jeder Mensch ist einzigartig
+              </h4>
+              <p>
+                Die Bach-Blütentherapie respektiert die Individualität auf
+                mehreren Ebenen:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Persönliche Lebensgeschichte</li>
+                <li>Individuelle Reaktionsmuster</li>
+                <li>Eigener Entwicklungsweg</li>
+              </ul>
+            </div>
+            <div className="bg-green-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Praktische Umsetzung:</h4>
+              <p>Dies bedeutet für die Therapie:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Keine standardisierten Behandlungsschemata</li>
+                <li>Individuelle Blütenkombinationen</li>
+                <li>Respekt vor dem persönlichen Entwicklungstempo</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-philosophy-5",
+        title: "Selbstheilungskräfte und Naturheilkunde",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">
+                Vertrauen in die Naturheilkraft
+              </h4>
+              <p>
+                Ein zentrales Prinzip ist das Vertrauen in die natürlichen
+                Heilungsprozesse:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Aktivierung der Selbstheilungskräfte</li>
+                <li>Unterstützung durch Naturenergien</li>
+                <li>Sanfte Begleitung statt Intervention</li>
+              </ul>
+            </div>
+            <div className="bg-amber-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Therapeutische Haltung:</h4>
+              <p>Der Therapeut versteht sich als:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Begleiter des Heilungsprozesses</li>
+                <li>Unterstützer der Selbstheilungskräfte</li>
+                <li>Vermittler zwischen Mensch und Natur</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-philosophy-6",
+        title: "Ethische Grundsätze",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-indigo-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Therapeutische Ethik</h4>
+              <p>Die Bach-Blütentherapie folgt klaren ethischen Prinzipien:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Respekt vor der Autonomie des Menschen</li>
+                <li>Förderung der Selbsterkenntnis</li>
+                <li>Unterstützung der persönlichen Entwicklung</li>
+              </ul>
+            </div>
+            <div className="bg-rose-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Praktische Umsetzung:</h4>
+              <p>Dies bedeutet im therapeutischen Alltag:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Keine Abhängigkeit erzeugen</li>
+                <li>Transparenz in der Behandlung</li>
+                <li>Förderung der Selbstkompetenz</li>
+                <li>Respektvoller Umgang mit Grenzen</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-philosophy-7",
+        title: "Integration in die moderne Heilkunde",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-cyan-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Komplementärer Ansatz</h4>
+              <p>Die Bach-Blütentherapie versteht sich als:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Ergänzung zur konventionellen Medizin</li>
+                <li>Teil eines integrativen Gesundheitskonzepts</li>
+                <li>Brücke zwischen traditioneller und moderner Heilkunst</li>
+              </ul>
+            </div>
+            <div className="bg-teal-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Moderne Anwendung:</h4>
+              <p>Aktuelle Integrationsmöglichkeiten:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Psychosomatische Medizin</li>
+                <li>Präventive Gesundheitsförderung</li>
+                <li>Begleitende Therapie bei chronischen Erkrankungen</li>
+                <li>Stress- und Burnout-Prävention</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+    ],
+    quiz: {
+      questions: [
+        {
+          type: "multiple",
+          question:
+            "Welche Aspekte umfasst das ganzheitliche Menschenbild der Bach-Blütentherapie?",
+          options: [
+            "Körperliche Ebene",
+            "Emotionale Ebene",
+            "Genetische Disposition",
+            "Mentale Ebene",
+            "Laborwerte",
+          ],
+          correctAnswers: [0, 1, 3],
+          explanation:
+            "Das holistische Menschenbild der Bach-Blütentherapie betrachtet den Menschen als Einheit von Körper (physisch), Seele (emotional) und Geist (mental).",
         },
         {
           type: "single",
-          question:
-            "Wie viele Blütenessenzen umfasst das vollständige Bach-Blüten-System?",
-          options: ["28", "38", "48", "58"],
-          correctAnswer: 1,
+          question: "Wie wird Krankheit in der Bach-Blütentherapie verstanden?",
+          options: [
+            "Als rein körperliche Störung",
+            "Als Strafe für Fehlverhalten",
+            "Als Signal für innere Disharmonie und Entwicklungschance",
+            "Als unvermeidbares Schicksal",
+          ],
+          correctAnswer: 2,
           explanation:
-            "Das vollständige Bach-Blüten-System umfasst genau 38 Blütenessenzen.",
+            "Krankheit wird als Signal für innere Disharmonie und als Chance zur persönlichen Entwicklung verstanden.",
         },
         {
           type: "multiple",
           question:
-            "Welche Grundzustände definierte Dr. Bach in seinem System?",
+            "Welche Rolle spielen Emotionen in der Bach-Blütentherapie?",
           options: [
-            "Angst",
-            "Unsicherheit",
-            "Euphorie",
-            "Einsamkeit",
-            "Überempfindlichkeit",
+            "Sie sind zentral für Gesundheit und Krankheit",
+            "Sie sind irrelevant für den Heilungsprozess",
+            "Positive Emotionen stärken die Lebenskraft",
+            "Negative Emotionen haben keine Auswirkung",
+            "Verdrängte Gefühle können krank machen",
           ],
-          correctAnswers: [0, 1, 3, 4],
+          correctAnswers: [0, 2, 4],
           explanation:
-            "Angst, Unsicherheit, Einsamkeit und Überempfindlichkeit gehören zu den von Dr. Bach definierten Grundzuständen.",
+            "Emotionen werden als zentrale Kraft für Gesundheit erkannt, wobei positive Emotionen stärkend wirken und verdrängte Gefühle krank machen können.",
         },
+        {
+          type: "multiple",
+          question:
+            "Was bedeutet das Prinzip der Individualität in der Praxis?",
+          options: [
+            "Standardisierte Behandlungsschemata",
+            "Individuelle Blütenkombinationen",
+            "Respekt vor dem persönlichen Entwicklungstempo",
+            "Einheitliche Dosierung für alle",
+            "Berücksichtigung der persönlichen Lebensgeschichte",
+          ],
+          correctAnswers: [1, 2, 4],
+          explanation:
+            "Das Individualitätsprinzip äußert sich in individuellen Blütenkombinationen, Respekt vor dem persönlichen Tempo und Berücksichtigung der Lebensgeschichte.",
+        },
+        {
+          type: "multiple",
+          question:
+            "Welche ethischen Grundsätze gelten in der Bach-Blütentherapie?",
+          options: [
+            "Respekt vor der Autonomie des Menschen",
+            "Erzeugung von Abhängigkeit",
+            "Förderung der Selbsterkenntnis",
+            "Manipulation des Patienten",
+            "Transparenz in der Behandlung",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Zentrale ethische Grundsätze sind Respekt vor der Autonomie, Förderung der Selbsterkenntnis",
+        },
+        {
+          type: "multiple",
+          question: "Wie versteht sich die Rolle des Bach-Blüten-Therapeuten?",
+          options: [
+            "Als Begleiter des Heilungsprozesses",
+            "Als alleiniger Experte für Heilung",
+            "Als Vermittler zwischen Mensch und Natur",
+            "Als Autorität über den Patienten",
+            "Als Unterstützer der Selbstheilungskräfte",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Der Therapeut versteht sich als begleitender Unterstützer und Vermittler, nicht als autoritäre Instanz.",
+        },
+
+        {
+          type: "single",
+          question:
+            "Was bedeutet 'Gesundheit' im Sinne der Bach-Blütentherapie?",
+          options: [
+            "Ausschließlich die Abwesenheit von körperlichen Symptomen",
+            "Ein Zustand der Harmonie zwischen körperlicher, emotionaler und mentaler Ebene",
+            "Die Einnahme der richtigen Medikamente",
+            "Die Vermeidung aller negativen Gefühle",
+          ],
+          correctAnswer: 1,
+          explanation:
+            "Gesundheit wird als harmonischer Zustand auf allen Ebenen des Menschseins verstanden.",
+        },
+
+        {
+          type: "multiple",
+          question:
+            "Welche Aspekte kennzeichnen den komplementären Ansatz der Bach-Blütentherapie?",
+          options: [
+            "Integration in ganzheitliche Behandlungskonzepte",
+            "Ablehnung konventioneller Medizin",
+            "Ergänzung zur schulmedizinischen Behandlung",
+            "Ausschließliche Nutzung als Monotherapie",
+            "Einsatz in der Prävention",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Die Therapie versteht sich als komplementärer Ansatz, der andere Behandlungsformen ergänzt und in der Prävention eingesetzt werden kann.",
+        },
+
+        {
+          type: "multiple",
+          question:
+            "Welche Prinzipien gelten für die Selbstheilungskräfte in der Bach-Blütentherapie?",
+          options: [
+            "Aktivierung natürlicher Heilungsprozesse",
+            "Unterdrückung von Symptomen",
+            "Unterstützung durch Naturenergien",
+            "Forcierte Intervention",
+            "Sanfte Begleitung des Heilungsweges",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Die Therapie setzt auf die Aktivierung und sanfte Unterstützung natürlicher Heilungsprozesse durch Naturenergien.",
+        },
+
+        {
+          type: "multiple",
+          question:
+            "Wie äußert sich der Respekt vor der Individualität in der therapeutischen Praxis?",
+          options: [
+            "Berücksichtigung des persönlichen Entwicklungstempos",
+            "Standardisierte Behandlungsprotokolle",
+            "Individuelle Anpassung der Blütenkombinationen",
+            "Einheitliche Therapiedauer für alle",
+            "Einbeziehung der individuellen Lebenssituation",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Individualität zeigt sich in der Berücksichtigung des persönlichen Tempos, individuellen Blütenkombinationen und der Lebenssituation.",
+        },
+
+        {
+          type: "single",
+          question:
+            "Welche Bedeutung haben negative Emotionen in der Bach-Blütentherapie?",
+          options: [
+            "Sie müssen vollständig vermieden werden",
+            "Sie sind wertvolle Hinweise auf Entwicklungspotenziale",
+            "Sie haben keine Bedeutung für die Therapie",
+            "Sie werden medikamentös unterdrückt",
+          ],
+          correctAnswer: 1,
+          explanation:
+            "Negative Emotionen werden als wichtige Signale und Entwicklungschancen verstanden, nicht als zu vermeidende Störungen.",
+        },
+
         {
           type: "multiple",
           question:
             "Welche modernen Anwendungsgebiete hat die Bach-Blütentherapie?",
           options: [
-            "Stress-Management",
-            "Operative Eingriffe",
-            "Emotionale Selbsthilfe",
-            "Persönlichkeitsentwicklung",
+            "Psychosomatische Begleitung",
+            "Chirurgische Eingriffe",
+            "Stress- und Burnout-Prävention",
             "Labordiagnostik",
+            "Emotionale Selbstregulation",
           ],
-          correctAnswers: [0, 2, 3],
+          correctAnswers: [0, 2, 4],
           explanation:
-            "Moderne Anwendungsgebiete sind Stress-Management, emotionale Selbsthilfe und Persönlichkeitsentwicklung.",
+            "Die Therapie findet heute besonders in der Psychosomatik, Prävention und emotionalen Selbstregulation Anwendung.",
         },
-      ] as Question[], // Type Assertion für korrekte Typisierung
+      ] as Question[],
     },
   },
-  // Weitere Lektionsinhalte...
+  "basics-mechanisms": {
+    id: "basics-mechanisms",
+    moduleId: "basics",
+    title: "Wirkungsprinzipien der Bach-Blüten",
+    description:
+      "Verstehen Sie die grundlegenden Wirkungsmechanismen der Bach-Blütentherapie",
+    pages: [
+      {
+        id: "basics-mechanisms-1",
+        title: "Grundlagen der energetischen Wirkung",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">
+                Energetische Grundprinzipien
+              </h4>
+              <p>
+                Die Bach-Blütentherapie basiert auf dem Verständnis subtiler
+                Energien:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Schwingungsmuster der Blüten</li>
+                <li>Informationsübertragung durch Wasser</li>
+                <li>Resonanzprinzip mit menschlichen Energiefeldern</li>
+              </ul>
+            </div>
+            <div className="bg-yellow-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Wissenschaftlicher Kontext:</h4>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Quantenphysikalische Betrachtungen</li>
+                <li>Wassercluster und Informationsspeicherung</li>
+                <li>Bioenergetische Felder des Menschen</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-mechanisms-2",
+        title: "Die Sonnenmethode im Detail",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Physikalische Prinzipien</h4>
+              <p>
+                Bei der Sonnenmethode wirken verschiedene physikalische
+                Faktoren:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Elektromagnetische Strahlung der Sonne</li>
+                <li>Strukturierung des Wassers</li>
+                <li>Photochemische Prozesse</li>
+                <li>Energetische Übertragung der Blüteninformation</li>
+              </ul>
+            </div>
+            <div className="bg-green-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Praktische Aspekte:</h4>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Bedeutung der Wasserqualität</li>
+                <li>Einfluss der Sonnenintensität</li>
+                <li>Rolle des Materials (Glas)</li>
+                <li>Zeitfaktor der Exposition</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-mechanisms-3",
+        title: "Die Kochmethode und ihre Wirkung",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-red-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Thermodynamische Prozesse</h4>
+              <p>
+                Die Kochmethode nutzt thermische Energie zur
+                Informationsübertragung:
+              </p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Energieübertragung durch Erhitzen</li>
+                <li>Extraktion ätherischer Bestandteile</li>
+                <li>Strukturveränderungen im Wasser</li>
+                <li>Potenzierung der Blüteninformation</li>
+              </ul>
+            </div>
+            <div className="bg-purple-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Anwendungsprinzipien:</h4>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Optimale Kochdauer</li>
+                <li>Bedeutung der Pflanzenauswahl</li>
+                <li>Qualität der Gefäße</li>
+                <li>Abkühlungsprozess</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-mechanisms-4",
+        title: "Informationsübertragung im Wasser",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">
+                Wasserstruktur und Information
+              </h4>
+              <p>Wasser als Informationsträger:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Clusterbildung im Wasser</li>
+                <li>Molekulare Strukturen und Muster</li>
+                <li>Stabilität der Information</li>
+                <li>Bedeutung der Potenzierung</li>
+              </ul>
+            </div>
+            <div className="bg-cyan-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Wissenschaftliche Perspektiven:</h4>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Aktuelle Wasserforschung</li>
+                <li>Quantenphysikalische Modelle</li>
+                <li>Experimentelle Nachweise</li>
+                <li>Grenzen des Verständnisses</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-mechanisms-5",
+        title: "Resonanz mit dem menschlichen Energiesystem",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-indigo-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">
+                Bioenergetische Interaktion
+              </h4>
+              <p>Wechselwirkung zwischen Blütenessenzen und Mensch:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Elektromagnetische Felder des Menschen</li>
+                <li>Resonanzphänomene</li>
+                <li>Energetische Regulation</li>
+                <li>Informationsvermittlung auf Zellebene</li>
+              </ul>
+            </div>
+            <div className="bg-violet-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Praktische Bedeutung:</h4>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Individuelles Ansprechen</li>
+                <li>Zeitfaktor der Wirkung</li>
+                <li>Dosierungsprinzipien</li>
+                <li>Beobachtung der Reaktionen</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-mechanisms-6",
+        title: "Von der Blüte zur Wirkung",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-emerald-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Wirkungskette</h4>
+              <p>Der Weg von der Blüte zur therapeutischen Wirkung:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Energetisches Potenzial der Blüte</li>
+                <li>Übertragungsprozess</li>
+                <li>Aufnahme im Organismus</li>
+                <li>Transformation der Emotionen</li>
+              </ul>
+            </div>
+            <div className="bg-teal-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Qualitätsfaktoren:</h4>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Reinheit der Ausgangsstoffe</li>
+                <li>Herstellungsbedingungen</li>
+                <li>Lagerung und Haltbarkeit</li>
+                <li>Anwendungsqualität</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "basics-mechanisms-7",
+        title: "Wissenschaftliche Perspektiven",
+        content: (
+          <div className="space-y-4">
+            <div className="bg-rose-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Aktuelle Forschung</h4>
+              <p>Wissenschaftliche Untersuchungen zur Wirksamkeit:</p>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Klinische Studien</li>
+                <li>Biophysikalische Messungen</li>
+                <li>Dokumentierte Fallberichte</li>
+                <li>Systematische Reviews</li>
+              </ul>
+            </div>
+            <div className="bg-orange-50 p-4 rounded-lg mt-4">
+              <h4 className="font-semibold">Zukünftige Entwicklungen:</h4>
+              <ul className="list-disc pl-5 mt-2">
+                <li>Neue Forschungsmethoden</li>
+                <li>Integration in die Medizin</li>
+                <li>Qualitätssicherung</li>
+                <li>Standardisierung</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+    ],
+    quiz: {
+      questions: [
+        {
+          type: "multiple",
+          question: "Welche Faktoren sind bei der Sonnenmethode relevant?",
+          options: [
+            "Elektromagnetische Strahlung der Sonne",
+            "Künstliche UV-Bestrahlung",
+            "Strukturierung des Wassers",
+            "Mondphasen",
+            "Verwendung von Glasgefäßen",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Die Sonnenmethode basiert auf der natürlichen Sonnenstrahlung, der Wasserstrukturierung und der Verwendung von Glasgefäßen.",
+        },
+        {
+          type: "multiple",
+          question: "Welche Prinzipien kennzeichnen die Kochmethode?",
+          options: [
+            "Thermische Energieübertragung",
+            "Extraktion ätherischer Bestandteile",
+            "Verwendung von Metallgefäßen",
+            "30-minütige Kochzeit",
+            "Zugabe von Konservierungsmitteln",
+          ],
+          correctAnswers: [0, 1, 3],
+          explanation:
+            "Die Kochmethode nutzt thermische Energie zur Extraktion und Übertragung über eine definierte Kochzeit.",
+        },
+        {
+          type: "multiple",
+          question: "Wie funktioniert Wasser als Informationsträger?",
+          options: [
+            "Bildung von Wasserclustern",
+            "Chemische Bindung mit Wirkstoffen",
+            "Speicherung von Schwingungsmustern",
+            "Radioaktive Markierung",
+            "Molekulare Strukturbildung",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Wasser speichert Information durch Clusterbildung, Schwingungsmuster und molekulare Strukturen.",
+        },
+        {
+          type: "single",
+          question: "Was ist das zentrale Prinzip der Resonanzwirkung?",
+          options: [
+            "Chemische Reaktion",
+            "Schwingungsabgleich zwischen Essenz und Organismus",
+            "Hormonelle Steuerung",
+            "Enzymatische Prozesse",
+          ],
+          correctAnswer: 1,
+          explanation:
+            "Die Resonanzwirkung basiert auf dem Schwingungsabgleich zwischen Essenz und menschlichem Energiesystem.",
+        },
+        {
+          type: "multiple",
+          question:
+            "Welche Qualitätsfaktoren sind bei der Herstellung wichtig?",
+          options: [
+            "Reinheit der Ausgangsstoffe",
+            "Industrielle Massenproduktion",
+            "Standardisierte Herstellungsbedingungen",
+            "Synthetische Zusätze",
+            "Korrekte Lagerung",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Qualität wird durch reine Ausgangsstoffe, standardisierte Herstellung und korrekte Lagerung gesichert.",
+        },
+        {
+          type: "multiple",
+          question: "Welche wissenschaftlichen Perspektiven sind relevant?",
+          options: [
+            "Klinische Studien",
+            "Alchemistische Traditionen",
+            "Biophysikalische Messungen",
+            "Astrologische Deutungen",
+            "Systematische Reviews",
+          ],
+          correctAnswers: [0, 2, 4],
+          explanation:
+            "Wissenschaftliche Relevanz basiert auf klinischen Studien, biophysikalischen Messungen und systematischen Reviews.",
+        },
+      ] as Question[],
+    },
+  },
 };
 
 // Helper-Funktionen für den Zugriff auf Lektionsinhalte

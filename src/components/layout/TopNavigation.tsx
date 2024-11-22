@@ -20,7 +20,7 @@ const TopNavigation: React.FC = () => {
   return (
     <header className="bg-white shadow-md p-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Bachblüten Admin</h2>
+        <h2 className="text-xl font-semibold">BloomBalance pro</h2>
         <div className="flex items-center">
           <button className="mr-4">
             <Bell className="w-6 h-6" />
