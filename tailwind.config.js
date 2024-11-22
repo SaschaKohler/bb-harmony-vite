@@ -1,4 +1,3 @@
-// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -69,6 +68,19 @@ module.exports = {
           orange: "hsl(39, 100%, 50%)", // Sensibilität
           red: "hsl(348, 83%, 47%)", // Mutlosigkeit
           turquoise: "hsl(181, 71%, 56%)", // Fürsorge
+        },
+        // Neue Learning Hub spezifische Farben
+        "learning-dark": {
+          background: "#1a1c2a", // Dunkleres, wärmeres Blau
+          foreground: "#e2e8f0",
+          muted: "#2d3748",
+          "muted-foreground": "#a0aec0",
+          accent: "#3d4b6e", // Gedämpftes Blau für Akzente
+          border: "#2d3748",
+          card: "#242736", // Leicht hellerer Hintergrund für Karten
+          "card-foreground": "#e2e8f0",
+          progress: "#4c51bf", // Violett für Fortschrittsanzeigen
+          hover: "#2d324d", // Hover-Effekt Farbe
         },
       },
       borderRadius: {

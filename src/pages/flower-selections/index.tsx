@@ -314,7 +314,7 @@ export default function FlowerSelectionListPage() {
         onResetFilters={resetFilters}
       />
 
-      <div className="rounded-lg border bg-white shadow-sm">
+      <div className="rounded-lg border bg-background shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
