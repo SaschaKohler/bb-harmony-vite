@@ -1,10 +1,30 @@
 import { Database } from "@/types/supabase";
+import { EmotionGroupName } from "../components/emotions-auswahl";
 
-export type WizardSchritt = "welcome" | "emotions" | "symptoms" | "result";
-
-// Direkt aus der Datenbank
 export type DBEmotion = Database["public"]["Tables"]["emotion"]["Row"];
 export type DBBachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
+
+export type WizardSchritt =
+  | "welcome"
+  | "emotion-groups"
+  | "symptoms"
+  | "flower-preview"
+  | "result";
+
+export const WIZARD_STEPS: WizardSchritt[] = [
+  "welcome",
+  "emotion-groups",
+  "symptoms",
+  "result",
+];
+
+export const STEP_TITLES: Record<WizardSchritt, string> = {
+  welcome: "Willkommen",
+  "emotion-groups": "Gefühlsbereiche",
+  symptoms: "Symptome",
+  result: "Deine Empfehlung",
+};
+// Direkt aus der Datenbank
 
 // Erweiterte Types für den Wizard
 export interface WizardEmotion extends DBEmotion {
@@ -21,19 +41,24 @@ export interface Symptom {
 
 export interface WizardState {
   currentStep: WizardSchritt;
-  selectedEmotions: string[];
-  emotionIntensities: Record<string, number>;
+  selectedEmotionGroups: string[];
   selectedSymptoms: string[];
-  empfohleneBluten: string[];
+  selectedSecondarySymptoms: string[];
+  selectedFlowers: string[]; // Neu
+  symptomWeights: Record<string, number>;
+  // empfohleneBluten: string[];
+  // blutenCount: number;
 }
 
 export interface WizardContextType extends WizardState {
   nextStep: () => void;
   previousStep: () => void;
-  selectEmotion: (emotionId: string) => void;
-  deselectEmotion: (emotionId: string) => void;
+  selectEmotionGroup: (groupName: EmotionGroupName) => void;
+  deselectEmotionGroup: (groupName: EmotionGroupName) => void;
   selectSymptom: (symptomId: string) => void;
   deselectSymptom: (symptomId: string) => void;
-  setEmotionIntensity: (emotionId: string, intensity: number) => void; // Neue Funktion
+  selectFlower: (flowerId: string) => void;
+  deselectFlower: (flowerId: string) => void;
+  setSymptomWeight: (symptomId: string, weight: number) => void;
   resetWizard: () => void;
 }

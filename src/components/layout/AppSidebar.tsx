@@ -34,7 +34,7 @@ export const AppSidebar: React.FC = () => {
   return (
     <Sidebar>
       <SidebarHeader>
-        <h2 className="text-xl font-semibold p-4">Bachblüten Admin</h2>
+        <h2 className="text-xl font-semibold p-4">BloomBalance pro</h2>
       </SidebarHeader>
       <SidebarContent>
         {navGroups.map((group) => (

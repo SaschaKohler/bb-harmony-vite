@@ -1,37 +1,43 @@
 import { createContext, useReducer, ReactNode } from "react";
+import { EmotionGroupName, EMOTION_GROUPS } from "../constants/emotion-groups";
+
 import { WizardContextType, WizardState, WizardSchritt } from "../types";
 
 const initialState: WizardState = {
   currentStep: "welcome",
-  selectedEmotions: [],
-  emotionIntensities: {},
+  selectedEmotionGroups: [], // Neue Property
   selectedSymptoms: [],
-  empfohleneBluten: [],
+  selectedFlowers: [], // Neu
+  selectedSecondarySymptoms: [],
+  symptomWeights: {},
 };
 
 type WizardAction =
   | { type: "NEXT_STEP" }
   | { type: "PREVIOUS_STEP" }
-  | { type: "SELECT_EMOTION"; emotionId: string }
-  | { type: "DESELECT_EMOTION"; emotionId: string }
-  | { type: "SET_EMOTION_INTENSITY"; emotionId: string; intensity: number }
+  | { type: "SELECT_EMOTION_GROUP"; groupName: EmotionGroupName }
+  | { type: "DESELECT_EMOTION_GROUP"; groupName: EmotionGroupName }
   | { type: "SELECT_SYMPTOM"; symptomId: string }
   | { type: "DESELECT_SYMPTOM"; symptomId: string }
-  | { type: "SET_EMPFOHLENE_BLUTEN"; blutenIds: string[] }
+  | { type: "SELECT_FLOWER"; flowerId: string } // Neu
+  | { type: "DESELECT_FLOWER"; flowerId: string } // Neu
+  | { type: "SET_SYMPTOM_WEIGHT"; symptomId: string; weight: number }
   | { type: "RESET" };
 
 const NEXT_STEPS: Record<WizardSchritt, WizardSchritt> = {
-  welcome: "emotions",
-  emotions: "symptoms",
-  symptoms: "result",
+  welcome: "emotion-groups",
+  "emotion-groups": "symptoms",
+  symptoms: "flower-preview",
+  "flower-preview": "result",
   result: "result",
 };
 
 const PREVIOUS_STEPS: Record<WizardSchritt, WizardSchritt> = {
   welcome: "welcome",
-  emotions: "welcome",
-  symptoms: "emotions",
-  result: "symptoms",
+  "emotion-groups": "welcome",
+  symptoms: "emotion-groups",
+  "flower-preview": "symptoms", // Hier fehlte der flower-preview Schritt
+  result: "flower-preview",
 };
 
 // Im Reducer dann einfach verwenden
@@ -51,51 +57,65 @@ const wizardReducer = (
         ...state,
         currentStep: PREVIOUS_STEPS[state.currentStep],
       };
-    case "SELECT_EMOTION":
+
+    case "SELECT_EMOTION_GROUP":
       return {
         ...state,
-        selectedEmotions: [...state.selectedEmotions, action.emotionId],
-        emotionIntensities: {
-          ...state.emotionIntensities,
-          [action.emotionId]: 5, // Standardwert für Intensität
-        },
+        selectedEmotionGroups: [
+          ...state.selectedEmotionGroups,
+          action.groupName,
+        ],
       };
 
-    case "DESELECT_EMOTION": {
-      // Wir nutzen Object Rest Destructuring für die Intensitäten
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [action.emotionId]: _, ...restIntensities } =
-        state.emotionIntensities;
-
+    case "DESELECT_EMOTION_GROUP":
       return {
         ...state,
-        selectedEmotions: state.selectedEmotions.filter(
-          (id) => id !== action.emotionId,
+        selectedEmotionGroups: state.selectedEmotionGroups.filter(
+          (name) => name !== action.groupName,
         ),
-        emotionIntensities: restIntensities,
       };
-    }
 
-    case "SET_EMOTION_INTENSITY":
-      return {
-        ...state,
-        emotionIntensities: {
-          ...state.emotionIntensities,
-          [action.emotionId]: action.intensity,
-        },
-      };
     case "SELECT_SYMPTOM":
       return {
         ...state,
         selectedSymptoms: [...state.selectedSymptoms, action.symptomId],
+        symptomWeights: {
+          ...state.symptomWeights,
+          [action.symptomId]: 1,
+        },
       };
 
-    case "DESELECT_SYMPTOM":
+    case "DESELECT_SYMPTOM": {
+      const { [action.symptomId]: _, ...restWeights } = state.symptomWeights;
       return {
         ...state,
         selectedSymptoms: state.selectedSymptoms.filter(
           (id) => id !== action.symptomId,
         ),
+        symptomWeights: restWeights,
+      };
+    }
+    case "SELECT_FLOWER":
+      if (state.selectedFlowers.length >= 7) return state;
+      return {
+        ...state,
+        selectedFlowers: [...state.selectedFlowers, action.flowerId],
+      };
+
+    case "DESELECT_FLOWER":
+      return {
+        ...state,
+        selectedFlowers: state.selectedFlowers.filter(
+          (id) => id !== action.flowerId,
+        ),
+      };
+    case "SET_SYMPTOM_WEIGHT":
+      return {
+        ...state,
+        symptomWeights: {
+          ...state.symptomWeights,
+          [action.symptomId]: action.weight,
+        },
       };
 
     case "RESET":
@@ -117,16 +137,22 @@ export function WizardProvider({ children }: { children: ReactNode }) {
     ...state,
     nextStep: () => dispatch({ type: "NEXT_STEP" }),
     previousStep: () => dispatch({ type: "PREVIOUS_STEP" }),
-    selectEmotion: (emotionId: string) =>
-      dispatch({ type: "SELECT_EMOTION", emotionId }),
-    deselectEmotion: (emotionId: string) =>
-      dispatch({ type: "DESELECT_EMOTION", emotionId }),
-    setEmotionIntensity: (emotionId: string, intensity: number) =>
-      dispatch({ type: "SET_EMOTION_INTENSITY", emotionId, intensity }),
-    selectSymptom: (symptomId: string) =>
+    selectEmotionGroup: (groupName) =>
+      dispatch({ type: "SELECT_EMOTION_GROUP", groupName }),
+    deselectEmotionGroup: (groupName) =>
+      dispatch({ type: "DESELECT_EMOTION_GROUP", groupName }),
+    selectSymptom: (symptomId) =>
       dispatch({ type: "SELECT_SYMPTOM", symptomId }),
-    deselectSymptom: (symptomId: string) =>
+    deselectSymptom: (symptomId) =>
       dispatch({ type: "DESELECT_SYMPTOM", symptomId }),
+    selectFlower: (
+      flowerId, // Diese Zeile fehlte
+    ) => dispatch({ type: "SELECT_FLOWER", flowerId }),
+    deselectFlower: (
+      flowerId, // Diese Zeile fehlte
+    ) => dispatch({ type: "DESELECT_FLOWER", flowerId }),
+    setSymptomWeight: (symptomId, weight) =>
+      dispatch({ type: "SET_SYMPTOM_WEIGHT", symptomId, weight }),
     resetWizard: () => dispatch({ type: "RESET" }),
   };
 

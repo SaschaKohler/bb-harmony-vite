@@ -1,6 +1,7 @@
 import { lazy, ComponentType } from "react";
 import {
   Home,
+  Brain,
   Compass,
   Users,
   FileText,
@@ -20,6 +21,11 @@ const UnifiedAuthPage = lazy(() => import("@/components/auth/UnifiedAuthPage"));
 const AdminPage = lazy(() => import("@/pages/admin"));
 const TherapyConsultation = lazy(() => import("@/pages/therapy-consultation"));
 const BachbluetenWizard = lazy(() => import("@/pages/bachblueten-wizard"));
+const LearningHub = lazy(() => import("@/pages/learning-hub"));
+const LessonDetailPage = lazy(
+  () => import("@/pages/learning-hub/components/lesson/LessonDetailPage"),
+);
+
 interface RouteConfig {
   path: string;
   element: ComponentType;
@@ -90,6 +96,22 @@ export const routes: RoutesConfig = {
           element: FlowerSelectionListPage,
           name: "Blüten-Mischungen",
           icon: FileText,
+        },
+      ],
+    },
+    {
+      label: "University",
+      routes: [
+        {
+          path: "/learning-hub",
+          element: LearningHub,
+          name: "Learning-Hub",
+          icon: Brain,
+        },
+        {
+          path: "/learning-hub/:lessonId",
+          element: LessonDetailPage,
+          name: "Lektion",
         },
       ],
     },

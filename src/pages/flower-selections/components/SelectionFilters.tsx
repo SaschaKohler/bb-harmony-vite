@@ -1,5 +1,5 @@
 import React from "react";
-import { Search } from "lucide-react";
+import { CalendarIcon, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils";
 interface SelectionFiltersProps {
   clientFilter: string;
   setClientFilter: (value: string) => void;
-  dateFilter: Date | undefined;
-  setDateFilter: (date: Date | undefined) => void;
+  dateFilter: DateFilter;
+  setDateFilter: (date: DateFilter | undefined) => void;
   onResetFilters: () => void;
 }
 
@@ -51,22 +51,41 @@ export function SelectionFilters({
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[240px] justify-start text-left font-normal",
-                  !dateFilter && "text-muted-foreground",
+                  "justify-start text-left font-normal",
+                  !dateFilter.startDate && "text-muted-foreground",
                 )}
               >
-                {dateFilter ? (
-                  format(dateFilter, "PP", { locale: de })
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {dateFilter.startDate ? (
+                  dateFilter.endDate ? (
+                    <>
+                      {format(dateFilter.startDate, "dd.MM.yyyy", {
+                        locale: de,
+                      })}{" "}
+                      -
+                      {format(dateFilter.endDate, "dd.MM.yyyy", { locale: de })}
+                    </>
+                  ) : (
+                    format(dateFilter.startDate, "dd.MM.yyyy", { locale: de })
+                  )
                 ) : (
-                  <span>Datum wählen</span>
+                  "Zeitraum wählen"
                 )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
-                mode="single"
-                selected={dateFilter}
-                onSelect={setDateFilter}
+                mode="range"
+                selected={{
+                  from: dateFilter.startDate || undefined,
+                  to: dateFilter.endDate || undefined,
+                }}
+                onSelect={(range) => {
+                  setDateFilter({
+                    startDate: range?.from || null,
+                    endDate: range?.to || null,
+                  });
+                }}
                 locale={de}
                 initialFocus
               />
@@ -75,13 +94,11 @@ export function SelectionFilters({
         </div>
 
         {/* Reset Button */}
-        <Button
-          variant="ghost"
-          onClick={onResetFilters}
-          className="w-full sm:w-auto"
-        >
-          Filter zurücksetzen
-        </Button>
+        {(clientFilter || dateFilter.startDate || dateFilter.endDate) && (
+          <Button variant="ghost" onClick={onResetFilters} className="px-2">
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
     </div>
   );

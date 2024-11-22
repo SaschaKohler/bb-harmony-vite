@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { format, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { supabase } from "@/lib/supabaseClient";
 import {
   Table,
@@ -32,14 +32,20 @@ import { Eye, Download, Printer, ArrowUpDown } from "lucide-react";
 import FlowerSelectionDetails from "./components/FlowerSelectionDetails";
 import { toast } from "sonner";
 
+// Neuer Typ für den Datumsfilter
+interface DateFilter {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
 // Typen für unsere Daten
 type FlowerSelection = {
   id: string;
   client_id: string;
   date: string;
   notes: string | null;
-  created_at: string;
-  duration_weeks: number;
+  created_at: string | null;
+  duration_weeks: number | 4;
   status: "active" | "completed";
   client: {
     first_name: string | null;
@@ -181,11 +187,14 @@ export default function FlowerSelectionListPage() {
   const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [clientFilter, setClientFilter] = useState("");
-  const [dateFilter, setDateFilter] = useState<Date>();
+  const [dateFilter, setDateFilter] = useState<DateFilter>({
+    startDate: null,
+    endDate: null,
+  });
 
   const resetFilters = () => {
     setClientFilter("");
-    setDateFilter(undefined);
+    setDateFilter({ startDate: null, endDate: null });
   };
 
   useEffect(() => {
@@ -243,10 +252,17 @@ export default function FlowerSelectionListPage() {
       const searchTerm = clientFilter.toLowerCase();
       const matchesClient = clientName.includes(searchTerm);
 
-      const matchesDate = dateFilter
-        ? format(new Date(selection.date), "yyyy-MM-dd") ===
-          format(dateFilter, "yyyy-MM-dd")
-        : true;
+      // Erweiterter Datumsfilter
+      let matchesDate = true;
+      if (dateFilter.startDate || dateFilter.endDate) {
+        const selectionDate = startOfDay(new Date(selection.date));
+        matchesDate = isWithinInterval(selectionDate, {
+          start: dateFilter.startDate
+            ? startOfDay(dateFilter.startDate)
+            : new Date(0),
+          end: dateFilter.endDate ? endOfDay(dateFilter.endDate) : new Date(),
+        });
+      }
 
       return matchesClient && matchesDate;
     });
@@ -276,8 +292,17 @@ export default function FlowerSelectionListPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Blütenauswahlen</h1>
-        <div className="text-sm text-muted-foreground">
-          {filteredData.length} Auswahlen gefunden
+        <div className="spce-x-2">
+          <span className="text-sm text-muted-foreground">
+            {filteredData.length} Auswahlen gefunden
+          </span>
+          {dateFilter.startDate && (
+            <span className="text-sm text-muted-foreground">
+              {format(dateFilter.startDate, "dd.MM.yyyy", { locale: de })}
+              {dateFilter.endDate &&
+                ` - ${format(dateFilter.endDate, "dd.MM.yyyy", { locale: de })}`}
+            </span>
+          )}
         </div>
       </div>
 

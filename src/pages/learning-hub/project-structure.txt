@@ -1,0 +1,24 @@
+.
+├── components
+│   ├── LessonCard.tsx
+│   └── lesson
+│       ├── LessonDetail.tsx
+│       ├── LessonDetailPage.tsx
+│       └── LessonQuiz.tsx
+├── containers
+│   └── LessonDetailContainer.tsx
+├── context
+│   └── learning-hub-context.tsx
+├── data
+│   ├── lesson-content-registry.tsx
+│   ├── lesson-content.tsx
+│   └── modules.ts
+├── hooks
+│   ├── use-learning-data.ts
+│   └── use-learning-hub-context.ts
+├── index.tsx
+├── project-structure.txt
+└── types
+    └── index.ts
+
+7 directories, 14 files

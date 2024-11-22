@@ -4,24 +4,44 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useWizardContext } from "../hooks/use-wizard-context";
 import { EmotionsAuswahl } from "./emotions-auswahl";
 import { SymptomeAuswahl } from "./symptome-auswahl";
-import { ErgebnisAnsicht } from "./ergebnis-ansicht";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@radix-ui/react-progress";
+import { BluetenVorschau } from "./flower-preview";
+import { ResultStep } from "./result/ResultStep";
+
+const STEPS = [
+  { id: "welcome", title: "Willkommen" },
+  { id: "emotion-groups", title: "Gefühlsbereiche" },
+  { id: "symptoms", title: "Symptome" },
+  { id: "flower-preview", title: "Blütenauswahl" },
+  { id: "result", title: "Deine Empfehlung" },
+] as const;
 
 export const WizardContent: React.FC = () => {
   const {
     currentStep,
     nextStep,
     previousStep,
-    selectedEmotions,
+    selectedEmotionGroups,
     selectedSymptoms,
+    selectedFlowers,
   } = useWizardContext();
+
+  // Berechne den aktuellen Fortschritt
+  const progress = () => {
+    const currentIndex = STEPS.findIndex((step) => step.id === currentStep);
+    return ((currentIndex + 1) / STEPS.length) * 100;
+  };
 
   // Prüfen ob der nächste Schritt erlaubt ist
   const canProceed = () => {
     switch (currentStep) {
-      case "emotions":
-        return selectedEmotions.length > 0;
+      case "emotion-groups":
+        return selectedEmotionGroups.length > 0;
       case "symptoms":
-        return selectedSymptoms.length > 0;
+        return selectedSymptoms.length >= 1;
+      case "flower-preview":
+        return selectedFlowers.length >= 1 && selectedFlowers.length <= 7;
       default:
         return true;
     }
@@ -31,7 +51,7 @@ export const WizardContent: React.FC = () => {
     switch (currentStep) {
       case "welcome":
         return (
-          <div className="text-center space-y-6">
+          <div className="text-center space-y-6 p-8">
             <h2 className="text-2xl font-bold">
               Willkommen beim Bachblüten Finder
             </h2>
@@ -40,41 +60,84 @@ export const WizardContent: React.FC = () => {
               aktuelle Situation zu finden. Der Prozess besteht aus drei
               einfachen Schritten:
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left max-w-2xl mx-auto">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold mb-2">1. Emotionen</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              <div className="p-6 bg-white rounded-lg shadow-sm border">
+                <div className="mb-4">
+                  <Badge className="bg-blue-100 text-blue-800 mb-2">
+                    Schritt 1
+                  </Badge>
+                </div>
+                <h3 className="font-semibold mb-2">Gefühlsbereiche</h3>
                 <p className="text-sm text-gray-500">
-                  Wähle die Gefühle aus, die dich aktuell beschäftigen
+                  Wähle die Gefühlsbereiche aus, die dich aktuell beschäftigen
                 </p>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold mb-2">2. Symptome</h3>
+
+              <div className="p-6 bg-white rounded-lg shadow-sm border">
+                <div className="mb-4">
+                  <Badge className="bg-green-100 text-green-800 mb-2">
+                    Schritt 2
+                  </Badge>
+                </div>
+                <h3 className="font-semibold mb-2">Symptome</h3>
                 <p className="text-sm text-gray-500">
-                  Beschreibe deine konkreten Symptome
+                  Spezifiziere die konkreten Symptome in den ausgewählten
+                  Bereichen
                 </p>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold mb-2">3. Empfehlung</h3>
+
+              <div className="p-6 bg-white rounded-lg shadow-sm border">
+                <div className="mb-4">
+                  <Badge className="bg-purple-100 text-purple-800 mb-2">
+                    Schritt 3
+                  </Badge>
+                </div>
+                <h3 className="font-semibold mb-2">Empfehlung</h3>
                 <p className="text-sm text-gray-500">
-                  Erhalte deine persönliche Bachblüten-Empfehlung
+                  Erhalte deine persönliche Bachblüten-Mischung
                 </p>
               </div>
             </div>
+
+            <div className="mt-8 text-gray-600">
+              <p>
+                Die Auswahl basiert auf der traditionellen Bachblüten-Therapie
+                und berücksichtigt deine individuellen Bedürfnisse.
+              </p>
+            </div>
           </div>
         );
-      case "emotions":
+      case "emotion-groups":
         return <EmotionsAuswahl />;
       case "symptoms":
         return <SymptomeAuswahl />;
-      // case "result":
-      //   return <ErgebnisAnsicht />;
+      case "flower-preview":
+        return <BluetenVorschau />;
+      case "result":
+        return <ResultStep />;
     }
   };
 
+  const currentStepInfo = STEPS.find((step) => step.id === currentStep);
+
   return (
     <div className="space-y-8">
-      {renderStep()}
+      {/* Progress and Step Indicator */}
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>{currentStepInfo?.title}</span>
+          <span>
+            Schritt {STEPS.findIndex((step) => step.id === currentStep) + 1} von{" "}
+            {STEPS.length}
+          </span>
+        </div>
+        <Progress value={progress()} className="h-2" />
+      </div>
 
+      {/* Content */}
+      <div className="min-h-[400px]">{renderStep()}</div>
+
+      {/* Navigation */}
       <div className="flex justify-between pt-6 border-t">
         <Button
           variant="outline"
@@ -87,17 +150,22 @@ export const WizardContent: React.FC = () => {
 
         {currentStep !== "result" && (
           <Button onClick={nextStep} disabled={!canProceed()}>
-            {currentStep === "symptoms" ? "Empfehlung anzeigen" : "Weiter"}
+            {currentStep === "flower-preview"
+              ? "Empfehlung erstellen"
+              : currentStep === "symptoms"
+                ? "Blüten anzeigen"
+                : "Weiter"}
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         )}
-
-        {currentStep === "result" && (
-          <Button variant="outline" onClick={() => window.print()}>
-            Ergebnis drucken
-          </Button>
-        )}
       </div>
+
+      {/* Step-specific Guidance */}
+      {currentStep === "flower-preview" && selectedFlowers.length > 7 && (
+        <div className="mt-2 text-sm text-red-600">
+          Bitte wähle maximal 7 Blüten aus
+        </div>
+      )}
     </div>
   );
 };
