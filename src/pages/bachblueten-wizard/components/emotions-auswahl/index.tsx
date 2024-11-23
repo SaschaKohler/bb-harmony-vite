@@ -13,10 +13,10 @@ export const EmotionsAuswahl: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="text-2xl font-bold text-muted-foreground">
           In welchen Bereichen möchtest du Unterstützung?
         </h2>
-        <p className="text-gray-700">
+        <p className="text-muted-foreground">
           Wähle die Gefühlsbereiche aus, die dich aktuell am meisten
           beschäftigen. Im nächsten Schritt kannst du dann genauer
           spezifizieren.
@@ -29,7 +29,8 @@ export const EmotionsAuswahl: React.FC = () => {
             key={groupName}
             className={cn(
               "p-4 cursor-pointer transition-all duration-200",
-              "border-2",
+              "border",
+              "hover:shadow-light-hover dark:hover:shadow-dark-hover dark:hover:bg-muted",
               selectedEmotionGroups.includes(groupName)
                 ? "border-[#color] bg-[#bgColor]"
                 : "border-transparent hover:border-[#borderColor]/30",
@@ -49,7 +50,7 @@ export const EmotionsAuswahl: React.FC = () => {
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-muted-foreground">
                   {groupName}
                 </h3>
                 <div
@@ -61,7 +62,9 @@ export const EmotionsAuswahl: React.FC = () => {
                 />
               </div>
 
-              <p className="text-sm text-gray-700">{groupInfo.description}</p>
+              <p className="text-sm text-muted-foreground">
+                {groupInfo.description}
+              </p>
 
               <div className="flex flex-wrap gap-2">
                 {groupInfo.examples.map((example) => (
@@ -85,8 +88,8 @@ export const EmotionsAuswahl: React.FC = () => {
       </div>
 
       {selectedEmotionGroups.length > 0 && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <h4 className="text-sm font-medium text-gray-900 mb-2">
+        <div className="mt-6 p-4 bg-muted rounded-lg border-muted">
+          <h4 className="text-sm font-medium text-foreground mb-2">
             Ausgewählte Bereiche:
           </h4>
           <div className="flex flex-wrap gap-2">

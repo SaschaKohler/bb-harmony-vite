@@ -118,7 +118,7 @@ export default function BachFlowerLibrary({ flowers }: BachFlowerLibraryProps) {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Filter-Bereich */}
-      <div className="flex flex-col md:flex-row gap-4 items-end bg-white p-4 rounded-lg shadow-sm">
+      <div className="flex flex-col md:flex-row gap-4 items-end bg-background p-4 rounded-lg shadow-sm">
         <div className="flex-1 space-y-2">
           <label className="text-sm font-medium">Suche</label>
           <div className="relative">

@@ -12,6 +12,9 @@
     --background: 210 40% 98%;
     --foreground: 217 33% 17%;
 
+    --border-soft: 226 232 240 0.6;
+    --card-border-soft: 226 232 240 0.4;
+
     --card: 0 0% 100%;
     --card-foreground: 217 33% 17%;
 
@@ -37,6 +40,9 @@
     /* Dark Mode Defaults */
     --background: 217 33% 17%;
     --foreground: 214 32% 91%;
+
+    --border-soft: 51 65 85 0.8;
+    --card-border-soft: 51 65 85 0.7;
 
     --card: 220 25% 21%;
     --card-foreground: 214 32% 91%;
@@ -146,6 +152,16 @@
 
 /* In globals.css */
 @layer components {
+  .card-border-soft {
+    @apply border-[color:rgb(var(--border-soft))];
+  }
+
+  .hover-shadow-effect {
+    @apply transition-all duration-200
+           hover:shadow-light-hover dark:hover:shadow-dark-hover
+           hover:-translate-y-0.5;
+  }
+
   /* Basis-Stil für die Progress-Bar */
   .radix-progress-root {
     @apply relative w-full h-2 overflow-hidden rounded-full bg-gray-100/50;

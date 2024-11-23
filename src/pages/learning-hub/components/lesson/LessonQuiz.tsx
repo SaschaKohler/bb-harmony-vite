@@ -65,34 +65,36 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
   };
 
   return (
-    <Card className="mt-8 p-6">
-      <h3 className="text-xl font-bold mb-6">
+    <Card className="mt-8 p-6 bg-learning-light-card dark:bg-learning-dark-card">
+      <h3 className="text-xl font-bold mb-6 text-learning-light-foreground dark:text-learning-dark-foreground">
         Quiz: Frage {currentQuestion + 1} von {quiz.questions.length}
       </h3>
 
       <div className="space-y-6">
-        <p className="text-lg">{question.question}</p>
+        <p className="text-lg text-learning-light-foreground dark:text-learning-dark-foreground">
+          {question.question}
+        </p>
 
         <div className="space-y-3">
           {question.options.map((option, index) => (
             <div
               key={index}
-              className={`p-4 rounded-lg border ${
+              className={`p-4 rounded-lg border transition-colors ${
                 isAnswered
                   ? question.type === "single"
                     ? index === question.correctAnswer
-                      ? "border-green-500 bg-green-50"
+                      ? "border-learning-light-success dark:border-learning-dark-success bg-learning-light-success/10 dark:bg-learning-dark-success/10"
                       : selectedAnswers[0] === index
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-200"
+                        ? "border-destructive bg-destructive/10"
+                        : "border-learning-light-border dark:border-learning-dark-border"
                     : question.correctAnswers?.includes(index)
-                      ? "border-green-500 bg-green-50"
+                      ? "border-learning-light-success dark:border-learning-dark-success bg-learning-light-success/10 dark:bg-learning-dark-success/10"
                       : selectedAnswers.includes(index)
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-200"
+                        ? "border-destructive bg-destructive/10"
+                        : "border-learning-light-border dark:border-learning-dark-border"
                   : selectedAnswers.includes(index)
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200"
+                    ? "border-learning-light-accent dark:border-learning-dark-accent bg-learning-light-accent/10 dark:bg-learning-dark-accent/10"
+                    : "border-learning-light-border dark:border-learning-dark-border"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -128,13 +130,23 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
         </div>
 
         {!isAnswered ? (
-          <Button onClick={checkAnswer} disabled={selectedAnswers.length === 0}>
+          <Button
+            onClick={checkAnswer}
+            disabled={selectedAnswers.length === 0}
+            className="bg-primary text-primary-foreground dark:bg-learning-dark-accent hover:bg-primary/90 dark:hover:bg-learning-dark-accent/90 shadow-sm font-medium px-6 py-2 rounded-md"
+          >
             Antwort überprüfen
           </Button>
         ) : (
           <div className="mt-4">
-            <p className="text-gray-600 mb-4">{question.explanation}</p>
-            <Button onClick={handleNext}>
+            <p className="text-learning-light-muted-foreground dark:text-learning-dark-muted-foreground mb-4">
+              {question.explanation}
+            </p>
+            <Button
+              onClick={handleNext}
+              // Verbesserte Button-Stile für bessere Sichtbarkeit
+              className="bg-primary text-primary-foreground dark:bg-learning-dark-accent hover:bg-primary/90 dark:hover:bg-learning-dark-accent/90 shadow-sm font-medium px-6 py-2 rounded-md"
+            >
               {currentQuestion + 1 === quiz.questions.length
                 ? "Quiz abschließen"
                 : "Nächste Frage"}
@@ -143,7 +155,7 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
         )}
       </div>
 
-      <div className="mt-4 text-sm text-gray-500">
+      <div className="mt-4 text-sm text-learning-light-muted-foreground dark:text-learning-dark-muted-foreground">
         Aktueller Punktestand: {score} von {quiz.questions.length} Punkten
       </div>
     </Card>

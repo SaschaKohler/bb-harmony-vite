@@ -79,7 +79,8 @@ module.exports = {
           "card-foreground": "#334155",
           accent: "#e0f2fe", // Sanftes Blau für Akzente
           "accent-foreground": "#0369a1",
-          border: "#e2e8f0",
+          border: "rgba(226, 232, 240, 0.8)", // Softer light border
+          "card-border": "rgba(226, 232, 240, 0.6)", // Even softer for cards
           progress: "#7dd3fc", // Helles, freundliches Blau
           hover: "#f1f5f9",
           // Neue Statusfarben
@@ -98,7 +99,8 @@ module.exports = {
           "card-foreground": "#e2e8f0",
           accent: "#2563eb", // Leuchtendes Blau
           "accent-foreground": "#e2e8f0",
-          border: "#334155",
+          border: "rgba(51, 65, 85, 0.6)", // Softer dark border
+          "card-border": "rgba(51, 65, 85, 0.4)", // Even softer for cards
           progress: "#3b82f6", // Dynamisches Blau
           hover: "#2c3c5c",
           // Neue Statusfarben
@@ -127,6 +129,14 @@ module.exports = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        "light-hover":
+          "0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)",
+        "dark-hover":
+          "0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(148, 163, 184, 0.1)",
+        "card-light": "0 1px 3px rgba(0, 0, 0, 0.05)",
+        "card-dark": "0 1px 3px rgba(0, 0, 0, 0.2)",
       },
       keyframes: {
         "accordion-down": {

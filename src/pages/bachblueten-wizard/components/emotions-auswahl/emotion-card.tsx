@@ -108,7 +108,7 @@ export const EmotionCard: React.FC<EmotionCardProps> = ({
         {isSelected && onIntensityChange && (
           <div className="pt-4 space-y-3 animate-in fade-in slide-in-from-top-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Intensität</span>
+              <span className="text-sm text-muted-foreground">Intensität</span>
               <Badge variant="outline" className="font-medium">
                 {getIntensityLabel(intensity)}
               </Badge>

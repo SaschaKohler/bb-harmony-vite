@@ -55,51 +55,51 @@ export const WizardContent: React.FC = () => {
             <h2 className="text-2xl font-bold">
               Willkommen beim Bachblüten Finder
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-foreground max-w-2xl mx-auto">
               Dieser Wizard hilft dir dabei, die passenden Bachblüten für deine
               aktuelle Situation zu finden. Der Prozess besteht aus drei
               einfachen Schritten:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              <div className="p-6 bg-white rounded-lg shadow-sm border">
+              <div className="p-6 bg-background rounded-lg shadow-sm border">
                 <div className="mb-4">
                   <Badge className="bg-blue-100 text-blue-800 mb-2">
                     Schritt 1
                   </Badge>
                 </div>
                 <h3 className="font-semibold mb-2">Gefühlsbereiche</h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-foreground">
                   Wähle die Gefühlsbereiche aus, die dich aktuell beschäftigen
                 </p>
               </div>
 
-              <div className="p-6 bg-white rounded-lg shadow-sm border">
+              <div className="p-6 bg-muted-backround rounded-lg shadow-sm border">
                 <div className="mb-4">
                   <Badge className="bg-green-100 text-green-800 mb-2">
                     Schritt 2
                   </Badge>
                 </div>
                 <h3 className="font-semibold mb-2">Symptome</h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-foreground">
                   Spezifiziere die konkreten Symptome in den ausgewählten
                   Bereichen
                 </p>
               </div>
 
-              <div className="p-6 bg-white rounded-lg shadow-sm border">
+              <div className="p-6 bg-background rounded-lg shadow-sm border">
                 <div className="mb-4">
                   <Badge className="bg-purple-100 text-purple-800 mb-2">
                     Schritt 3
                   </Badge>
                 </div>
                 <h3 className="font-semibold mb-2">Empfehlung</h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-foreground">
                   Erhalte deine persönliche Bachblüten-Mischung
                 </p>
               </div>
             </div>
 
-            <div className="mt-8 text-gray-600">
+            <div className="mt-8 text-muted-foreground">
               <p>
                 Die Auswahl basiert auf der traditionellen Bachblüten-Therapie
                 und berücksichtigt deine individuellen Bedürfnisse.
@@ -124,7 +124,7 @@ export const WizardContent: React.FC = () => {
     <div className="space-y-8">
       {/* Progress and Step Indicator */}
       <div className="space-y-2">
-        <div className="flex justify-between text-sm text-gray-600">
+        <div className="flex justify-between text-sm text-muted-foreground">
           <span>{currentStepInfo?.title}</span>
           <span>
             Schritt {STEPS.findIndex((step) => step.id === currentStep) + 1} von{" "}

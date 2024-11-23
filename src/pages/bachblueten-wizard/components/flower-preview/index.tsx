@@ -235,7 +235,7 @@ export const BluetenVorschau: React.FC = () => {
 
       {/* Auswahl-Status */}
       {selectedFlowers.length > 0 && (
-        <div className="sticky bottom-0 bg-white border-t shadow-lg p-4">
+        <div className="sticky bottom-0 bg-background border rounded shadow-lg p-4">
           <div className="max-w-4xl mx-auto">
             {/* Obere Zeile: Ausgewählte Blüten */}
             <div className="flex items-center justify-between mb-2">
@@ -256,7 +256,7 @@ export const BluetenVorschau: React.FC = () => {
             {/* Untere Zeile: Statistiken */}
             {selectedFlowers.length > 0 && (
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 rounded-lg p-3">
+                <div className="bg-background rounded-lg p-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Gesamtrelevanz:</span>
                     <Badge variant="secondary">
@@ -264,7 +264,7 @@ export const BluetenVorschau: React.FC = () => {
                     </Badge>
                   </div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
+                <div className="bg-muted rounded-lg p-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
                       Emotionale Abdeckung:

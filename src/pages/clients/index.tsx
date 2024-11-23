@@ -267,13 +267,9 @@ export default function ClientListPage() {
           </p>
         </div>
         <ClientFormDialog onSuccess={fetchClients} />
-        {/* <Button> */}
-        {/*   <Plus className="h-4 w-4 mr-2" /> */}
-        {/*   Neuer Kunde */}
-        {/* </Button> */}
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow-sm border mb-6">
+      <div className="bg-background p-4 rounded-lg shadow-sm border mb-6">
         <div className="flex gap-4">
           <div className="flex-1">
             <Input
@@ -286,7 +282,7 @@ export default function ClientListPage() {
         </div>
       </div>
 
-      <div className="rounded-lg border bg-white shadow-sm">
+      <div className="rounded-lg border bg-background shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -115,7 +115,7 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
         "p-4 cursor-pointer transition-all duration-200",
         "relative h-full", // Volle Höhe
         "flex flex-col", // Flexbox für gleichmäßige Verteilung
-        "hover:shadow-lg hover:-translate-y-0.5",
+        "hover:shadow-lg ",
         isSelected && "ring-2 ring-primary shadow-md bg-primary/5",
       )}
       onClick={onSelect}
@@ -131,7 +131,9 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
       <div
         className={cn(
           "relative aspect-auto rounded-lg overflow-hidden",
-          "h-32 sm:h-48 md:h-56 lg:h-64 xl:h-72 2xl:h-80",
+          "w-24 h-24 sm:w-32 sm:h-32", // Kleinere, quadratische Größe
+          "border border-learning-light-card-border dark:border-learning-dark-card-border",
+          "shadow-sm",
         )}
       >
         <img
@@ -139,7 +141,12 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
           alt={flower.name_german}
           className="object-cover w-full h-full"
         />
-        {isSelected && <div className="absolute inset-0 bg-primary/10" />}
+        {isSelected && (
+          <div
+            className="absolute inset-0 bg-primary/10 dark:bg-primary/20"
+            aria-hidden="true"
+          />
+        )}
       </div>
 
       {/* Blüten-Info */}
@@ -208,7 +215,8 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
                           variant="outline"
                           className="text-xs opacity-80"
                           style={{
-                            borderColor: EMOTION_GROUPS[groupName].color,
+                            // borderColor: EMOTION_GROUPS[groupName].color,
+                            background: EMOTION_GROUPS[groupName].color,
                             color: EMOTION_GROUPS[groupName].textColor,
                           }}
                         >
@@ -265,7 +273,7 @@ export const FlowerCard: React.FC<FlowerCardProps> = ({
                 </TooltipContent>
               </Tooltip>
             </div>
-            <div className="h-2 w-full max-w-[120px] bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-2 w-full max-w-[120px] bg-background rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full transition-all duration-500",

@@ -25,13 +25,19 @@ const LessonCard = ({ lesson, status }: LessonCardProps) => {
   const getStatusIcon = () => {
     switch (status) {
       case "locked":
-        return <Lock className="w-5 h-5 text-gray-400" />;
+        return <Lock className="w-5 h-5 text-muted-foreground" />;
       case "completed":
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return (
+          <CheckCircle className="w-5 h-5 text-learning-light-success dark:text-learning-dark-success" />
+        );
       case "in_progress":
-        return <PlayCircle className="w-5 h-5 text-blue-500" />;
+        return (
+          <PlayCircle className="w-5 h-5 text-learning-light-accent dark:text-learning-dark-accent" />
+        );
       default:
-        return <PlayCircle className="w-5 h-5 text-blue-500" />;
+        return (
+          <PlayCircle className="w-5 h-5 text-learning-light-accent dark:text-learning-dark-accent" />
+        );
     }
   };
 
@@ -83,29 +89,40 @@ const LessonCard = ({ lesson, status }: LessonCardProps) => {
   return (
     <Card
       className={`
-      transition-all duration-200
-      ${status === "locked" ? "opacity-50 cursor-not-allowed" : "hover:shadow-md"}
-    `}
+        transition-all duration-200
+        border border-learning-light-card-border dark:border-learning-dark-card-border
+        shadow-card-light dark:shadow-card-dark
+        ${
+          status === "locked"
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:shadow-md transition-transform hover:-translate-y-0.5"
+        }
+      `}
     >
       <CardHeader className="p-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
+          <CardTitle className="text-lg flex items-center gap-2 text-learning-light-card-foreground dark:text-learning-dark-card-foreground">
             {getStatusIcon()}
             {lesson.title}
           </CardTitle>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-learning-light-muted-foreground dark:text-learning-dark-muted-foreground">
             <span>{getDurationText()}</span>
             {status === "in_progress" && (
-              <Progress value={0} className="w-24" />
+              <Progress
+                value={0}
+                className="w-24 bg-learning-light-muted dark:bg-learning-dark-muted"
+              />
             )}
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-0">
-        <p className="text-gray-600 mb-4">{lesson.description}</p>
+        <p className="text-learning-light-foreground dark:text-learning-dark-foreground mb-4">
+          {lesson.description}
+        </p>
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
-            <span className="text-sm text-gray-500">
+            <span className={`text-sm lesson-status status-${status}`}>
               {status === "locked"
                 ? "Gesperrt"
                 : status === "completed"
@@ -114,7 +131,9 @@ const LessonCard = ({ lesson, status }: LessonCardProps) => {
                     ? "In Bearbeitung"
                     : "Verfügbar"}
             </span>
-            <span className="text-xs text-gray-400">{prerequisitesText}</span>
+            <span className="text-xs text-learning-light-muted-foreground dark:text-learning-dark-muted-foreground">
+              {prerequisitesText}
+            </span>
           </div>
           {status !== "locked" && (
             <Button
@@ -122,6 +141,7 @@ const LessonCard = ({ lesson, status }: LessonCardProps) => {
               size="sm"
               onClick={handleStart}
               disabled={updateProgress.isPending || !isAuthenticated}
+              className="bg-learning-light-accent dark:bg-learning-dark-accent hover:bg-learning-light-accent/90 dark:hover:bg-learning-dark-accent/90"
             >
               {updateProgress.isPending
                 ? "Wird geladen..."

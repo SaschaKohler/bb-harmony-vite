@@ -1,5 +1,3 @@
-// src/pages/bachblueten-wizard/components/symptome-auswahl/index.tsx
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -28,7 +26,7 @@ export const SymptomeAuswahl: React.FC = () => {
           <h2 className="text-2xl font-bold">
             Welche dieser Symptome treffen auf dich zu?
           </h2>
-          <p className="text-gray-600">
+          <p className="text-foreground">
             Basierend auf deinen ausgewählten Gefühlsbereichen findest du hier
             spezifische Symptome. Wähle alle aus, die auf dich zutreffen.
           </p>
@@ -65,14 +63,14 @@ export const SymptomeAuswahl: React.FC = () => {
         <h2 className="text-2xl font-bold">
           Welche dieser Symptome treffen auf dich zu?
         </h2>
-        <p className="text-gray-600">
+        <p className="text-foreground">
           Basierend auf deinen ausgewählten Gefühlsbereichen findest du hier
           spezifische Symptome. Wähle alle aus, die auf dich zutreffen.
         </p>
       </div>
 
       <ScrollArea className="h-[600px]">
-        <div className="space-y-8">
+        <div className="space-y-8 px-3">
           {selectedEmotionGroups.map((groupName) => {
             const groupInfo = EMOTION_GROUPS[groupName];
             const symptoms = getSymptomsByEmotionGroup(groupName);
@@ -94,10 +92,10 @@ export const SymptomeAuswahl: React.FC = () => {
                     <Card
                       key={symptom.id}
                       className={cn(
-                        "p-4 cursor-pointer transition-all duration-200",
+                        "p-4 cursor-pointer border-muted  transition-all duration-200",
                         selectedSymptoms.includes(symptom.id)
-                          ? "ring-2 bg-primary/5"
-                          : "hover:bg-gray-50",
+                          ? "ring-2 bg-accent/10"
+                          : "dark:hover:border-red-100",
                       )}
                       style={
                         {
@@ -125,7 +123,7 @@ export const SymptomeAuswahl: React.FC = () => {
                           )}
                         </div>
                         {symptom.description && (
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-foreground">
                             {symptom.description}
                           </p>
                         )}

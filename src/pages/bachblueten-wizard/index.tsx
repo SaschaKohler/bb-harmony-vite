@@ -8,7 +8,7 @@ const BachbluetenWizardPage: React.FC = () => {
     <div className="container mx-auto py-6">
       <header className="mb-6">
         <h1 className="text-3xl font-bold">Bachblüten Finder</h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-muted-foreground mt-2">
           Finde die passenden Bachblüten für deine aktuelle Situation
         </p>
       </header>
