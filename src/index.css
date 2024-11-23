@@ -8,85 +8,65 @@
 @tailwind utilities;
 @layer base {
   :root {
+    /* Light Mode Defaults */
     --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --foreground: 217 33% 17%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 217 33% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 217 33% 17%;
 
-    --primary: 225 73% 57%;
+    --primary: 217 91% 60%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 271 81% 53%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 217 33% 17%;
 
-    --muted: 210 40% 93%;
-    --muted-foreground: 215.4 16.3% 40%;
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 25% 27%;
 
-    --accent: 181 71% 56%;
-    --accent-foreground: 222 47% 11%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --success: 142 72% 29%;
-    --success-foreground: 210 40% 98%;
-
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 47% 11%;
-
-    --border: 214.3 31.8% 85%;
-    --input: 214.3 31.8% 85%;
-    --ring: 225 73% 57%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 217 33% 17%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* Dark Mode Defaults */
+    --background: 217 33% 17%;
+    --foreground: 214 32% 91%;
 
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 25% 21%;
+    --card-foreground: 214 32% 91%;
 
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 25% 21%;
+    --popover-foreground: 214 32% 91%;
 
-    --primary: 225 73% 57%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 214 32% 91%;
 
-    --secondary: 271 81% 53%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 25% 21%;
+    --secondary-foreground: 214 32% 91%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 75%;
+    --muted: 220 25% 24%;
+    --muted-foreground: 214 32% 91%;
 
-    --accent: 181 71% 56%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --success: 142 72% 29%;
-    --success-foreground: 210 40% 98%;
-
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 47% 11%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 225 73% 57%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 214 32% 91%;
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 }
 @layer utilities {
@@ -94,6 +74,52 @@
     transform: scale(1.02);
     transition: transform 200ms ease-out;
   }
+}
+
+/* Utility Klassen für Lektionskarten */
+.lesson-card {
+  @apply relative p-4 transition-all duration-200;
+}
+
+.light .lesson-card {
+  @apply bg-learning-light-card 
+         hover:bg-learning-light-hover
+         border-learning-light-border;
+}
+
+.dark .lesson-card {
+  @apply bg-learning-dark-card
+         hover:bg-learning-dark-hover
+         border-learning-dark-border;
+}
+
+/* Status Styles */
+.lesson-status {
+  @apply px-2 py-1 rounded-full text-sm font-medium;
+}
+
+.light .status-pending {
+  @apply bg-status-pending-light text-yellow-800;
+}
+
+.dark .status-pending {
+  @apply bg-status-pending-dark text-yellow-100;
+}
+
+.light .status-active {
+  @apply bg-status-active-light text-blue-800;
+}
+
+.dark .status-active {
+  @apply bg-status-active-dark text-blue-100;
+}
+
+.light .status-completed {
+  @apply bg-status-completed-light text-green-800;
+}
+
+.dark .status-completed {
+  @apply bg-status-completed-dark text-green-100;
 }
 /* Harmonische Farbübergänge */
 .harmony-gradient {

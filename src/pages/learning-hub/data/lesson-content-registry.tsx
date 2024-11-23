@@ -24,7 +24,7 @@ export const lessonsContent: Record<string, LessonContent> = {
               und Immunologe, dessen Weg von der konventionellen Medizin zur
               Naturheilkunde das Gesundheitswesen nachhaltig prägte.
             </p>
-            <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Wichtige Lebensstationen:</h4>
               <ul className="list-disc pl-5 space-y-2">
                 <li>1886: Geboren in Moseley, Birmingham</li>
@@ -47,7 +47,7 @@ export const lessonsContent: Record<string, LessonContent> = {
           <div className="space-y-4">
             <h3 className="text-xl font-bold">Der wissenschaftliche Weg</h3>
             <div className="grid gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">
                   Bakteriologische Forschung
                 </h4>
@@ -58,7 +58,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                   erster Schritt in Richtung ganzheitlicher Behandlung.
                 </p>
               </div>
-              <div className="bg-green-50 p-4 rounded-lg">
+              <div className="learning-hub-card p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Schlüsselerkenntnisse</h4>
                 <ul className="list-disc pl-5">
                   <li>Zusammenhang zwischen Persönlichkeit und Krankheit</li>
@@ -75,7 +75,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Grundlagen der Bach-Blütentherapie",
         content: (
           <div className="space-y-4">
-            <div className="bg-yellow-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Philosophische Basis</h4>
               <p className="italic mb-4">
                 "Krankheit ist keine Grausamkeit, auch keine Strafe, sondern
@@ -84,7 +84,7 @@ export const lessonsContent: Record<string, LessonContent> = {
               </p>
             </div>
             <div className="grid gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Kernprinzipien:</h4>
                 <ul className="list-disc pl-5">
                   <li>Einheit von Körper und Seele</li>
@@ -103,7 +103,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         content: (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-purple-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Phase 1 (1928-1932)</h4>
                 <ul className="list-disc pl-5">
                   <li>
@@ -117,7 +117,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                   <li>Entwicklung der Sonnenmethode</li>
                 </ul>
               </div>
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Phase 2 (1932-1935)</h4>
                 <ul className="list-disc pl-5">
                   <li>Entwicklung der Kochmethode</li>
@@ -135,7 +135,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         content: (
           <div className="space-y-4">
             <div className="grid gap-4">
-              <div className="bg-yellow-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Die Sonnenmethode</h4>
                 <p>
                   Für zarte Blüten: Dreistündige Sonnenexposition in Quellwasser
@@ -146,7 +146,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                   <li>Glasschalen als Medium</li>
                 </ul>
               </div>
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Die Kochmethode</h4>
                 <p>Für Bäume und holzige Pflanzen: 30-minütiges Kochen</p>
                 <ul className="list-disc pl-5 mt-2">
@@ -166,7 +166,7 @@ export const lessonsContent: Record<string, LessonContent> = {
           <div className="space-y-4">
             <h3 className="text-xl font-bold">Die 38 Blütenessenzen</h3>
             <div className="grid gap-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Die sieben Grundthemen:</h4>
                 <ul className="list-disc pl-5">
                   <li>Angst und ihre Erscheinungsformen</li>
@@ -188,7 +188,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         content: (
           <div className="space-y-4">
             <div className="grid gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Wirkungsprinzipien</h4>
                 <ul className="list-disc pl-5">
                   <li>Energetische Übertragung</li>
@@ -196,7 +196,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                   <li>Resonanzprinzip mit emotionalen Zuständen</li>
                 </ul>
               </div>
-              <div className="bg-green-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Moderne Forschung</h4>
                 <ul className="list-disc pl-5">
                   <li>Klinische Beobachtungsstudien</li>
@@ -214,7 +214,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         content: (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">Aktuelle Einsatzgebiete:</h4>
                 <ul className="list-disc pl-5">
                   <li>Emotionale Selbstregulation</li>
@@ -223,7 +223,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                   <li>Präventive Gesundheitsvorsorge</li>
                 </ul>
               </div>
-              <div className="bg-green-50 p-4 rounded-lg">
+              <div className="bg-background p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">
                   Integration in die Medizin:
                 </h4>
@@ -419,7 +419,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Ganzheitliches Menschenbild",
         content: (
           <div className="space-y-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Das holistische Prinzip</h4>
               <p>
                 Die Bach-Blütentherapie basiert auf einem ganzheitlichen
@@ -432,7 +432,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Geist (mentale Ebene)</li>
               </ul>
             </div>
-            <div className="bg-yellow-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Praxisrelevanz:</h4>
               <p>
                 Dieses Verständnis erfordert einen therapeutischen Ansatz, der:
@@ -451,7 +451,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Das Verständnis von Gesundheit und Krankheit",
         content: (
           <div className="space-y-4">
-            <div className="bg-green-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Gesundheit als Harmonie</h4>
               <p>
                 Nach Dr. Bach ist Gesundheit mehr als die Abwesenheit von
@@ -464,7 +464,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Spirituellem Wohlbefinden</li>
               </ul>
             </div>
-            <div className="bg-red-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Krankheit als Botschaft</h4>
               <blockquote className="italic border-l-4 pl-4 my-2">
                 "Krankheit ist in ihrer Endursache so unmateriell wie das Gemüt
@@ -486,7 +486,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Die Rolle der Emotionen",
         content: (
           <div className="space-y-4">
-            <div className="bg-purple-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">
                 Emotionale Balance als Schlüssel
               </h4>
@@ -500,7 +500,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Verdrängte Gefühle können krank machen</li>
               </ul>
             </div>
-            <div className="bg-blue-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Therapeutische Konsequenz:</h4>
               <p>Die Behandlung zielt auf:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -517,7 +517,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Das Prinzip der Individualität",
         content: (
           <div className="space-y-4">
-            <div className="bg-yellow-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">
                 Jeder Mensch ist einzigartig
               </h4>
@@ -531,7 +531,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Eigener Entwicklungsweg</li>
               </ul>
             </div>
-            <div className="bg-green-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Praktische Umsetzung:</h4>
               <p>Dies bedeutet für die Therapie:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -548,7 +548,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Selbstheilungskräfte und Naturheilkunde",
         content: (
           <div className="space-y-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">
                 Vertrauen in die Naturheilkraft
               </h4>
@@ -562,7 +562,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Sanfte Begleitung statt Intervention</li>
               </ul>
             </div>
-            <div className="bg-amber-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Therapeutische Haltung:</h4>
               <p>Der Therapeut versteht sich als:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -579,7 +579,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Ethische Grundsätze",
         content: (
           <div className="space-y-4">
-            <div className="bg-indigo-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Therapeutische Ethik</h4>
               <p>Die Bach-Blütentherapie folgt klaren ethischen Prinzipien:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -588,7 +588,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Unterstützung der persönlichen Entwicklung</li>
               </ul>
             </div>
-            <div className="bg-rose-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Praktische Umsetzung:</h4>
               <p>Dies bedeutet im therapeutischen Alltag:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -606,7 +606,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Integration in die moderne Heilkunde",
         content: (
           <div className="space-y-4">
-            <div className="bg-cyan-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Komplementärer Ansatz</h4>
               <p>Die Bach-Blütentherapie versteht sich als:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -615,7 +615,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Brücke zwischen traditioneller und moderner Heilkunst</li>
               </ul>
             </div>
-            <div className="bg-teal-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Moderne Anwendung:</h4>
               <p>Aktuelle Integrationsmöglichkeiten:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -827,7 +827,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Grundlagen der energetischen Wirkung",
         content: (
           <div className="space-y-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">
                 Energetische Grundprinzipien
               </h4>
@@ -841,7 +841,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Resonanzprinzip mit menschlichen Energiefeldern</li>
               </ul>
             </div>
-            <div className="bg-yellow-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Wissenschaftlicher Kontext:</h4>
               <ul className="list-disc pl-5 mt-2">
                 <li>Quantenphysikalische Betrachtungen</li>
@@ -857,7 +857,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Die Sonnenmethode im Detail",
         content: (
           <div className="space-y-4">
-            <div className="bg-amber-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Physikalische Prinzipien</h4>
               <p>
                 Bei der Sonnenmethode wirken verschiedene physikalische
@@ -870,7 +870,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Energetische Übertragung der Blüteninformation</li>
               </ul>
             </div>
-            <div className="bg-green-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Praktische Aspekte:</h4>
               <ul className="list-disc pl-5 mt-2">
                 <li>Bedeutung der Wasserqualität</li>
@@ -887,7 +887,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Die Kochmethode und ihre Wirkung",
         content: (
           <div className="space-y-4">
-            <div className="bg-red-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Thermodynamische Prozesse</h4>
               <p>
                 Die Kochmethode nutzt thermische Energie zur
@@ -900,7 +900,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Potenzierung der Blüteninformation</li>
               </ul>
             </div>
-            <div className="bg-purple-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Anwendungsprinzipien:</h4>
               <ul className="list-disc pl-5 mt-2">
                 <li>Optimale Kochdauer</li>
@@ -917,7 +917,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Informationsübertragung im Wasser",
         content: (
           <div className="space-y-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">
                 Wasserstruktur und Information
               </h4>
@@ -929,7 +929,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Bedeutung der Potenzierung</li>
               </ul>
             </div>
-            <div className="bg-cyan-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Wissenschaftliche Perspektiven:</h4>
               <ul className="list-disc pl-5 mt-2">
                 <li>Aktuelle Wasserforschung</li>
@@ -946,7 +946,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Resonanz mit dem menschlichen Energiesystem",
         content: (
           <div className="space-y-4">
-            <div className="bg-indigo-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">
                 Bioenergetische Interaktion
               </h4>
@@ -958,7 +958,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Informationsvermittlung auf Zellebene</li>
               </ul>
             </div>
-            <div className="bg-violet-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Praktische Bedeutung:</h4>
               <ul className="list-disc pl-5 mt-2">
                 <li>Individuelles Ansprechen</li>
@@ -975,7 +975,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Von der Blüte zur Wirkung",
         content: (
           <div className="space-y-4">
-            <div className="bg-emerald-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Wirkungskette</h4>
               <p>Der Weg von der Blüte zur therapeutischen Wirkung:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -985,7 +985,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Transformation der Emotionen</li>
               </ul>
             </div>
-            <div className="bg-teal-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Qualitätsfaktoren:</h4>
               <ul className="list-disc pl-5 mt-2">
                 <li>Reinheit der Ausgangsstoffe</li>
@@ -1002,7 +1002,7 @@ export const lessonsContent: Record<string, LessonContent> = {
         title: "Wissenschaftliche Perspektiven",
         content: (
           <div className="space-y-4">
-            <div className="bg-rose-50 p-4 rounded-lg">
+            <div className="bg-background p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Aktuelle Forschung</h4>
               <p>Wissenschaftliche Untersuchungen zur Wirksamkeit:</p>
               <ul className="list-disc pl-5 mt-2">
@@ -1012,7 +1012,7 @@ export const lessonsContent: Record<string, LessonContent> = {
                 <li>Systematische Reviews</li>
               </ul>
             </div>
-            <div className="bg-orange-50 p-4 rounded-lg mt-4">
+            <div className="bg-background p-4 rounded-lg mt-4">
               <h4 className="font-semibold">Zukünftige Entwicklungen:</h4>
               <ul className="list-disc pl-5 mt-2">
                 <li>Neue Forschungsmethoden</li>

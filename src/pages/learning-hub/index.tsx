@@ -70,7 +70,7 @@ const LearningHubContent = () => {
         <div className="flex items-center gap-4">
           <Progress
             value={activeModule ? calculateModuleProgress(activeModule) : 0}
-            className="w-64"
+            className="w-64 learning-progress"
           />
           <span className="text-sm text-gray-600">
             {activeModule ? calculateModuleProgress(activeModule) : 0}% des

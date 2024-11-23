@@ -28,7 +28,7 @@ export function SelectionFilters({
   onResetFilters,
 }: SelectionFiltersProps) {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border mb-6 space-y-4">
+    <div className="bg-background p-4 rounded-lg shadow-sm border mb-6 space-y-4">
       <h2 className="font-medium text-sm text-muted-foreground mb-3">Filter</h2>
       <div className="flex flex-col sm:flex-row gap-4">
         {/* Klientensuche */}

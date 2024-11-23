@@ -42,20 +42,17 @@ const FlowerSelectionDetails = ({ selection }) => {
       </div>
 
       {/* Blütenliste */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2 ">
         {selection.selection_flowers
           .sort((a, b) => a.position - b.position)
           .map((sf) => (
             <div
               key={sf.flower.id}
-              className="flex items-center gap-2 p-2 bg-violet-50/50 rounded-md border border-violet-100"
+              className="flex items-center gap-2 p-2  rounded-md border bg-muted"
             >
-              <span className="text-violet-600 font-mono text-sm min-w-[24px]">
-                {sf.position.toString().padStart(2, "0")}
-              </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline gap-1.5 flex-wrap">
-                  <span className="text-sm font-medium text-violet-900 whitespace-nowrap">
+                  <span className="text-sm font-medium text-accent-foreground whitespace-nowrap">
                     Nr.{sf.flower.number}
                   </span>
                   <span className="text-sm font-medium truncate">
@@ -63,7 +60,7 @@ const FlowerSelectionDetails = ({ selection }) => {
                   </span>
                 </div>
                 <span
-                  className="text-xs text-violet-600 block truncate"
+                  className="text-xs text-accent-foreground block truncate"
                   title={sf.flower.name_german}
                 >
                   {sf.flower.name_german}

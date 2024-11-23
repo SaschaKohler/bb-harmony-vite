@@ -4,7 +4,23 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>BloomBalance pro</title>
+    <!-- Prevent theme flashing -->
+    <script>
+      // This script prevents flash of wrong theme
+      let theme;
+      try {
+        theme = localStorage.getItem("theme") || "system";
+        if (theme === "system") {
+          theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+        document.documentElement.classList[theme === "dark" ? "add" : "remove"](
+          "dark",
+        );
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

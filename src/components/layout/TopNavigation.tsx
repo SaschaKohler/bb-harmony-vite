@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, User, LogOut, Settings } from "lucide-react";
+import { ThemeToggle } from "../theme-toggle";
 
 const TopNavigation: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -18,7 +19,7 @@ const TopNavigation: React.FC = () => {
   };
 
   return (
-    <header className="bg-white shadow-md p-4">
+    <header className="bg-background shadow-md p-4">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">BloomBalance pro</h2>
         <div className="flex items-center">
@@ -39,7 +40,14 @@ const TopNavigation: React.FC = () => {
               <ChevronDown className="w-4 h-4" />
             </button>
             {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+              <div className="absolute right-0 mt-2 w-48 bg-background rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                <a
+                  href="#"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                >
+                  <ThemeToggle />
+                </a>
+
                 <Link
                   to="/profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
