@@ -27,6 +27,7 @@ const LessonDetailPage = lazy(
   () => import("@/pages/learning-hub/components/lesson/LessonDetailPage"),
 );
 const FlowerLibraryPage = lazy(() => import("@/pages/flower-library"));
+const TherapySessionsPage = lazy(() => import("@/pages/therapy-sessions"));
 
 interface RouteConfig {
   path: string;
@@ -131,6 +132,12 @@ export const routes: RoutesConfig = {
           element: ClientListPage,
           name: "Klienten",
           icon: Users,
+        },
+        {
+          path: "/therapy-sessions",
+          element: TherapySessionsPage,
+          name: "Therapiesitzungen",
+          icon: FileText,
         },
       ],
     },
