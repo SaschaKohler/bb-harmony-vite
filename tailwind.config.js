@@ -69,18 +69,58 @@ module.exports = {
           red: "hsl(348, 83%, 47%)", // Mutlosigkeit
           turquoise: "hsl(181, 71%, 56%)", // Fürsorge
         },
-        // Neue Learning Hub spezifische Farben
+        // Light Mode spezifische Farben
+        "learning-light": {
+          background: "#f8fafc", // Sanftes, warmes Weiß
+          foreground: "#334155",
+          muted: "#f1f5f9",
+          "muted-foreground": "#64748b",
+          card: "#ffffff",
+          "card-foreground": "#334155",
+          accent: "#e0f2fe", // Sanftes Blau für Akzente
+          "accent-foreground": "#0369a1",
+          border: "#e2e8f0",
+          progress: "#7dd3fc", // Helles, freundliches Blau
+          hover: "#f1f5f9",
+          // Neue Statusfarben
+          success: "#86efac", // Sanftes Grün
+          warning: "#fde68a", // Sanftes Gelb
+          info: "#bae6fd", // Helles Blau
+        },
+
+        // Dark Mode spezifische Farben
         "learning-dark": {
-          background: "#1a1c2a", // Dunkleres, wärmeres Blau
+          background: "#1e293b", // Warmeres Dunkelblau
           foreground: "#e2e8f0",
-          muted: "#2d3748",
-          "muted-foreground": "#a0aec0",
-          accent: "#3d4b6e", // Gedämpftes Blau für Akzente
-          border: "#2d3748",
-          card: "#242736", // Leicht hellerer Hintergrund für Karten
+          muted: "#334155",
+          "muted-foreground": "#94a3b8",
+          card: "#243247", // Wärmerer Kartenhintergrund
           "card-foreground": "#e2e8f0",
-          progress: "#4c51bf", // Violett für Fortschrittsanzeigen
-          hover: "#2d324d", // Hover-Effekt Farbe
+          accent: "#2563eb", // Leuchtendes Blau
+          "accent-foreground": "#e2e8f0",
+          border: "#334155",
+          progress: "#3b82f6", // Dynamisches Blau
+          hover: "#2c3c5c",
+          // Neue Statusfarben
+          success: "#22c55e", // Leuchtendes Grün
+          warning: "#fbbf24", // Warmes Gelb
+          info: "#38bdf8", // Helles Blau
+        },
+
+        // Status Farben für beide Modi
+        status: {
+          pending: {
+            light: "#fef9c3", // Sanftes Gelb
+            dark: "#854d0e", // Warmes Dunkelgelb
+          },
+          active: {
+            light: "#dbeafe", // Sanftes Blau
+            dark: "#1e40af", // Warmes Dunkelblau
+          },
+          completed: {
+            light: "#dcfce7", // Sanftes Grün
+            dark: "#166534", // Warmes Dunkelgrün
+          },
         },
       },
       borderRadius: {
