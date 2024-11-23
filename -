@@ -9,7 +9,6 @@ import {
   LogIn,
   Settings,
   MessageCircle,
-  Flower2,
 } from "lucide-react";
 
 // Lazy loaded components
