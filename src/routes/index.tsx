@@ -111,11 +111,6 @@ export const routes: RoutesConfig = {
           icon: Brain,
         },
         {
-          path: "/learning-hub/:lessonId",
-          element: LessonDetailPage,
-          name: "Lektion",
-        },
-        {
           path: "/flower-library",
           element: FlowerLibraryPage,
           name: "Blüten-Bibliothek",

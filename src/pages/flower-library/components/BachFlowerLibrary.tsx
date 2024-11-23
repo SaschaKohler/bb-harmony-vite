@@ -92,6 +92,20 @@ export default function BachFlowerLibrary({ flowers }: BachFlowerLibraryProps) {
       .filter(Boolean);
   };
 
+  const getSpecificSymptoms = (flower: BachFlowerLibraryProps): string[] => {
+    // Hole nur die spezifischen Symptome dieser Blüte
+    const primarySymptoms = flower.flower_symptom_relations
+      .filter((rel) => rel.is_primary && rel.symptom)
+      .map((rel) => rel.symptom?.name)
+      .filter((symptom): symptom is string => Boolean(symptom));
+
+    // Entferne allgemeine Gruppenbeschreibungen
+    return primarySymptoms.filter(
+      (symptom) =>
+        !symptom.toLowerCase().includes("diese gruppe hilft bei") &&
+        !symptom.toLowerCase().includes("die blüten in dieser gruppe"),
+    );
+  };
   const getTransformationText = (flowerName: string) => {
     const transformation =
       FLOWER_TRANSFORMATIONS[flowerName.toLowerCase().replace(/\s+/g, "_")];
@@ -235,16 +249,6 @@ export default function BachFlowerLibrary({ flowers }: BachFlowerLibraryProps) {
                     <p className="text-sm italic">{flower.affirmation}</p>
                   </div>
                 )}
-
-                {/* Anwendungsbereiche */}
-                <div>
-                  <h4 className="text-sm font-semibold mb-2">Anwendung bei</h4>
-                  <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-                    {getApplicationAreas(flower).map((area, index) => (
-                      <li key={index}>{area}</li>
-                    ))}
-                  </ul>
-                </div>
               </CardContent>
             </Card>
           );
