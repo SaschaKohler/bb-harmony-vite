@@ -10,6 +10,7 @@ import {
   Settings,
   MessageCircle,
   Flower2,
+  Calendar,
 } from "lucide-react";
 
 // Lazy loaded components
@@ -28,6 +29,9 @@ const LessonDetailPage = lazy(
 );
 const FlowerLibraryPage = lazy(() => import("@/pages/flower-library"));
 const TherapySessionsPage = lazy(() => import("@/pages/therapy-sessions"));
+const TherapySessionDetailPage = lazy(
+  () => import("@/pages/therapy-sessions/[id]"),
+);
 
 interface RouteConfig {
   path: string;
@@ -71,6 +75,31 @@ export const routes: RoutesConfig = {
           name: "Dashboard",
           icon: Home,
         },
+      ],
+    },
+    {
+      label: "Therapie",
+      routes: [
+        {
+          path: "/therapy-sessions",
+          element: TherapySessionsPage,
+          name: "Therapiesitzungen",
+          icon: Calendar,
+        },
+        {
+          path: "/therapy-sessions/:sessionId",
+          element: TherapySessionDetailPage,
+          name: "Sitzungsdetails",
+          // versteckt in der Navigation
+          hidden: true,
+        },
+        {
+          path: "/bachbluten-rad",
+          element: BachblutenRad,
+          name: "Bachblüten Rad",
+          icon: Compass,
+        },
+        // ... andere Therapie-bezogene Routen
       ],
     },
     {

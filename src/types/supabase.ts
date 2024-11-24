@@ -309,6 +309,7 @@ export type Database = {
           follow_up_date: string | null
           id: string
           notes: string | null
+          session_id: string | null
           status: string | null
           therapist_id: string
           updated_at: string | null
@@ -322,6 +323,7 @@ export type Database = {
           follow_up_date?: string | null
           id?: string
           notes?: string | null
+          session_id?: string | null
           status?: string | null
           therapist_id: string
           updated_at?: string | null
@@ -335,11 +337,26 @@ export type Database = {
           follow_up_date?: string | null
           id?: string
           notes?: string | null
+          session_id?: string | null
           status?: string | null
           therapist_id?: string
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_flower_selections_therapy_sessions"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "therapy_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_flower_selections_therapy_sessions"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "view_therapy_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "flower_selections_client_id_fkey"
             columns: ["client_id"]
@@ -352,6 +369,20 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flower_selections_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "therapy_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flower_selections_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "view_therapy_sessions"
             referencedColumns: ["id"]
           },
         ]

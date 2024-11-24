@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar, FileText, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,29 +12,42 @@ interface SessionListProps {
   onSelectSession: (session: SessionWithDetails) => void;
 }
 
-export function SessionList({ sessions, onSelectSession }: SessionListProps) {
-  const getStatusBadge = (status: string) => {
-    const variants: Record<
-      string,
-      "default" | "secondary" | "success" | "destructive" | "warning"
-    > = {
-      scheduled: "default",
-      in_progress: "secondary",
-      completed: "success",
-      cancelled: "destructive",
-      no_show: "warning",
-    };
+const sessionTypeLabels: Record<string, string> = {
+  initial_consultation: "Erstgespräch",
+  follow_up: "Folgesitzung",
+  emergency: "Notfallsitzung",
+  online: "Online-Beratung",
+};
 
-    return <Badge variant={variants[status] || "default"}>{status}</Badge>;
+const statusLabels: Record<
+  string,
+  {
+    label: string;
+    variant: "default" | "secondary" | "success" | "destructive" | "warning";
+  }
+> = {
+  scheduled: { label: "Geplant", variant: "default" },
+  in_progress: { label: "In Bearbeitung", variant: "secondary" },
+  completed: { label: "Abgeschlossen", variant: "success" },
+  cancelled: { label: "Storniert", variant: "destructive" },
+  no_show: { label: "Nicht erschienen", variant: "warning" },
+};
+
+export function SessionList({ sessions, onSelectSession }: SessionListProps) {
+  const navigate = useNavigate();
+  const getStatusBadge = (status: string) => {
+    const statusInfo = statusLabels[status] || statusLabels.scheduled;
+
+    return <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>;
   };
-  console.log(sessions);
+
   return (
     <div className="grid gap-4">
       {sessions.map((session) => (
         <Card
           key={session.id}
           className="hover:shadow-md transition-shadow cursor-pointer"
-          onClick={() => onSelectSession(session)}
+          onClick={() => navigate(`/therapy-sessions/${session.id}`)}
         >
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
@@ -41,7 +55,7 @@ export function SessionList({ sessions, onSelectSession }: SessionListProps) {
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4 text-muted-foreground" />
                   <span className="font-medium">
-                    {session.client_first_name} {session.client_last_name}
+                    {session.client?.first_name} {session.client?.last_name}
                   </span>
                   {getStatusBadge(session.status)}
                 </div>
@@ -49,13 +63,15 @@ export function SessionList({ sessions, onSelectSession }: SessionListProps) {
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    {format(new Date(session.start_time), "PPp", {
-                      locale: de,
-                    })}
+                    {format(
+                      new Date(session.start_time),
+                      "EEEE, d. MMMM yyyy 'um' HH:mm 'Uhr'",
+                      { locale: de },
+                    )}
                   </div>
                   <div className="flex items-center gap-1">
                     <FileText className="w-4 h-4" />
-                    {session.session_type}
+                    {sessionTypeLabels[session.session_type]}
                   </div>
                 </div>
               </div>

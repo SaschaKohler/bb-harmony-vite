@@ -20,13 +20,26 @@ export function useTherapySessions() {
     null,
   );
 
-  // Fetch sessions
+  // Liste aller Sitzungen
   const { data: sessions, isLoading } = useQuery({
     queryKey: ["therapy-sessions"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("view_therapy_sessions")
-        .select("*")
+        .from("therapy_sessions")
+        .select(
+          `
+          *,
+          client:clients(
+            first_name,
+            last_name,
+            email
+          ),
+          calendar_event:calendar_events(
+            google_event_id
+          ),
+          protocol:session_protocols(*)
+        `,
+        )
         .eq("therapist_id", user?.id)
         .order("start_time", { ascending: false });
 
@@ -35,6 +48,75 @@ export function useTherapySessions() {
     },
     enabled: !!user?.id,
   });
+
+  // Einzelne Sitzung abrufen
+  const useSession = (sessionId?: string) => {
+    return useQuery({
+      queryKey: ["therapy-session", sessionId],
+      queryFn: async () => {
+        if (!sessionId || !user?.id) {
+          throw new Error("Sitzungs-ID oder Benutzer fehlt");
+        }
+
+        const { data: session, error: sessionError } = await supabase
+          .from("therapy_sessions")
+          .select(
+            `
+            *,
+            client:clients (
+              first_name,
+              last_name,
+              email
+            ),
+            calendar_event:calendar_events (
+              google_event_id
+            ),
+            protocol:session_protocols (*),
+            flower_selections (
+              id,
+              notes,
+              dosage_notes,
+              duration_weeks,
+              created_at,
+              selection_flowers (
+                flower:bach_flowers (*)
+              )
+            )
+          `,
+          )
+          .eq("id", sessionId)
+          .single();
+
+        if (sessionError) throw sessionError;
+
+        if (!session) {
+          throw new Error("Sitzung nicht gefunden");
+        }
+
+        // Transformiere die Daten in das erwartete Format
+        const flowerSelection = session.flower_selections?.[0];
+        const transformedSession = {
+          ...session,
+          flower_selection: flowerSelection
+            ? {
+                id: flowerSelection.id,
+                notes: flowerSelection.notes,
+                dosage_notes: flowerSelection.dosage_notes,
+                duration_weeks: flowerSelection.duration_weeks,
+                created_at: flowerSelection.created_at,
+                flowers:
+                  flowerSelection.selection_flowers?.map((sf) => sf.flower) ||
+                  [],
+              }
+            : undefined,
+          flower_selections: undefined, // Entferne das Original-Array
+        };
+
+        return transformedSession;
+      },
+      enabled: !!sessionId && !!user?.id,
+    });
+  };
 
   // Create session
   const createSession = useMutation({
@@ -54,7 +136,12 @@ export function useTherapySessions() {
         .select()
         .single();
 
-      if (calendarError) throw calendarError;
+      if (calendarError) {
+        toast.error("Kalendareintrag konnte nicht erstellt werden", {
+          description: calendarError.message,
+        });
+        throw calendarError;
+      }
 
       // 2. Create therapy session
       const { data: session, error: sessionError } = await supabase
@@ -69,7 +156,28 @@ export function useTherapySessions() {
         .select()
         .single();
 
-      if (sessionError) throw sessionError;
+      if (sessionError) {
+        // Cleanup calendar event if session creation fails
+        await supabase
+          .from("calendar_events")
+          .delete()
+          .eq("id", calendarEvent.id);
+
+        if (
+          sessionError.code === "P0001" &&
+          sessionError.message.includes("Terminüberschneidung")
+        ) {
+          toast.error("Terminüberschneidung", {
+            description:
+              "Für diesen Zeitraum existiert bereits ein Termin. Bitte wählen Sie eine andere Zeit.",
+          });
+        } else {
+          toast.error("Fehler beim Erstellen der Sitzung", {
+            description: sessionError.message,
+          });
+        }
+        throw sessionError;
+      }
 
       return session;
     },
@@ -78,12 +186,18 @@ export function useTherapySessions() {
       toast.success("Therapiesitzung erfolgreich erstellt");
     },
     onError: (error) => {
-      toast.error("Fehler beim Erstellen der Therapiesitzung");
-      console.error("Session creation error:", error);
+      console.error("Error creating session:", error);
+      // Generische Fehlermeldung nur wenn keine spezifische bereits gezeigt wurde
+      if (!error.message?.includes("Terminüberschneidung")) {
+        toast.error("Unerwarteter Fehler", {
+          description:
+            "Die Sitzung konnte nicht erstellt werden. Bitte versuchen Sie es später erneut.",
+        });
+      }
     },
   });
 
-  // Update protocol
+  // Protokoll aktualisieren
   const updateProtocol = useMutation({
     mutationFn: async ({
       sessionId,
@@ -94,34 +208,41 @@ export function useTherapySessions() {
     }) => {
       const { data, error } = await supabase
         .from("session_protocols")
-        .upsert([
-          {
-            session_id: sessionId,
-            ...protocol,
-          },
-        ])
+        .upsert({
+          session_id: sessionId,
+          ...protocol,
+        })
         .select()
         .single();
 
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (_, { sessionId }) => {
       queryClient.invalidateQueries({ queryKey: ["therapy-sessions"] });
-      toast.success("Protokoll erfolgreich aktualisiert");
+      queryClient.invalidateQueries({
+        queryKey: ["therapy-session", sessionId],
+      });
+      toast.success("Protokoll wurde aktualisiert");
+    },
+    onError: (error) => {
+      toast.error("Fehler beim Aktualisieren des Protokolls", {
+        description: error.message,
+      });
     },
   });
 
-  // Add flower mixture
+  // Blütenmischung hinzufügen
   const addFlowerMixture = useMutation({
     mutationFn: async (mixture: FlowerMixtureForSession) => {
-      // 1. Create flower selection
+      // 1. Erstelle die Blütenmischung
       const { data: selection, error: selectionError } = await supabase
         .from("flower_selections")
         .insert([
           {
             therapist_id: user?.id,
-            client_id: activeSession?.client_id,
+            client_id: mixture.client_id, // Wir brauchen das jetzt von der Session
+            session_id: mixture.session_id,
             date: new Date().toISOString(),
             notes: mixture.notes,
             dosage_notes: mixture.dosage_notes,
@@ -133,7 +254,7 @@ export function useTherapySessions() {
 
       if (selectionError) throw selectionError;
 
-      // 2. Add flowers to selection
+      // 2. Füge die Blüten hinzu
       const flowerSelections = mixture.flowers.map((flowerId, index) => ({
         selection_id: selection.id,
         flower_id: flowerId,
@@ -146,72 +267,88 @@ export function useTherapySessions() {
 
       if (flowersError) throw flowersError;
 
-      // 3. Update session protocol with used flowers
-      await updateProtocol.mutateAsync({
-        sessionId: mixture.session_id,
-        protocol: {
-          used_flowers: mixture.flowers,
-          symptoms: activeSession?.protocol?.symptoms || [],
-          follow_up_needed: true,
-          follow_up_date: new Date(
-            Date.now() + mixture.duration_weeks! * 7 * 24 * 60 * 60 * 1000,
-          ),
-        },
-      });
-
       return selection;
     },
-    onSuccess: () => {
+    onSuccess: (_, { session_id }) => {
       queryClient.invalidateQueries({ queryKey: ["therapy-sessions"] });
-      toast.success("Blütenmischung erfolgreich hinzugefügt");
+      queryClient.invalidateQueries({
+        queryKey: ["therapy-session", session_id],
+      });
+      toast.success("Blütenmischung wurde erstellt");
+    },
+    onError: (error) => {
+      toast.error("Fehler beim Erstellen der Blütenmischung", {
+        description:
+          error instanceof Error ? error.message : "Unbekannter Fehler",
+      });
     },
   });
 
-  const startSession = useCallback(
-    async (sessionId: string) => {
-      const { error } = await supabase
+  // Status-Änderungen
+  const startSession = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { data, error } = await supabase
         .from("therapy_sessions")
-        .update({ status: "in_progress" })
-        .eq("id", sessionId);
+        .update({
+          status: "in_progress",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", sessionId)
+        .select()
+        .single();
 
       if (error) {
-        toast.error("Fehler beim Starten der Sitzung");
-        return;
+        console.error("Start session error:", error);
+        throw new Error("Fehler beim Starten der Sitzung");
       }
 
-      queryClient.invalidateQueries({ queryKey: ["therapy-sessions"] });
-      toast.success("Sitzung gestartet");
+      return data;
     },
-    [queryClient],
-  );
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["therapy-sessions"] });
+      queryClient.invalidateQueries({
+        queryKey: ["therapy-session", data.id],
+      });
+    },
+  });
 
-  const completeSession = useCallback(
-    async (sessionId: string) => {
-      const { error } = await supabase
+  const completeSession = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { data, error } = await supabase
         .from("therapy_sessions")
-        .update({ status: "completed" })
-        .eq("id", sessionId);
+        .update({
+          status: "completed",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", sessionId)
+        .select()
+        .single();
 
       if (error) {
-        toast.error("Fehler beim Abschließen der Sitzung");
-        return;
+        console.error("Complete session error:", error);
+        throw new Error("Fehler beim Abschließen der Sitzung");
       }
 
-      queryClient.invalidateQueries({ queryKey: ["therapy-sessions"] });
-      toast.success("Sitzung abgeschlossen");
+      return data;
     },
-    [queryClient],
-  );
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["therapy-sessions"] });
+      queryClient.invalidateQueries({
+        queryKey: ["therapy-session", data.id],
+      });
+    },
+  });
 
   return {
     sessions,
     isLoading,
+    useSession,
     activeSession,
     setActiveSession,
     createSession,
     updateProtocol,
     addFlowerMixture,
-    startSession,
-    completeSession,
+    startSession: startSession.mutateAsync,
+    completeSession: completeSession.mutateAsync,
   };
 }
