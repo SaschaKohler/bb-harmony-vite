@@ -1,3 +1,5 @@
+// src/pages/consultation-sessions/index.tsx
+
 import { useState } from "react";
 import { Plus, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,17 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useTherapySessions } from "./hooks/use-therapy-sessions";
-import { SessionList } from "./components/SessionList";
-import type { CreateSessionInput, SessionWithDetails } from "./types";
-import { SessionFormDialog } from "./components/SessionFormDialog";
+import { useConsultationSessions } from "./hooks/use-consultation-sessions";
+import { ConsultationList } from "./components/ConsultationList";
+import type { CreateConsultationInput, ConsultationWithDetails } from "./types";
+import { ConsultationFormDialog } from "./components/ConsultationFormDialog";
 
-export default function TherapySessionsPage() {
+export default function ConsultationSessionsPage() {
   const { sessions, isLoading, setActiveSession, createSession } =
-    useTherapySessions();
+    useConsultationSessions();
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  console.log(sessions);
 
   const filteredSessions = sessions?.filter((session) => {
     const nameMatch = `${session.client_first_name} ${session.client_last_name}`
@@ -30,19 +31,21 @@ export default function TherapySessionsPage() {
       statusFilter === "all" || session.status === statusFilter;
     return nameMatch && statusMatch;
   });
-  const handleCreateSession = async (data: CreateSessionInput) => {
+
+  const handleCreateSession = async (data: CreateConsultationInput) => {
+    console.log(data);
     await createSession.mutateAsync(data);
   };
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Therapiesitzungen</h1>
-        <SessionFormDialog
+        <h1 className="text-2xl font-bold">Beratungsgespräche</h1>
+        <ConsultationFormDialog
           trigger={
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              Neue Sitzung
+              Neues Gespräch
             </Button>
           }
           onSubmit={handleCreateSession}
@@ -70,7 +73,7 @@ export default function TherapySessionsPage() {
               <SelectContent>
                 <SelectItem value="all">Alle Status</SelectItem>
                 <SelectItem value="scheduled">Geplant</SelectItem>
-                <SelectItem value="in_progress">In Bearbeitung</SelectItem>
+                <SelectItem value="in_progress">In Beratung</SelectItem>
                 <SelectItem value="completed">Abgeschlossen</SelectItem>
                 <SelectItem value="cancelled">Storniert</SelectItem>
                 <SelectItem value="no_show">Nicht erschienen</SelectItem>
@@ -89,7 +92,7 @@ export default function TherapySessionsPage() {
           </CardContent>
         </Card>
       ) : (
-        <SessionList
+        <ConsultationList
           sessions={filteredSessions || []}
           onSelectSession={setActiveSession}
         />

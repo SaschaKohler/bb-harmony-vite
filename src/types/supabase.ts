@@ -245,6 +245,166 @@ export type Database = {
           },
         ]
       }
+      consultation_protocols: {
+        Row: {
+          agreements: string | null
+          created_at: string | null
+          current_situation: string | null
+          emotional_states: string[] | null
+          follow_up_date: string | null
+          follow_up_needed: boolean | null
+          goals: string | null
+          id: string
+          recommendations: string | null
+          resources: string | null
+          session_id: string
+          updated_at: string | null
+          used_flowers: string[] | null
+        }
+        Insert: {
+          agreements?: string | null
+          created_at?: string | null
+          current_situation?: string | null
+          emotional_states?: string[] | null
+          follow_up_date?: string | null
+          follow_up_needed?: boolean | null
+          goals?: string | null
+          id?: string
+          recommendations?: string | null
+          resources?: string | null
+          session_id: string
+          updated_at?: string | null
+          used_flowers?: string[] | null
+        }
+        Update: {
+          agreements?: string | null
+          created_at?: string | null
+          current_situation?: string | null
+          emotional_states?: string[] | null
+          follow_up_date?: string | null
+          follow_up_needed?: boolean | null
+          goals?: string | null
+          id?: string
+          recommendations?: string | null
+          resources?: string | null
+          session_id?: string
+          updated_at?: string | null
+          used_flowers?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultation_protocols_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "consultation_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultation_protocols_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "view_consultation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consultation_sessions: {
+        Row: {
+          calendar_event_id: string | null
+          client_id: string
+          created_at: string | null
+          duration_minutes: number
+          end_time: string
+          id: string
+          internal_notes: string | null
+          invoice_id: string | null
+          location: string | null
+          notes: string | null
+          session_type: string
+          start_time: string
+          status: string
+          therapist_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          calendar_event_id?: string | null
+          client_id: string
+          created_at?: string | null
+          duration_minutes: number
+          end_time: string
+          id?: string
+          internal_notes?: string | null
+          invoice_id?: string | null
+          location?: string | null
+          notes?: string | null
+          session_type: string
+          start_time: string
+          status?: string
+          therapist_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          calendar_event_id?: string | null
+          client_id?: string
+          created_at?: string | null
+          duration_minutes?: number
+          end_time?: string
+          id?: string
+          internal_notes?: string | null
+          invoice_id?: string | null
+          location?: string | null
+          notes?: string | null
+          session_type?: string
+          start_time?: string
+          status?: string
+          therapist_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultation_sessions_calendar_event_id_fkey"
+            columns: ["calendar_event_id"]
+            isOneToOne: false
+            referencedRelation: "calendar_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultation_sessions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "client_addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultation_sessions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultation_sessions_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultation_sessions_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "user_learning_progress"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "consultation_sessions_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emotion: {
         Row: {
           color: string | null
@@ -344,20 +504,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "fk_flower_selections_therapy_sessions"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "therapy_sessions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_flower_selections_therapy_sessions"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "view_therapy_sessions"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "flower_selections_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -375,14 +521,14 @@ export type Database = {
             foreignKeyName: "flower_selections_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
-            referencedRelation: "therapy_sessions"
+            referencedRelation: "consultation_sessions"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "flower_selections_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
-            referencedRelation: "view_therapy_sessions"
+            referencedRelation: "view_consultation_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -526,14 +672,14 @@ export type Database = {
             foreignKeyName: "invoice_items_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
-            referencedRelation: "therapy_sessions"
+            referencedRelation: "consultation_sessions"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "invoice_items_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
-            referencedRelation: "view_therapy_sessions"
+            referencedRelation: "view_consultation_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -862,62 +1008,12 @@ export type Database = {
             referencedRelation: "flower_selections"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      session_protocols: {
-        Row: {
-          created_at: string | null
-          diagnosis: string | null
-          follow_up_date: string | null
-          follow_up_needed: boolean | null
-          id: string
-          recommendations: string | null
-          session_id: string
-          symptoms: string[] | null
-          treatment_plan: string | null
-          updated_at: string | null
-          used_flowers: string[] | null
-        }
-        Insert: {
-          created_at?: string | null
-          diagnosis?: string | null
-          follow_up_date?: string | null
-          follow_up_needed?: boolean | null
-          id?: string
-          recommendations?: string | null
-          session_id: string
-          symptoms?: string[] | null
-          treatment_plan?: string | null
-          updated_at?: string | null
-          used_flowers?: string[] | null
-        }
-        Update: {
-          created_at?: string | null
-          diagnosis?: string | null
-          follow_up_date?: string | null
-          follow_up_needed?: boolean | null
-          id?: string
-          recommendations?: string | null
-          session_id?: string
-          symptoms?: string[] | null
-          treatment_plan?: string | null
-          updated_at?: string | null
-          used_flowers?: string[] | null
-        }
-        Relationships: [
           {
-            foreignKeyName: "session_protocols_session_id_fkey"
-            columns: ["session_id"]
+            foreignKeyName: "selection_flowers_selection_id_fkey"
+            columns: ["selection_id"]
             isOneToOne: false
-            referencedRelation: "therapy_sessions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "session_protocols_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "view_therapy_sessions"
-            referencedColumns: ["id"]
+            referencedRelation: "view_consultation_sessions"
+            referencedColumns: ["flower_selection_id"]
           },
         ]
       }
@@ -1029,103 +1125,6 @@ export type Database = {
             foreignKeyName: "therapist_calendar_settings_therapist_id_fkey"
             columns: ["therapist_id"]
             isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      therapy_sessions: {
-        Row: {
-          calendar_event_id: string | null
-          client_id: string
-          created_at: string | null
-          duration_minutes: number
-          end_time: string
-          id: string
-          internal_notes: string | null
-          invoice_id: string | null
-          location: string | null
-          notes: string | null
-          session_type: string
-          start_time: string
-          status: string
-          therapist_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          calendar_event_id?: string | null
-          client_id: string
-          created_at?: string | null
-          duration_minutes: number
-          end_time: string
-          id?: string
-          internal_notes?: string | null
-          invoice_id?: string | null
-          location?: string | null
-          notes?: string | null
-          session_type: string
-          start_time: string
-          status?: string
-          therapist_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          calendar_event_id?: string | null
-          client_id?: string
-          created_at?: string | null
-          duration_minutes?: number
-          end_time?: string
-          id?: string
-          internal_notes?: string | null
-          invoice_id?: string | null
-          location?: string | null
-          notes?: string | null
-          session_type?: string
-          start_time?: string
-          status?: string
-          therapist_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "therapy_sessions_calendar_event_id_fkey"
-            columns: ["calendar_event_id"]
-            isOneToOne: false
-            referencedRelation: "calendar_events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "therapy_sessions_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "client_addresses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "therapy_sessions_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "therapy_sessions_invoice_id_fkey"
-            columns: ["invoice_id"]
-            isOneToOne: false
-            referencedRelation: "invoices"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "therapy_sessions_therapist_id_fkey"
-            columns: ["therapist_id"]
-            isOneToOne: false
-            referencedRelation: "user_learning_progress"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "therapy_sessions_therapist_id_fkey"
-            columns: ["therapist_id"]
-            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
@@ -1395,17 +1394,23 @@ export type Database = {
         }
         Relationships: []
       }
-      view_therapy_sessions: {
+      view_consultation_sessions: {
         Row: {
+          agreements: string | null
           calendar_event_id: string | null
           client_email: string | null
           client_first_name: string | null
           client_id: string | null
           client_last_name: string | null
           created_at: string | null
-          diagnosis: string | null
+          current_situation: string | null
           duration_minutes: number | null
+          emotional_states: string[] | null
           end_time: string | null
+          flower_selection_id: string | null
+          flower_selection_notes: string | null
+          follow_up_date: string | null
+          goals: string | null
           google_event_id: string | null
           id: string | null
           internal_notes: string | null
@@ -1415,53 +1420,51 @@ export type Database = {
           location: string | null
           notes: string | null
           recommendations: string | null
+          resources: string | null
           session_type: string | null
           start_time: string | null
           status: string | null
-          symptoms: string[] | null
           therapist_id: string | null
-          treatment_plan: string | null
           updated_at: string | null
-          used_flowers: string[] | null
         }
         Relationships: [
           {
-            foreignKeyName: "therapy_sessions_calendar_event_id_fkey"
+            foreignKeyName: "consultation_sessions_calendar_event_id_fkey"
             columns: ["calendar_event_id"]
             isOneToOne: false
             referencedRelation: "calendar_events"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "therapy_sessions_client_id_fkey"
+            foreignKeyName: "consultation_sessions_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "client_addresses"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "therapy_sessions_client_id_fkey"
+            foreignKeyName: "consultation_sessions_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "therapy_sessions_invoice_id_fkey"
+            foreignKeyName: "consultation_sessions_invoice_id_fkey"
             columns: ["invoice_id"]
             isOneToOne: false
             referencedRelation: "invoices"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "therapy_sessions_therapist_id_fkey"
+            foreignKeyName: "consultation_sessions_therapist_id_fkey"
             columns: ["therapist_id"]
             isOneToOne: false
             referencedRelation: "user_learning_progress"
             referencedColumns: ["user_id"]
           },
           {
-            foreignKeyName: "therapy_sessions_therapist_id_fkey"
+            foreignKeyName: "consultation_sessions_therapist_id_fkey"
             columns: ["therapist_id"]
             isOneToOne: false
             referencedRelation: "users"
