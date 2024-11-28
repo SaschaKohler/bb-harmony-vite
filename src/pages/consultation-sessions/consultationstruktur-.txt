@@ -1,0 +1,20 @@
+.
+├── [id]
+│   └── index.tsx
+├── components
+│   ├── ConsultationFormDialog.tsx
+│   ├── ConsultationHistory.tsx
+│   ├── ConsultationList.tsx
+│   ├── ConsultationProtocol.tsx
+│   ├── EmotionInput.tsx
+│   ├── FlowerSelection.tsx
+│   └── FlowerSelectionHistory.tsx
+├── consultationstruktur-.txt
+├── hooks
+│   ├── use-clients.ts
+│   └── use-consultation-sessions.ts
+├── index.tsx
+└── types
+    └── index.ts
+
+4 directories, 13 files

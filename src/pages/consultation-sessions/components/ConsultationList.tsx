@@ -87,33 +87,36 @@ export function ConsultationList({
               </div>
 
               <div className="flex flex-col items-end gap-2">
-                {session.flower_selection_id && (
+                {session.flower_selection && (
                   <Badge variant="secondary" className="ml-2">
-                    {session.flower_selection_id?.flowers.length}{" "}
-                    Blütenempfehlung
-                    {session.flower_selection_id?.flowers.length !== 1
+                    {session.flower_selection?.flowers?.length} Blütenempfehlung
+                    {session.flower_selection?.flowers?.length !== 1
                       ? "en"
                       : ""}
                   </Badge>
                 )}
 
-                {session.follow_up_date && (
+                {session.protocol?.follow_up_date && (
                   <div className="text-xs text-muted-foreground flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     Folgegespräch:{" "}
-                    {format(new Date(session.follow_up_date), "d. MMMM yyyy", {
-                      locale: de,
-                    })}
+                    {format(
+                      new Date(session.protocol?.follow_up_date),
+                      "d. MMMM yyyy",
+                      {
+                        locale: de,
+                      },
+                    )}
                   </div>
                 )}
               </div>
             </div>
 
             {/* Emotionale Zustände als Tags anzeigen */}
-            {session.emotional_states &&
-              session.emotional_states.length > 0 && (
+            {session.protocol?.emotional_states &&
+              session.protocol?.emotional_states.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-3">
-                  {session.emotional_states.map((state, index) => (
+                  {session.protocol?.emotional_states.map((state, index) => (
                     <Badge
                       key={index}
                       variant="outline"

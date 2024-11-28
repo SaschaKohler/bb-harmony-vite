@@ -78,55 +78,22 @@ export function useConsultationSessions() {
   });
 
   // Query für einzelne Konsultation
+  // Hauptquery für Sitzungsdetails
   const useSession = (sessionId: string) => {
     return useQuery({
-      queryKey: ["consultation-sessions", sessionId],
+      queryKey: ["consultation-session", sessionId],
       queryFn: async () => {
-        if (!user?.id) throw new Error("No user ID available");
-
         const { data, error } = await supabase
           .from("view_consultation_sessions")
-          .select(
-            `
-            *,
-            client:clients(
-              id,
-              first_name,
-              last_name,
-              email
-            ),
-            protocol:consultation_protocols(
-              current_situation,
-              emotional_states,
-              resources,
-              goals,
-              recommendations,
-              agreements,
-              follow_up_date
-            ),
-            flower_selection:flower_selections(
-              id,
-              notes,
-              dosage_notes,
-              duration_weeks,
-              created_at,
-              flowers:selection_flowers(
-                flower:bach_flowers(
-                  id,
-                  name_german,
-                  name_english
-                )
-              )
-            )
-          `,
-          )
+          .select("*")
           .eq("id", sessionId)
           .single();
 
         if (error) throw error;
-        return data as ConsultationSessionWithDetails;
+        return data;
       },
-      enabled: !!user?.id && !!sessionId,
+      enabled: !!sessionId,
+      staleTime: Infinity, // Wichtig: Verhindert Auto-Refetching
     });
   };
 
@@ -232,65 +199,33 @@ export function useConsultationSessions() {
   });
 
   // Mutation für das Aktualisieren des Protokolls
+  // Optimierte Update-Mutation
   const updateProtocol = useMutation({
-    mutationFn: async ({ consultationId, protocol }: UpdateProtocolInput) => {
-      // Prüfen ob bereits ein Protokoll existiert
-      const { data: existingProtocol } = await supabase
+    mutationFn: async ({ consultationId, protocol }) => {
+      const { data, error } = await supabase
         .from("consultation_protocols")
-        .select("id")
-        .eq("session_id", consultationId)
+        .upsert({
+          session_id: consultationId,
+          ...protocol,
+        })
+        .select()
         .single();
 
-      if (existingProtocol) {
-        // Update existierendes Protokoll
-        const { data, error } = await supabase
-          .from("consultation_protocols")
-          .update({
-            current_situation: protocol.current_situation,
-            emotional_states: protocol.emotional_states,
-            resources: protocol.resources,
-            goals: protocol.goals,
-            recommendations: protocol.recommendations,
-            agreements: protocol.agreements,
-            follow_up_date: protocol.follow_up_date,
-          })
-          .eq("session_id", consultationId)
-          .select()
-          .single();
-
-        if (error) throw error;
-        return data;
-      } else {
-        // Erstelle neues Protokoll
-        const { data, error } = await supabase
-          .from("consultation_protocols")
-          .insert([
-            {
-              session_id: consultationId,
-              current_situation: protocol.current_situation,
-              emotional_states: protocol.emotional_states,
-              resources: protocol.resources,
-              goals: protocol.goals,
-              recommendations: protocol.recommendations,
-              agreements: protocol.agreements,
-              follow_up_date: protocol.follow_up_date,
-            },
-          ])
-          .select()
-          .single();
-
-        if (error) throw error;
-        return data;
-      }
+      if (error) throw error;
+      return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["consultation-sessions"] });
-      toast.success("Protokoll erfolgreich gespeichert");
-    },
-    onError: (error: Error) => {
-      toast.error("Fehler beim Speichern des Protokolls", {
-        description: error.message,
-      });
+    onSuccess: (data, variables) => {
+      // Manuelles Cache-Update
+      queryClient.setQueryData(
+        ["consultation-session", variables.consultationId],
+        (old: any) => {
+          if (!old) return old;
+          return {
+            ...old,
+            protocol: data,
+          };
+        },
+      );
     },
   });
 

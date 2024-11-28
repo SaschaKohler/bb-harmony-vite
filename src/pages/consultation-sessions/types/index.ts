@@ -1,24 +1,46 @@
 // src/pages/consultation-sessions/types/index.ts
-
-import { supabase } from "@/lib/supabaseClient";
+import { SESSION_TYPES, SESSION_STATUS } from "@/constants/sessions";
 import type { Database } from "@/types/supabase";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
 type DbConsultationSession =
   Database["public"]["Tables"]["consultation_sessions"]["Row"];
 type DbConsultationProtocol =
   Database["public"]["Tables"]["consultation_protocols"]["Row"];
-type DbFlowerSelection =
-  Database["public"]["Tables"]["flower_selections"]["Row"];
-type DbBachFlower = Database["public"]["Tables"]["bach_flowers"]["Row"];
 
 export interface ConsultationProtocol
   extends Omit<
     DbConsultationProtocol,
     "id" | "created_at" | "updated_at" | "session_id"
   > {
+  current_situation: string | null;
+  emotional_states: string[] | null;
+  goals: string | null;
+  resources: string | null;
+  recommendations: string | null;
+  agreements: string | null;
   follow_up_date: string | null;
+}
+
+export interface ConsultationSessionWithDetails extends DbConsultationSession {
+  client_first_name: string;
+  client_last_name: string;
+  client_email: string | null;
+  protocol: ConsultationProtocol | null;
+  flower_selection: {
+    id: string;
+    notes: string | null;
+    flowers: Array<{
+      id: string;
+      name_german: string | null;
+      name_english: string;
+    }>;
+  } | null;
+  current_situation?: string | null;
+  flower_selection_id?: {
+    flowers: Array<any>;
+    length: number;
+  } | null;
 }
 
 export interface FlowerInSelection {
@@ -34,14 +56,6 @@ export interface FlowerSelection {
   dosage_notes: string | null;
   duration_weeks: number | null;
   flowers: FlowerInSelection[];
-}
-
-export interface ConsultationSessionWithDetails extends DbConsultationSession {
-  client_first_name: string;
-  client_last_name: string;
-  client_email: string | null;
-  protocol: ConsultationProtocol | null;
-  flower_selection: FlowerSelection | null;
 }
 
 export interface CreateConsultationInput {
@@ -74,23 +88,3 @@ export const consultationSessionSchema = z.object({
   notes: z.string().optional(),
   internal_notes: z.string().optional(),
 });
-
-// Custom Hook für Session Management
-export function useConsultationSession(sessionId?: string) {
-  const queryClient = useQueryClient();
-
-  return useQuery({
-    queryKey: ["consultation-session", sessionId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("view_consultation_sessions")
-        .select("*")
-        .eq("id", sessionId)
-        .single();
-
-      if (error) throw error;
-      return data as ConsultationSessionWithDetails;
-    },
-    enabled: !!sessionId,
-  });
-}

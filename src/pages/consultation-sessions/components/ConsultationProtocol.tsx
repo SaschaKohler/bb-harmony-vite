@@ -1,7 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -23,10 +34,12 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
-import { CalendarIcon, Save } from "lucide-react";
+import { CalendarIcon, Loader2, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConsultationSessions } from "../hooks/use-consultation-sessions";
 import type { ConsultationSessionWithDetails } from "../types";
+import { EmotionInput } from "./EmotionInput";
+import { toast } from "sonner";
 
 const protocolSchema = z.object({
   current_situation: z
@@ -51,7 +64,10 @@ interface ConsultationProtocolProps {
 
 export function ConsultationProtocol({ session }: ConsultationProtocolProps) {
   const [isEditing, setIsEditing] = useState(!session.protocol);
+  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const [navigationPath, setNavigationPath] = useState<string | null>(null);
   const { updateProtocol } = useConsultationSessions();
+  const navigate = useNavigate();
 
   // Konvertiere das follow_up_date von string zu Date wenn vorhanden
   const defaultValues: FormData = {
@@ -64,7 +80,6 @@ export function ConsultationProtocol({ session }: ConsultationProtocolProps) {
     follow_up_date: session.protocol?.follow_up_date
       ? new Date(session.protocol.follow_up_date)
       : null,
-    notes: session.internal_notes ?? "",
   };
 
   const form = useForm<FormData>({
@@ -72,21 +87,54 @@ export function ConsultationProtocol({ session }: ConsultationProtocolProps) {
     defaultValues,
   });
 
-  const onSubmit = async (values: FormData) => {
+  const isDirty = form.formState.isDirty;
+
+  // Warnung bei ungespeicherten Änderungen und Navigation
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
+
+  // Navigation Handler
+  const handleNavigation = (path: string) => {
+    if (isDirty) {
+      setNavigationPath(path);
+      setShowUnsavedWarning(true);
+    } else {
+      navigate(path);
+    }
+  };
+
+  const onSubmit = async (data: FormData) => {
     try {
       await updateProtocol.mutateAsync({
         consultationId: session.id,
         protocol: {
-          ...values,
-          follow_up_date: values.follow_up_date?.toISOString() ?? null,
+          ...data,
+          follow_up_date: data.follow_up_date?.toISOString() ?? null,
         },
       });
-      setIsEditing(false);
+
+      form.reset(data);
+      toast.success("Protokoll gespeichert");
+
+      // Nach erfolgreichem Speichern Navigation durchführen wenn gewünscht
+      if (navigationPath) {
+        navigate(navigationPath);
+        setNavigationPath(null);
+      }
     } catch (error) {
-      console.error("Error saving protocol:", error);
+      toast.error("Fehler beim Speichern des Protokolls");
+      console.error(error);
     }
   };
-
   if (!isEditing && session.protocol) {
     return (
       <div className="space-y-4">
@@ -175,16 +223,6 @@ export function ConsultationProtocol({ session }: ConsultationProtocolProps) {
                 </p>
               </div>
             )}
-
-            {/* Interne Notizen */}
-            {session.internal_notes && (
-              <div>
-                <h4 className="font-medium mb-1">Interne Notizen</h4>
-                <p className="text-sm text-muted-foreground">
-                  {session.internal_notes}
-                </p>
-              </div>
-            )}
           </CardContent>
         </Card>
       </div>
@@ -192,275 +230,267 @@ export function ConsultationProtocol({ session }: ConsultationProtocolProps) {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Gesprächsnotizen</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Aktuelle Situation */}
-            <FormField
-              control={form.control}
-              name="current_situation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Aktuelle Situation</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Beschreiben Sie die aktuelle Lebenssituation und die Anliegen..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Gesprächsnotizen</CardTitle>
+            </CardHeader>
 
-            {/* Emotionale Wahrnehmung */}
-            <FormField
-              control={form.control}
-              name="emotional_states"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Emotionale Wahrnehmung</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Beschreiben Sie die wahrgenommenen emotionalen Zustände (einen pro Zeile)..."
-                      value={field.value?.join("\n")}
-                      onChange={(e) => {
-                        const emotions = e.target.value
-                          .split("\n")
-                          .map((emotion) => emotion.trim())
-                          .filter((emotion) => emotion.length > 0); // Filtert leere Zeilen
-                        field.onChange(emotions);
-
-                        // Wichtig: Trigger der Formvalidierung
-                        form.trigger("emotional_states");
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          const textarea = e.target as HTMLTextAreaElement;
-                          const { selectionStart, selectionEnd } = textarea;
-                          const currentValue = textarea.value;
-
-                          // Füge einen echten Zeilenumbruch ein
-                          const newValue =
-                            currentValue.slice(0, selectionStart) +
-                            "\n" +
-                            currentValue.slice(selectionEnd);
-
-                          // Aktualisiere den Wert und die Cursor-Position
-                          textarea.value = newValue;
-                          textarea.selectionStart = textarea.selectionEnd =
-                            selectionStart + 1;
-
-                          // Trigger das Change-Event
-                          const event = new Event("input", { bubbles: true });
-                          textarea.dispatchEvent(event);
-                        }
-                      }}
-                      className="min-h-[100px] font-mono" // Monospace-Font für bessere Lesbarkeit
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Drücken Sie Enter für einen neuen emotionalen Zustand. Jede
-                    Zeile wird als separater Zustand erfasst.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Ressourcen */}
-            <FormField
-              control={form.control}
-              name="resources"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vorhandene Ressourcen</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Welche Ressourcen und Stärken stehen zur Verfügung..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Beschreiben Sie die Stärken und Unterstützungsmöglichkeiten,
-                    die der Klient bereits nutzen kann.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Ziele */}
-            <FormField
-              control={form.control}
-              name="goals"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Angestrebte Ziele</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Welche Ziele wurden gemeinsam erarbeitet..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Definieren Sie die konkreten Ziele, die durch die Beratung
-                    erreicht werden sollen.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Empfehlungen */}
-            <FormField
-              control={form.control}
-              name="recommendations"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Empfehlungen</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Welche Empfehlungen wurden ausgesprochen..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Formulieren Sie Ihre Empfehlungen zur Unterstützung der
-                    persönlichen Entwicklung.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Vereinbarungen */}
-            <FormField
-              control={form.control}
-              name="agreements"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Getroffene Vereinbarungen</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Welche konkreten Vereinbarungen wurden getroffen..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Halten Sie die gemeinsam vereinbarten nächsten Schritte
-                    fest.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Folgetermin */}
-            <FormField
-              control={form.control}
-              name="follow_up_date"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Nächstes Beratungsgespräch</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP", { locale: de })
-                          ) : (
-                            <span>Datum wählen</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) => date < new Date()}
-                        initialFocus
+            <CardContent className="space-y-4">
+              {/* Aktuelle Situation */}
+              <FormField
+                control={form.control}
+                name="current_situation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Aktuelle Situation</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Beschreiben Sie die aktuelle Lebenssituation und die Anliegen..."
+                        className="min-h-[100px]"
+                        {...field}
                       />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    Optional: Wählen Sie einen Termin für das nächste
-                    Beratungsgespräch.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Interne Notizen */}
-            <FormField
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Interne Notizen</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Interne Notizen für die weitere Beratung..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Persönliche Notizen für die Vorbereitung weiterer Gespräche
-                    (nicht Teil des offiziellen Protokolls).
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
+              {/* Emotionale Wahrnehmung */}
+              <FormField
+                control={form.control}
+                name="emotional_states"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Emotionale Wahrnehmung</FormLabel>
+                    <FormControl>
+                      <EmotionInput
+                        value={field.value || []}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Drücken Sie Enter für einen neuen emotionalen Zustand oder
+                      wählen Sie aus den Vorschlägen.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <div className="flex justify-end gap-2">
-          {session.protocol && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsEditing(false)}
-            >
-              Abbrechen
-            </Button>
-          )}
-          <Button type="submit" disabled={updateProtocol.isPending}>
-            {updateProtocol.isPending ? (
-              <>
-                <div className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                Wird gespeichert...
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4 mr-2" />
-                Gesprächsnotizen speichern
-              </>
+              {/* Ressourcen */}
+              <FormField
+                control={form.control}
+                name="resources"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vorhandene Ressourcen</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Welche Ressourcen und Stärken stehen zur Verfügung..."
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Beschreiben Sie die Stärken und
+                      Unterstützungsmöglichkeiten, die der Klient bereits nutzen
+                      kann.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Ziele */}
+              <FormField
+                control={form.control}
+                name="goals"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Angestrebte Ziele</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Welche Ziele wurden gemeinsam erarbeitet..."
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Definieren Sie die konkreten Ziele, die durch die Beratung
+                      erreicht werden sollen.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Empfehlungen */}
+              <FormField
+                control={form.control}
+                name="recommendations"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Empfehlungen</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Welche Empfehlungen wurden ausgesprochen..."
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Formulieren Sie Ihre Empfehlungen zur Unterstützung der
+                      persönlichen Entwicklung.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Vereinbarungen */}
+              <FormField
+                control={form.control}
+                name="agreements"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Getroffene Vereinbarungen</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Welche konkreten Vereinbarungen wurden getroffen..."
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Halten Sie die gemeinsam vereinbarten nächsten Schritte
+                      fest.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Folgetermin */}
+              <FormField
+                control={form.control}
+                name="follow_up_date"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Nächstes Beratungsgespräch</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[240px] pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP", { locale: de })
+                            ) : (
+                              <span>Datum wählen</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormDescription>
+                      Optional: Wählen Sie einen Termin für das nächste
+                      Beratungsgespräch.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-end gap-2">
+            {session.protocol && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  if (isDirty) {
+                    setShowUnsavedWarning(true);
+                  } else {
+                    setIsEditing(false);
+                  }
+                }}
+              >
+                Abbrechen
+              </Button>
             )}
-          </Button>
-        </div>
-      </form>
-    </Form>
+            <Button
+              type="submit"
+              disabled={updateProtocol.isPending || !isDirty}
+            >
+              {updateProtocol.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Wird gespeichert...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Speichern
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </Form>
+      <AlertDialog
+        open={showUnsavedWarning}
+        onOpenChange={setShowUnsavedWarning}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Ungespeicherte Änderungen</AlertDialogTitle>
+            <AlertDialogDescription>
+              Es gibt ungespeicherte Änderungen. Möchten Sie diese speichern?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setShowUnsavedWarning(false);
+                if (navigationPath) {
+                  navigate(navigationPath);
+                  setNavigationPath(null);
+                } else {
+                  setIsEditing(false);
+                }
+              }}
+            >
+              Verwerfen
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                form.handleSubmit(onSave)();
+              }}
+            >
+              Speichern
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
